@@ -1,0 +1,38 @@
+---
+interface Props {
+  title: string;
+  image: string;
+  design: string;        // Nombre visible del diseño
+  slug: string;          // Slug de la prenda (ej: "remera-oversize")
+  price: string;
+  category: string;      // <- nuevo
+  designSlug: string;    // <- nuevo
+}
+
+const { title, image, design, slug, price, category, designSlug } = Astro.props;
+---
+
+<div class="shadow-xl rounded-2xl overflow-hidden mt-8">
+  <div class="w-full h-56 md:h-96 overflow-hidden"> 
+    <a href={`/${category}/${designSlug}/${slug}`}>
+      <img
+        src={image}
+        alt={title}
+        class="w-full h-full object-cover"
+      />
+    </a>
+  </div>
+  <div class="p-2 md:p-4">
+    <h2 class="text-base md:text-2xl font-bold text-zinc-900">{title}</h2>
+    <p class="text-sm text-zinc-500">{design}</p>
+    <p class="text-2xl font-bold text-zinc-900 precio" aria-label={price}>AR$</p>
+    <div class="flex justify-center">
+      <a href={`/${category}/${designSlug}/${slug}`} class="text-white text-sm md:text-base bg-pink-700 text-center rounded-lg w-full py-2 mt-3">Seleccionar Prenda</a>
+    </div>
+  </div>
+</div>
+
+<script>
+  import { getPrecios } from "@scripts/precios.ts";
+  document.addEventListener("astro:page-load", getPrecios);
+</script>

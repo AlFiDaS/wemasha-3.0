@@ -1,0 +1,91 @@
+---
+import Layout from "@layouts/Layout.astro";
+import Hero from "@components/Hero.astro";
+import { clientes } from "@lib/clientes";
+---
+
+<Layout title="Clientes">
+	<div class="max-w-[1440px] mx-auto">
+        <Hero title="Clientes" image="/images/categories/personalizado.png" slug="" />
+		<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 items-center gap-3 mt-12 mx-3 lg:mx-auto">
+			{clientes.map((cliente) => {
+				const { title, image } = cliente;
+				return (
+					<div 
+						class="flex items-center justify-center aspect-square rounded-2xl overflow-hidden md:mx-auto cursor-pointer" 
+						data-image={image}
+					>
+						<img src={image} alt={title} class="w-full rounded-lg" />
+					</div>
+				);
+			})}
+		</div>
+	</div>
+
+    {/* Modal */}
+    <div id="modal" class="hidden fixed inset-0 bg-black bg-opacity-70 justify-center items-center z-50">
+        <div class="relative bg-white rounded-lg overflow-hidden">
+            <button 
+                class="absolute top-3 right-3 text-white bg-black rounded-full px-2 py-1 z-10"
+                id="close-modal"
+            >
+                Cerrar
+            </button>
+            <img id="modal-image" src="" alt="Imagen ampliada" class="max-w-full max-h-[85vh] object-contain" />
+        </div>
+    </div>
+</Layout>
+
+<script>
+    document.addEventListener('astro:page-load', ()=> {
+        // Obtención de elementos
+        const modal = document.querySelector<HTMLDivElement>('#modal');
+        const modalImage = document.querySelector<HTMLImageElement>('#modal-image');
+        const closeModalBtn = document.querySelector<HTMLButtonElement>('#close-modal');
+
+        if (!modal || !modalImage || !closeModalBtn) {
+            console.error('No se encontraron los elementos necesarios para el modal.');
+        }
+
+        // Delegación de eventos para abrir el modal
+        document.addEventListener('click', (event: MouseEvent) => {
+            const target = event.target as HTMLElement;
+            const image = target.closest<HTMLDivElement>('[data-image]')?.dataset.image;
+
+            if (image) {
+                openModal(image);
+            }
+        });
+
+        // Función para abrir el modal
+        function openModal(image: string): void {
+            if (modal && modalImage) {
+                modalImage.src = image;
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            }
+        }
+
+        // Función para cerrar el modal
+        function closeModal(): void {
+            if (modal && modalImage) {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+                modalImage.src = '';
+            }
+        }
+
+        // Evento para cerrar el modal al hacer clic en el botón "Cerrar"
+        closeModalBtn?.addEventListener('click', () => {
+            closeModal();
+        });
+
+        // Evento para cerrar el modal al hacer clic fuera de la imagen
+        modal?.addEventListener('click', (event: MouseEvent) => {
+            if (event.target === modal) {
+                closeModal();
+            }
+        });
+
+    });
+</script>

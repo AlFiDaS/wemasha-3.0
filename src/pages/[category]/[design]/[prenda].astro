@@ -1,0 +1,130 @@
+---
+import Layout from "@layouts/LayoutCart.astro";
+import Hero from "@components/Hero.astro";
+import { getCollection, getEntry } from "astro:content";
+import Modalidad from "@components/Modalidad.astro";
+import MCart from "@icons/mCart.astro";
+
+export async function getStaticPaths() {
+  const productos = await getCollection("productos");
+  return productos.flatMap((producto) =>
+    producto.data.prendas.map((prenda) => ({
+      params: {
+        category: producto.data.category.id,
+        design: producto.data.designSlug,
+        prenda: prenda.slug, // Solo el slug de la prenda
+      },
+    }))
+  );
+}
+
+const { design, category, prenda } = Astro.params;
+
+const producto = (await getEntry("productos", category + "/" + design))?.data;
+
+if (!producto) {
+  throw new Error(`No se encontró el producto con el slug ${design}`);
+}
+
+const { title, image, prendas } = producto;
+
+const prendaMetadata = prendas.filter((p) => p.slug === prenda);
+
+const {
+  title: prendaTitle,
+  image: prendaImage,
+  price: prendaPrice,
+  talles: prendaTalles,
+} = prendaMetadata[0];
+---
+
+<Layout title="WeMasha - Remeras y Buzos Streetwear de tus Artistas Favoritos">
+  <div class="max-w-[1440px] mx-auto">
+    <Hero 
+  title={title} 
+  image={image} 
+  slug={prenda} 
+  backTo={`/${category}/${design}`} 
+/>
+
+    <div
+      class="max-w-[1200px] mx-auto grid grid-cols-1 md:grid-cols-2 items-center gap-2 md:gap-8 mt-0 md:mt-16 px-1 md:px-4"
+    >
+      <div
+        class="rounded-2xl overflow-hidden p-6 md:p-8 flex flex-col gap-1"
+      >
+        <h2 class="text-2xl font-bold text-zinc-900">{prendaTitle}</h2>
+        <p class="text-base text-zinc-500">{title}</p>
+        <p class="text-2xl font-bold text-zinc-700 precio" aria-label={prendaPrice}>AR$ </p>
+        <form class="mt-4 flex flex-col gap-4" action="">
+          <select
+            name="talle"
+            aria-label={prendaTalles}
+            id="talle"
+            class="w-full rounded-lg border border-zinc-300 p-2"
+            required
+          >
+            <option value="0" selected disabled>Talles disponibles</option>
+          </select>
+
+          <input
+            type="number"
+            id="cantidad"
+            class="w-full rounded-lg border border-zinc-300 p-2"
+            placeholder="Cantidad de prendas"
+            min="1"
+            max="99"
+            required
+          />
+          <input type="text" id="prenda" value={prendaTitle} hidden />
+          <input type="text" id="diseño" value=`${category}-${design}` hidden />
+          <input type="text" id="image" value={prendaImage} hidden />
+          <input type="text" id="price" value={prendaPrice} hidden />
+
+          <div class="mt-1 flex flex-col gap-4 justify-center">
+            <p id="alert-error" class="hidden bg-pink-900 text-white text-center py-2">Selecciona un talle y una cantidad válida.</p>
+            <p id="alert-success" class="hidden bg-pink-900 text-white text-center py-2">Producto agregado correctamente al carrito</p>
+            <button
+              type="submit"
+              id="btn-submit"
+              class="text-white bg-pink-700 text-center rounded-lg w-full py-2 disabled:opacity-90"
+              >Agregar al carrito</button>
+              <a id="btn-cart" class="text-white bg-zinc-900 cursor-pointer flex flex-row justify-center items-center gap-2 rounded-lg w-full py-2 disabled:opacity-90">
+                Ver carrito <span class=" text-white"><MCart></span> 
+              </a>
+          </div>
+        </form>
+      </div>
+      <div class="overflow-hidden max-w-[550px] mx-auto">
+        <img
+          src={prendaImage}
+          transition:name=`${design}/${prenda}`
+          alt={prendaTitle}
+          class="w-full h-full object-cover rounded-lg"
+        />
+      </div>
+    </div>
+    <Modalidad />
+  </div>
+</Layout>
+
+<script>
+  import {saveCarrito} from "@scripts/saveCarrito";
+  import { getPrecios } from '@scripts/precios';
+  import { getTalles } from '@scripts/getTalles';
+
+  const form = document.querySelector("form") as HTMLFormElement;
+  const btnCart = document.querySelector("#btn-cart") as HTMLButtonElement;
+
+  // Envío del formulario y guardado del carrito
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    saveCarrito();
+  });
+
+  // Obtener precio y talles
+  document.addEventListener('DOMContentLoaded', getPrecios);
+  document.addEventListener('DOMContentLoaded', getTalles);
+
+  btnCart.addEventListener('click', () => { window.location.href = "/cart"; });
+</script>

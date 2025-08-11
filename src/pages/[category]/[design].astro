@@ -1,0 +1,56 @@
+---
+import Layout from '@layouts/Layout.astro';
+import Hero from '@components/Hero.astro';
+import Preguntas from '@components/Preguntas.astro';
+import { getCollection, getEntry } from 'astro:content';
+import Prendas from "@components/Prendas.astro";
+
+export async function getStaticPaths() {
+	const productos = await getCollection('productos');
+	return productos.map((producto) => ({
+		params: { 
+			category: producto.data.category.id,
+			design: producto.data.designSlug,
+		},
+	}));
+};
+
+const { design, category } = Astro.params;
+
+const producto = (await getEntry('productos', `${category}/${design}`))?.data;
+const categoria = (await getEntry('categorias', category))?.data;
+
+if (!producto || !categoria) {
+	throw new Error(`No se encontró el producto con el slug ${design}`);
+}
+
+const { title, image, designSlug, prendas } = producto;
+---
+
+<Layout title="WeMasha - Remeras y Buzos Streetwear de tus Artistas Favoritos">
+	<div class="max-w-[1440px] mx-auto">
+		<Hero 
+      title={title} 
+      image={image} 
+      slug={designSlug} 
+      backTo={`/${category}`} 
+    />
+		<div class="mx-auto grid grid-cols-2 p-4 md:grid-cols-2 lg:grid-cols-4 items-center gap-3 mt-3">
+			{
+				prendas.map((prenda) => 
+					<Prendas
+  title={prenda.title}
+  slug={prenda.slug}
+  image={prenda.image}
+  price={prenda.price}
+  design={title} 
+  category={category}
+  designSlug={designSlug}
+/>
+
+				)
+			}
+		</div>
+		<Preguntas />
+	</div>
+</Layout>

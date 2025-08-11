@@ -1,0 +1,25 @@
+---
+import Catbtn from '@components/Catbtn.astro';
+
+interface Props {
+	slug: string;
+    title: string;
+    image: string;
+}
+
+const { slug, title, image } = Astro.props;
+---
+<div class="cat-item bg-cover bg-center w-full h-[384px] pl-9 md:pl-16 pb-9 flex items-end" transition:name={slug} style={`background-image: url('${image}')`}>
+    <div class="flex flex-col gap-9">
+        <h1 class="text-4xl sm:text-5xl md:text-6xl max-w-[300px] sm:max-w-[400px] text-white leading-none font-black ">{title}</h1>
+        <Catbtn slug={slug} />
+    </div>
+</div>
+
+<style>
+    @media (min-width: 768px) {
+        .cat-item:nth-last-child(1):nth-child(even) {
+        grid-column: span 2;
+        }
+    }
+</style>

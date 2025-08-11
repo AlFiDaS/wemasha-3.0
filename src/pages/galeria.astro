@@ -1,0 +1,158 @@
+---
+// src/pages/galeria.astro
+import Layout from "@layouts/Layout.astro";
+
+
+
+// Mockups
+const mockups = {
+  adelante: "/images/mockups/adelante.webp",
+  atras: "/images/mockups/atras.webp",
+};
+
+// Lista completa (ahora con .category)
+import { designs } from "../lib/designs.ts";
+
+// Fallback server-side: primera página
+const firstDesk = designs.slice(0, 12);
+const firstMob  = designs.slice(0, 8);
+
+// Categorías únicas + "todos"
+const categories = ["todos", ...Array.from(new Set(designs.map(d => d.category)))];
+---
+
+<Layout title="Galería de ideas">
+  <div class="max-w-[1400px] mx-auto px-4 pt-6 pb-28 md:pb-10 grid lg:grid-cols-2 gap-8">
+
+    <!-- TÍTULO -->
+    <h1 class="lg:col-span-2 text-3xl md:text-4xl font-semibold text-center mb-2">
+      GALERIA DE IDEAS
+    </h1>
+
+    <!-- FILTRO DE CATEGORÍAS (visible en mobile y desktop) -->
+    <nav id="cat-filter" class="lg:col-span-2 flex flex-wrap gap-2 justify-center">
+      {categories.map((cat) => (
+        <button
+          class="btn-cat px-3 py-1.5 rounded-full border text-sm capitalize hover:bg-neutral-100 data-[active=true]:bg-black data-[active=true]:text-white"
+          data-cat={cat}
+        >
+          {cat === 'todos' ? 'Todos' : cat.replace(/-/g, ' ')}
+        </button>
+      ))}
+    </nav>
+
+    <!-- IZQUIERDA: visor + controles -->
+    <section class="grid gap-4 content-start">
+      <!-- Toggle centrado 50/50 -->
+      <div class="w-full max-w-md mx-auto self-center md:self-start">
+        <div class="flex w-full rounded-xl overflow-hidden border">
+          <button id="btn-adelante" class="flex-1 px-4 py-2 text-sm font-medium bg-black text-white" data-side="adelante">
+            Adelante
+          </button>
+          <button id="btn-atras" class="flex-1 px-4 py-2 text-sm font-medium bg-white text-gray-800" data-side="atras">
+            Atrás
+          </button>
+        </div>
+      </div>
+
+      <!-- Controles -->
+      <div class="order-3 md:order-3 grid grid-cols-1 sm:grid-cols-[1fr_auto] gap-3 items-end">
+        <label class="flex flex-col gap-1 text-sm">
+          Tamaño
+          <input id="range-size" type="range" min="10" max="100" value="35" />
+        </label>
+        <button id="btn-centro" class="px-4 py-2 rounded-lg bg-neutral-200 hover:bg-neutral-300 text-sm">
+          Centrar diseño
+        </button>
+      </div>
+
+      <!-- Visor -->
+      <div
+        id="mockup-wrapper"
+        class="order-2 md:order-2 relative w-full aspect-[4/5] bg-neutral-100 rounded-2xl overflow-hidden shadow touch-none overscroll-contain"
+      >
+        <img
+          id="mockup-base"
+          src={mockups.adelante}
+          alt="Mockup base"
+          class="absolute inset-0 w-full h-full object-cover select-none pointer-events-none"
+          draggable="false"
+        />
+        <img
+          id="mockup-overlay"
+          src=""
+          alt="Diseño aplicado"
+          class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 select-none touch-none"
+          style="display:none; mix-blend:multiply;"
+          draggable="false"
+        />
+      </div>
+    </section>
+
+    <!-- DERECHA: galería (desktop) con paginación -->
+    <section class="hidden md:block space-y-3">
+      <div class="flex items-center justify-between md:mt-6">
+        <h2 class="text-lg font-medium">Elegí un diseño</h2>
+        <div id="desk-page-indicator" class="text-sm text-neutral-500"></div>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <button id="desk-prev" class="p-2 rounded-lg border hover:bg-neutral-100" aria-label="Anterior">‹</button>
+
+        <div id="desk-grid" class="grid grid-cols-3 gap-3 flex-1">
+          <!-- Fallback SSR: primera página (12) -->
+          {firstDesk.map((d) => (
+            <button
+              class="aspect-square bg-black rounded-xl overflow-hidden border border-neutral-700 hover:shadow transition"
+              data-design={d.src}
+              aria-label={`Usar ${d.name}`}
+              title={d.name}
+            >
+              <img src={d.src} alt={d.name} class="w-full h-full object-contain p-2" />
+            </button>
+          ))}
+        </div>
+
+        <button id="desk-next" class="p-2 rounded-lg border hover:bg-neutral-100" aria-label="Siguiente">›</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- MOBILE: paginado 2x4 por página -->
+  <div class="md:hidden fixed bottom-0 inset-x-0 z-40 bg-black/90 backdrop-blur supports-[backdrop-filter]:bg-black/70 py-2">
+    <div class="px-3 text-white text-sm mb-2">Elegí un diseño</div>
+
+    <div id="mob-pager" class="overflow-x-auto no-scrollbar snap-x snap-mandatory">
+      <div id="mob-pages" class="flex gap-6 px-3 pb-2">
+        <!-- Fallback SSR: primera página (8) -->
+        <div class="shrink-0 w-full snap-start grid grid-cols-4 grid-rows-2 gap-3">
+          {firstMob.map((d) => (
+            <button
+              class="bg-black rounded-xl overflow-hidden border border-neutral-700 h-[72px]"
+              data-design={d.src}
+              aria-label={`Usar ${d.name}`}
+              title={d.name}
+            >
+              <img src={d.src} alt={d.name} class="w-full h-full object-contain p-2" />
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Enviar dataset completo al cliente -->
+  <script
+    type="application/json"
+    id="designs-data"
+    set:html={JSON.stringify({ designs, categories })}
+  ></script>
+
+<script type="module">
+  import initGaleria from "../scripts/galeria.js";
+  initGaleria();
+</script>
+
+
+
+</Layout>

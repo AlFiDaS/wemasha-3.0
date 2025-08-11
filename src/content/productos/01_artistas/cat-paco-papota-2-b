@@ -1,0 +1,51 @@
+---
+title: C&P - Papota#2 (B)
+category: 01_artistas
+designSlug: cat-paco-papota-2-b
+image: '/products/cabezotas/488-papota-2/principal.jpg'
+imageHover: '/products/cabezotas/488-papota-2/oversize.jpg'
+prendas: [
+    {   
+        title: 'Remera',
+        slug: 'remera',          
+        image: '/products/cabezotas/488-papota-2/normal.jpg',
+        price: 'remerasPrecio',
+        talles: 'remerasTallesBlanco'
+    },
+    {
+        title: 'Remera Oversize',
+        slug: 'remera-oversize',
+        image: '/products/cabezotas/488-papota-2/oversize.jpg',
+         price: 'oversizePrecio',
+        talles: 'oversizeTallesBlanco'
+    },
+    # {
+    #     title: 'Musculosa M',
+    #     slug: 'musculosa-mujer',
+    #     image: '/products/cabezotas/488-papota-2/musculosa.jpg',
+    #     price: 'musculosaPrecio',
+    #     talles: 'musculosasMujerTallesBlanco'
+    # },
+    {
+        title: 'Musculosa H',
+        slug: 'musculoso',
+        image: '/products/cabezotas/488-papota-2/musculoso.jpg',
+        price: 'musculosaPrecio',
+        talles: 'musculosasHombreTallesBlanco'
+    },
+    {
+        title: 'Pupera Oversize',
+        slug: 'pupera-oversize',
+        image: '/products/cabezotas/488-papota-2/pupera.jpg',
+        price: 'remerasPrecio',
+        talles: 'remerasTallesBlanco'
+    },
+    #  {
+    #      title: 'Buzo',
+    #      slug: 'buzo',
+    #      image: '/products/cabezotas/488-papota-2/buzo.jpg',
+    #      price: buzosPrecio,
+    #     talles: 'BuzosTallesBlanco'
+    #  },
+]
+---

@@ -1,0 +1,30 @@
+---
+import BackHomeIcon from "@icons/home.astro";
+
+interface Props {
+    title: string;
+    image: string;
+    slug: string;
+    backTo?: string; // opcional
+}
+
+const { title, image, slug, backTo } = Astro.props;
+---
+
+<div class="bg-cover bg-center w-full h-[184px] md:h-[384px] pl-9 md:pl-16 pb-8 flex items-end" transition:name={slug} style={`background-image: url('${image}')`} data-slug={slug}>
+  <div class="flex flex-col gap-4">
+    <h1 class="text-3xl sm:text-5xl md:text-6xl max-w-[300px] sm:max-w-[600px] text-white leading-none font-black">{title}</h1>
+    <div>
+      <a
+        id="back-button"
+        href={backTo || "/"}
+        data-backto={backTo || "/"}
+        class="flex items-center gap-1 text-white text-sm md:text-base font-semibold border border-white w-fit px-4 py-2 rounded-lg"
+      >
+        <BackHomeIcon />
+        IR ATRÁS
+      </a>
+    </div>
+  </div>
+</div>
+

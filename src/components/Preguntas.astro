@@ -1,0 +1,56 @@
+---
+import Calendar from "@icons/calendar.astro";
+import Clock from "@icons/clock.astro";
+import Sheepment from "@icons/sheepment.astro";
+import Point from "@icons/point.astro";
+---
+
+<div class="max-w-[1200px] mx-auto mt-16 grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-14">
+    <div class="hidden md:block rounded-lg overflow-hidden">
+        <img src="/images/preguntas-frecuentes.png" alt="Preguntas Frecuentes" class="w-full h-full object-cover" />
+    </div>
+    <div class="max-w-[612px] mx-4 md:ml-0">
+        <h1 class="text-5xl text-zinc-900 font-black mb-4">Preguntas Frecuentes</h1>
+        <p class="text-zinc-700 border-b border-b-zinc-300 pb-8">Sabemos que pueden surgir preguntas, así que aquí están las respuestas que necesitás.</p>
+        <div class="mt-8 flex gap-3">
+            <div class="w-8">
+                <Calendar />
+            </div>
+            <div>
+                <h2 class="text-xl text-zinc-900 font-black mb-3">¿Cuando cierran las listas de pedidos?</h2>
+                <p class="text-zinc-700">Todas las semanas cerramos la lista de pedidos los dias <b>Jueves a las 23:59hs</b>, los dias Viernes nos dedicamos a imprimir las estampas y preparar los pedidos para entregarlos los dias Sabados o Lunes a mas tardar.</p>
+            </div>
+        </div>
+
+        <div class="mt-8 flex gap-3">
+            <div class="w-8">
+                <Clock />
+            </div>
+            <div>
+                <h2 class="text-xl text-zinc-900 font-black mb-3">¿Cuanto tardan las remes en producirse?</h2>
+                <p class="text-zinc-700">Tardamos en realizar tu remera de 2 a 8 dias habiles desde que tomamos tu pedido.</p>
+            </div>
+        </div>
+
+        <div class="mt-8 flex gap-3">
+            <div class="w-8">
+                <Sheepment />
+            </div>
+            <div>
+                <h2 class="text-xl text-zinc-900 font-black mb-3">¿Hacen envios?</h2>
+                <p class="text-zinc-700">Si! Hacemos envios a todo el pais por medio de Correo Argentino. <br /> Los envios pueden ser a Sucursal de Correo Argentino o a Domicilio.</p>
+            </div>
+        </div>
+
+        <div class="mt-8 flex gap-3">
+            <div class="w-8">
+                <Point />
+            </div>
+            <div>
+                <h2 class="text-xl text-zinc-900 font-black mb-3">¿Cuanto tardan los envios?</h2>
+                <p class="text-zinc-700">Existen 2 tipos de envios el CLASICO (2 a 5 dias habiles) o el EXPRESO (1 a 3 dias habiles).</p>
+            </div>
+        </div>
+
+    </div>
+</div>

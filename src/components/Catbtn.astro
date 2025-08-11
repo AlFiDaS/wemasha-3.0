@@ -1,0 +1,10 @@
+---
+interface Props {
+	slug: string;
+}
+
+const { slug } = Astro.props;
+---
+<div>
+	<a href=`${slug}/` class="text-white border border-white rounded-lg py-3 px-6 text-center">Ver más</a>
+</div>

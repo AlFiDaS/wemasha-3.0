@@ -1,0 +1,41 @@
+---
+import Categories from '@components/Categories.astro';
+import Layout from '../layouts/Layout.astro';
+import Clientes from '@components/Clientes.astro';
+import Preguntas from '@components/Preguntas.astro';
+import { getCollection } from 'astro:content';
+
+const categorias = await getCollection('categorias');
+
+const destacado = categorias.find(item => item.slug === 'personalizados');
+const categoriasFiltradas = categorias.filter(item => item.slug !== 'personalizados').sort((a, b) => a.data.catSlug.localeCompare(b.data.catSlug));
+---
+
+<Layout title="WeMasha - Remeras y Buzos Streetwear de tus Artistas Favoritos">
+	<div class="max-w-[1440px] mx-auto">
+		<div class="mx-auto grid grid-cols-1 md:grid-cols-2 items-center gap-3">
+			<div class="col-span-1 md:col-span-2">
+				{
+					destacado ? (
+						<Categories slug={destacado.slug} title={destacado.data.title} image={destacado.data.image} />
+					) : (
+						<p>No hay destacados</p>
+					)
+				}
+				
+			</div>
+			{
+				categoriasFiltradas.map((categoria) => {
+					const { slug, data } = categoria;
+					const { title, image } = data;
+					return (
+						<Categories slug={slug} title={title} image={image} />
+					);
+				}
+				)
+			}
+		</div>
+		<Clientes />
+		<Preguntas />
+	</div>
+</Layout>
