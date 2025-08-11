@@ -93,7 +93,7 @@ function initMockup(refs) {
 
   function setSide(next) {
     side = next;
-    base.src = next === "adelante" ? "/images/mockups/adelante.jpg" : "/images/mockups/atras.jpg";
+    base.src = next === "adelante" ? "/images/mockups/adelante.webp" : "/images/mockups/atras.webp";
 
     const on = ["bg-black","text-white"], off = ["bg-white","text-gray-800"];
     if (next === "adelante") {

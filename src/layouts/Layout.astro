@@ -26,6 +26,8 @@ const { title } = Astro.props;
 			<slot />
 		</main>
 		<Footer />
+		<script type="module" src="/src/scripts/global.js"></script>
+
 	</body>
 </html>
 
@@ -36,4 +38,33 @@ const { title } = Astro.props;
 		width: 100%;
 		height: 100%;
 	}
+
+	<>
+  #menu-panel {
+    display: none;
+  }
+  #menu-panel[data-open="true"] {
+    display: block;
+  }
+  #gallery-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+  }
+  #gallery-modal[data-open="true"] {
+    display: flex;
+  }
+  #gallery-modal img[data-active] {
+    max-width: 90%;
+    max-height: 90%;
+  }
+  #gallery-modal [data-overlay] {
+    position: absolute;
+    inset: 0;
+  }
+
 </style>
