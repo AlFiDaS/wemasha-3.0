@@ -69,7 +69,7 @@ const categories = ["todos", ...Array.from(new Set(designs.map(d => d.category))
       <!-- Visor -->
       <div
         id="mockup-wrapper"
-        class="order-2 md:order-2 relative w-full aspect-[4/5] bg-neutral-100 rounded-2xl overflow-hidden shadow touch-none overscroll-contain"
+        class="order-2 md:order-2 relative w-full aspect-[4/5] bg-neutral-100 rounded-2xl overflow-hidden shadow md:touch-none md:overscroll-contain"
       >
         <img
           id="mockup-base"
@@ -82,7 +82,7 @@ const categories = ["todos", ...Array.from(new Set(designs.map(d => d.category))
           id="mockup-overlay"
           src=""
           alt="Diseño aplicado"
-          class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 select-none touch-none"
+          class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 select-none touch-none pointer-events-auto"
           style="display:none; mix-blend:multiply;"
           draggable="false"
         />
@@ -108,7 +108,7 @@ const categories = ["todos", ...Array.from(new Set(designs.map(d => d.category))
               aria-label={`Usar ${d.name}`}
               title={d.name}
             >
-              <img src={d.src} alt={d.name} class="w-full h-full object-contain p-2" />
+              <img src={d.src} alt={d.name} class="w-full h-full object-contain p-2" loading="lazy" />
             </button>
           ))}
         </div>
@@ -120,24 +120,44 @@ const categories = ["todos", ...Array.from(new Set(designs.map(d => d.category))
 
   <!-- MOBILE: paginado 2x4 por página -->
   <div class="md:hidden fixed bottom-0 inset-x-0 z-40 bg-black/90 backdrop-blur supports-[backdrop-filter]:bg-black/70 py-2">
-    <div class="px-3 text-white text-sm mb-2">Elegí un diseño</div>
+    <div class="px-3 text-white text-sm mb-2 flex items-center justify-between">
+      <span>Elegí un diseño</span>
+      <div id="mob-page-indicator" class="text-xs text-neutral-300"></div>
+    </div>
 
-    <div id="mob-pager" class="overflow-x-auto no-scrollbar snap-x snap-mandatory">
-      <div id="mob-pages" class="flex gap-6 px-3 pb-2">
-        <!-- Fallback SSR: primera página (8) -->
-        <div class="shrink-0 w-full snap-start grid grid-cols-4 grid-rows-2 gap-3">
-          {firstMob.map((d) => (
-            <button
-              class="bg-black rounded-xl overflow-hidden border border-neutral-700 h-[72px]"
-              data-design={d.src}
-              aria-label={`Usar ${d.name}`}
-              title={d.name}
-            >
-              <img src={d.src} alt={d.name} class="w-full h-full object-contain p-2" />
-            </button>
-          ))}
+    <div class="flex items-center gap-3 px-3">
+      <!-- Flecha izquierda -->
+      <button id="mob-prev" class="flex-shrink-0 p-3 rounded-full bg-white/20 hover:bg-white/30 text-white backdrop-blur transition-colors" aria-label="Anterior">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="15,18 9,12 15,6"></polyline>
+        </svg>
+      </button>
+
+      <!-- Contenedor de diseños -->
+      <div id="mob-pager" class="flex-1 overflow-x-auto no-scrollbar snap-x snap-mandatory">
+        <div id="mob-pages" class="flex gap-6">
+          <!-- Fallback SSR: primera página (8) -->
+          <div class="shrink-0 w-full snap-start grid grid-cols-4 grid-rows-2 gap-3">
+            {firstMob.map((d) => (
+              <button
+                class="bg-black rounded-xl overflow-hidden border border-neutral-700 h-[72px]"
+                data-design={d.src}
+                aria-label={`Usar ${d.name}`}
+                title={d.name}
+              >
+                <img src={d.src} alt={d.name} class="w-full h-full object-contain p-2" loading="lazy" />
+              </button>
+            ))}
+          </div>
         </div>
       </div>
+
+      <!-- Flecha derecha -->
+      <button id="mob-next" class="flex-shrink-0 p-3 rounded-full bg-white/20 hover:bg-white/30 text-white backdrop-blur transition-colors" aria-label="Siguiente">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="9,18 15,12 9,6"></polyline>
+        </svg>
+      </button>
     </div>
   </div>
 
@@ -147,6 +167,66 @@ const categories = ["todos", ...Array.from(new Set(designs.map(d => d.category))
     id="designs-data"
     set:html={JSON.stringify({ designs, categories })}
   ></script>
+
+<style>
+  /* Estilos para flechas deshabilitadas */
+  #mob-prev:disabled,
+  #mob-next:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+  
+  /* Mejorar la apariencia del indicador de página */
+  #mob-page-indicator {
+    font-variant-numeric: tabular-nums;
+  }
+  
+  /* Asegurar que las flechas tengan un tamaño consistente */
+  #mob-prev,
+  #mob-next {
+    min-width: 44px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  /* Mejorar el contraste de las flechas */
+  #mob-prev:not(:disabled):hover,
+  #mob-next:not(:disabled):hover {
+    background-color: rgba(255, 255, 255, 0.4);
+    transform: scale(1.05);
+  }
+  
+  /* Optimización de scroll para móvil */
+  @media (max-width: 768px) {
+    #mockup-wrapper {
+      /* Permitir scroll en móvil */
+      touch-action: pan-x pan-y;
+      overscroll-behavior: contain;
+    }
+    
+    #mockup-overlay {
+      /* Prevenir scroll cuando se interactúa con el overlay */
+      touch-action: none;
+      pointer-events: auto;
+    }
+    
+    /* Mejorar el scroll de la página en móvil */
+    body {
+      overscroll-behavior-y: contain;
+    }
+  }
+  
+  /* Desktop: mantener comportamiento original */
+  @media (min-width: 769px) {
+    #mockup-wrapper {
+      touch-action: none;
+      overscroll-behavior: contain;
+    }
+  }
+</style>
 
 <script type="module">
   import initGaleria from "../scripts/galeria.js";
