@@ -25,7 +25,8 @@ export function sumarMetodoPago( total: number ){
         return 0;
     }
 
-    console.log(total);
+    // Removemos el console.log que estaba causando logs repetidos
+    // console.log(total);
 
     if ( metodoPagoSelect.value === "Tarjeta") {
         const totalPrecio = Math.round(total / 0.85); 

@@ -9,7 +9,7 @@ function toARS(n: number) {
 }
 
 // Función para actualizar cantidad
-function actualizarCantidad(index: number, nuevaCantidad: number) {
+export function actualizarCantidad(index: number, nuevaCantidad: number) {
   let carrito: ProductoCarrito[] = [];
   try {
     const raw = localStorage.getItem('carrito') || '[]';
@@ -35,23 +35,23 @@ function actualizarCantidad(index: number, nuevaCantidad: number) {
   }
 }
 
-// Función para eliminar producto
-function eliminarProducto(index: number) {
-  let carrito: ProductoCarrito[] = [];
-  try {
-    const raw = localStorage.getItem('carrito') || '[]';
-    carrito = JSON.parse(raw);
-    if (!Array.isArray(carrito)) carrito = [];
-  } catch {
-    carrito = [];
-  }
+// Removemos la función eliminarProducto duplicada para evitar conflictos
+// function eliminarProducto(index: number) {
+//   let carrito: ProductoCarrito[] = [];
+//   try {
+//     const raw = localStorage.getItem('carrito') || '[]';
+//     carrito = JSON.parse(raw);
+//     if (!Array.isArray(carrito)) carrito = [];
+//   } catch {
+//     carrito = [];
+//   }
 
-  carrito.splice(index, 1);
-  localStorage.setItem('carrito', JSON.stringify(carrito));
-  window.dispatchEvent(new Event('carrito:actualizado'));
-}
+//   carrito.splice(index, 1);
+//   localStorage.setItem('carrito', JSON.stringify(carrito));
+//   window.dispatchEvent(new Event('carrito:actualizado'));
+// }
 
-export function cargarCarrito(): number {
+export function cargarCarrito(silent: boolean = false): number {
   // Leer carrito
   let carrito: ProductoCarrito[] = [];
   try {
@@ -73,8 +73,10 @@ export function cargarCarrito(): number {
     }
     if (totalPrecioElement) totalPrecioElement.textContent = '0';
 
-    // Notifica (por si hay badges escuchando)
-    window.dispatchEvent(new Event('carrito:actualizado'));
+    // Notifica (por si hay badges escuchando) solo si no está en modo silencioso
+    if (!silent) {
+      window.dispatchEvent(new Event('carrito:actualizado'));
+    }
     return 0;
   }
 
@@ -144,8 +146,10 @@ export function cargarCarrito(): number {
   // Actualiza total (una sola vez)
   if (totalPrecioElement) totalPrecioElement.textContent = toARS(total);
 
-  // Notifica cambios (por si otra vista escucha el total)
-  window.dispatchEvent(new Event('carrito:actualizado'));
+  // Notifica cambios (por si otra vista escucha el total) solo si no está en modo silencioso
+  if (!silent) {
+    window.dispatchEvent(new Event('carrito:actualizado'));
+  }
 
   return total;
 }

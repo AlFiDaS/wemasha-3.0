@@ -155,7 +155,11 @@ const totalPages = Math.ceil(clientes.length / ITEMS_PER_PAGE);
             const pageClientes = allClientes.slice(startIndex, endIndex);
             
             if (clientesGrid) {
+                // Limpiar el contenido actual
                 clientesGrid.innerHTML = '';
+                
+                // Crear un fragmento para mejor rendimiento
+                const fragment = document.createDocumentFragment();
                 
                 pageClientes.forEach((cliente, index) => {
                     const globalIndex = startIndex + index;
@@ -170,13 +174,19 @@ const totalPages = Math.ceil(clientes.length / ITEMS_PER_PAGE);
                     img.className = 'w-full h-full object-cover rounded-lg';
                     
                     div.appendChild(img);
-                    clientesGrid.appendChild(div);
+                    fragment.appendChild(div);
                 });
+                
+                // Agregar todo el contenido de una vez
+                clientesGrid.appendChild(fragment);
             }
         }
 
         // Función para actualizar la página
         function updatePage(pageNum: number) {
+            // Guardar la posición actual de scroll
+            const scrollPosition = window.scrollY;
+            
             currentPage = pageNum;
             
             // Renderizar la página
@@ -191,6 +201,14 @@ const totalPages = Math.ceil(clientes.length / ITEMS_PER_PAGE);
             // Actualizar botones de navegación
             if (prevPageBtn) prevPageBtn.disabled = currentPage === 1;
             if (nextPageBtn) nextPageBtn.disabled = currentPage === Math.ceil(allClientes.length / ITEMS_PER_PAGE);
+            
+            // Restaurar la posición de scroll después de un pequeño delay
+            setTimeout(() => {
+                window.scrollTo({
+                    top: scrollPosition,
+                    behavior: 'instant' // Usar 'instant' para evitar animación
+                });
+            }, 10);
         }
 
         // Función para abrir el modal

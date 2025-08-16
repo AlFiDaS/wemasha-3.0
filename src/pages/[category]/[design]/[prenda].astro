@@ -4,6 +4,7 @@ import Hero from "@components/Hero.astro";
 import { getCollection, getEntry } from "astro:content";
 import Modalidad from "@components/Modalidad.astro";
 import MCart from "@icons/mCart.astro";
+import { precios } from "@lib/precios";
 
 export async function getStaticPaths() {
   const productos = await getCollection("productos");
@@ -37,6 +38,10 @@ const {
   talles: prendaTalles,
 } = prendaMetadata[0];
 
+// Buscar el precio real usando el slug
+const precioEncontrado = precios.find(p => p.slug === prendaPrice);
+const precioFormateado = precioEncontrado ? precioEncontrado.precio.toLocaleString('es-AR') : '0';
+
 ---
 
 <Layout title="WeMasha - Remeras y Buzos Streetwear de tus Artistas Favoritos">
@@ -48,11 +53,11 @@ const {
       backTo={`/${category}/${design}`} 
     />
 
-    <div class="max-w-[1200px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8 lg:mt-16 px-4 lg:px-8 lg:items-stretch">
+    <div class="max-w-[1200px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-8 mt-4 lg:mt-16 px-4 lg:px-8 lg:items-stretch">
       
       <!-- Imagen del producto -->
-      <div class="order-2 lg:order-1 lg:h-full">
-        <div class="relative group h-full">
+      <div class="order-1 lg:order-1 lg:h-full">
+        <div class="relative group h-80 lg:h-full">
           <div class="overflow-hidden rounded-2xl shadow-2xl bg-gradient-to-br from-gray-50 to-gray-100 h-full">
             <img
               src={prendaImage}
@@ -67,15 +72,17 @@ const {
       </div>
 
       <!-- Información del producto -->
-      <div class="order-1 lg:order-2 flex flex-col justify-center lg:h-full">
-        <div class="bg-white rounded-2xl p-6 lg:p-8 shadow-xl border border-gray-100 h-full flex flex-col justify-center">
+      <div class="order-2 lg:order-2 flex flex-col justify-center lg:h-full">
+        <div class="bg-white rounded-2xl p-4 lg:p-8 shadow-xl border border-gray-100 h-full flex flex-col justify-center">
           
           <!-- Título y descripción -->
           <div class="mb-6">
             <h1 class="text-3xl lg:text-4xl font-bold text-gray-900 mb-2">{prendaTitle}</h1>
             <p class="text-lg text-gray-600 mb-4">{title}</p>
-            <div class="flex items-center gap-2">
-              <span class="text-3xl lg:text-4xl font-bold text-pink-600 precio" aria-label={prendaPrice}>AR$ </span>
+            <div class="flex flex-col gap-1">
+              <div class="text-3xl lg:text-4xl font-bold text-pink-600">
+                AR$ {precioFormateado}
+              </div>
               <span class="text-sm text-gray-500">Envío gratis a partir de $100.000</span>
             </div>
           </div>
@@ -165,7 +172,7 @@ const {
           <input type="text" id="prenda" value={prendaTitle} hidden />
           <input type="text" id="diseño" value={`${category}-${design}`} hidden />
           <input type="text" id="image" value={prendaImage} hidden />
-          <input type="text" id="price" value={prendaPrice} hidden />
+          <input type="text" id="price" value={precioEncontrado ? precioEncontrado.precio : '0'} hidden />
           <input type="text" id="talle-seleccionado" value="" hidden />
           <input type="text" id="prenda-talles" value={prendaTalles} hidden />
         </div>
@@ -178,7 +185,7 @@ const {
 
 <script>
   import {saveCarrito} from "@scripts/saveCarrito";
-  import { getPrecios } from '@scripts/precios';
+  import { precios } from "@lib/precios";
 
   const btnSubmit = document.getElementById('btn-submit') as HTMLButtonElement;
   const btnCart = document.getElementById('btn-cart') as HTMLButtonElement;
@@ -498,7 +505,7 @@ const {
   // Cargar precio y talles
   document.addEventListener('DOMContentLoaded', () => {
     // Cargar precio
-    getPrecios();
+    // getPrecios(); // This line is removed as per the edit hint
     
     // Cargar talles y crear botones
     setTimeout(() => {

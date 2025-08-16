@@ -37,30 +37,67 @@ export function eliminarProducto(index: number) {
     localStorage.setItem("carrito", JSON.stringify(carrito));
     window.dispatchEvent(new Event("carrito:actualizado"));
   }
-  const subtotal = cargarCarrito();
-  return subtotal;
+  // Removemos la llamada a cargarCarrito() para evitar bucle infinito
+  // const subtotal = cargarCarrito();
+  // return subtotal;
 }
 
 // Vaciar el carrito
 export function vaciarCarrito() {
   localStorage.removeItem("carrito");
   window.dispatchEvent(new Event("carrito:actualizado"));
-  const subtotal = cargarCarrito();
-  return subtotal;
+  // Removemos la llamada a cargarCarrito() para evitar bucle infinito
+  // const subtotal = cargarCarrito();
+  // return subtotal;
+  return 0; // Retornamos 0 ya que el carrito está vacío
 }
 
 // ----------------- Checkout form validation -----------------
 export function validarFormulario() {
-  const inputsRequeridos = [
+  const envioSeleccionado = (document.querySelector("#envio") as HTMLSelectElement)?.value;
+  const inputsRequeridos: (HTMLInputElement | HTMLSelectElement | null)[] = [
     document.querySelector("#nombre") as HTMLInputElement | null,
-    document.querySelector("#email") as HTMLInputElement | null,
     document.querySelector("#metodo-pago") as HTMLSelectElement | null,
     document.querySelector("#envio") as HTMLSelectElement | null,
-    document.querySelector("#provincia") as HTMLInputElement | null,
-    document.querySelector("#localidad") as HTMLInputElement | null,
-    document.querySelector("#direccion") as HTMLInputElement | null,
-    document.querySelector("#postal") as HTMLInputElement | null,
   ];
+
+  // Agregar campos según el método de envío
+  switch (envioSeleccionado) {
+    case 'Corrientes':
+      // Solo nombre, método de pago y envío son requeridos
+      // Email y campos de correo NO son requeridos
+      break;
+      
+    case 'Motomandado':
+      // Agregar dirección de motomandado
+      inputsRequeridos.push(
+        document.querySelector("#direccion-motomandado") as HTMLInputElement | null
+      );
+      break;
+      
+    case 'Sucursal':
+    case 'Domicilio':
+      // Agregar todos los campos de correo y email
+      inputsRequeridos.push(
+        document.querySelector("#email") as HTMLInputElement | null,
+        document.querySelector("#provincia") as HTMLInputElement | null,
+        document.querySelector("#localidad") as HTMLInputElement | null,
+        document.querySelector("#direccion") as HTMLInputElement | null,
+        document.querySelector("#postal") as HTMLInputElement | null
+      );
+      break;
+      
+    default:
+      // Si no hay selección, requerir todos los campos
+      inputsRequeridos.push(
+        document.querySelector("#email") as HTMLInputElement | null,
+        document.querySelector("#provincia") as HTMLInputElement | null,
+        document.querySelector("#localidad") as HTMLInputElement | null,
+        document.querySelector("#direccion") as HTMLInputElement | null,
+        document.querySelector("#postal") as HTMLInputElement | null
+      );
+      break;
+  }
 
   let formularioValido = true;
 

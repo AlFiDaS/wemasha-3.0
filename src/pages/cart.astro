@@ -35,7 +35,6 @@ import Modalidad from "@components/Modalidad.astro";
                   <span class="text-center w-full font-bold">Información del comprador</span>
                   <form class="mt-4 flex flex-col gap-4" action="">
                     <input name="nombre" id="nombre" placeholder="Nombre y Apellido"  class="w-full rounded-lg border border-zinc-300 p-2" required />
-                    <input name="email" id="email" type="email" placeholder="Email" class="w-full rounded-lg border border-zinc-300 p-2" required />
                     <select name="metodo-pago" id="metodo-pago" class="w-full rounded-lg border border-zinc-300 p-2" required>
                       <option value="Transferencia">Pago por transferencia</option>
                       <option value="Tarjeta">Pago con tarjeta (hasta 2 cuotas sin interes)</option>  
@@ -49,13 +48,29 @@ import Modalidad from "@components/Modalidad.astro";
                       <option value="Domicilio">Envio a Domicilio por Correo Argentino ($8500)</option>
                       <!-- <option value="Resistencia">Retiro en Ciudad de Resistencia (Chaco)</option> -->
                     </select>
-                    <span class="text-xs text-zinc-600 ">Los pedidos mayores a $80.000 tienen envio GRATIS a domicilio.</span>
+                    <span class="text-xs text-zinc-600 ">Los pedidos mayores a $100.000 tienen envio GRATIS a domicilio.</span>
                     <span class="text-xs text-zinc-600 ">Los envios cotizados arriba son de modalidad Clasico y tardan de 2 a 5 dias habiles en llegar a destino.</span>
                     <span class="text-xs text-zinc-600 ">Los envios de modalidad Expreso tardan de 1 a 3 dias habiles en llegar pero tienen costos mas elevados, consultar por whatsapp.</span>
-                    <input name="provincia" id="provincia" placeholder="Provincia" class="w-full rounded-lg border border-zinc-300 p-2" required />
-                    <input name="localidad" id="localidad" placeholder="Localidad" class="w-full rounded-lg border border-zinc-300 p-2" required />
-                    <input name="direccion" id="direccion" placeholder="Sucursal o dirección para envio"  class="w-full rounded-lg border border-zinc-300 p-2" required />
-                    <input name="postal" id="postal" placeholder="Código Postal" class="w-full rounded-lg border border-zinc-300 p-2" required />	
+                    
+                    <!-- Campos para envío por correo -->
+                    <div id="campos-correo" class="hidden space-y-4">
+                      <input name="provincia" id="provincia" placeholder="Provincia" class="w-full rounded-lg border border-zinc-300 p-2" />
+                      <input name="localidad" id="localidad" placeholder="Localidad" class="w-full rounded-lg border border-zinc-300 p-2" />
+                      <input name="direccion" id="direccion" placeholder="Sucursal o dirección para envio"  class="w-full rounded-lg border border-zinc-300 p-2" />
+                      <input name="postal" id="postal" placeholder="Código Postal" class="w-full rounded-lg border border-zinc-300 p-2" />
+                    </div>
+                    
+                    <!-- Campo para motomandado -->
+                    <div id="campo-motomandado" class="hidden">
+                      <input name="direccion-motomandado" id="direccion-motomandado" placeholder="Dirección: Calle Siempreviva 123" class="w-full rounded-lg border border-zinc-300 p-2" />
+                    </div>
+                    
+                    <!-- Email (siempre visible pero con validación condicional) -->
+                    <div class="email-container">
+                      <input name="email" id="email" type="email" placeholder="Email" class="w-full rounded-lg border border-zinc-300 p-2" />
+                    </div>
+                    
+                    <!-- Aclaraciones -->
                     <input name="aclaraciones" id="aclaraciones" placeholder="Aclaraciones" class="w-full rounded-lg border border-zinc-300 p-2"/>
                   </form>
                   <div id="error" class="w-full mt-4 hidden">
@@ -82,9 +97,9 @@ import Modalidad from "@components/Modalidad.astro";
 </Layout>
 
 <script>
-    import { cargarCarrito } from "@scripts/getCarrito";
+    import { cargarCarrito, actualizarCantidad } from "@scripts/getCarrito";
     import { sumarEnvio, sumarMetodoPago } from "@scripts/sumarExtras";
-    import { vaciarCarrito, validarFormulario } from "@scripts/carritoFunctions";
+    import { vaciarCarrito, validarFormulario, eliminarProducto } from "@scripts/carritoFunctions";
     import {enviarMensaje} from "@scripts/enviarMensaje";
 
     const carritoItems = document.querySelector('#carrito-items') as HTMLElement;
@@ -93,57 +108,120 @@ import Modalidad from "@components/Modalidad.astro";
     const comprarCarritoBtn = document.querySelector('#comprar-carrito') as HTMLElement;
     const envioSelect = document.querySelector('#envio') as HTMLSelectElement;
     const metodoPagoSelect = document.querySelector('#metodo-pago') as HTMLSelectElement;
+    const camposCorreo = document.querySelector('#campos-correo') as HTMLElement;
+    const campoMotomandado = document.querySelector('#campo-motomandado') as HTMLElement;
+    const emailContainer = document.querySelector('.email-container') as HTMLElement;
+    const aclaracionesInput = document.querySelector('#aclaraciones') as HTMLInputElement;
     let subTotal = 0;
 
-    // Función para actualizar cantidad
-    function actualizarCantidad(index: number, nuevaCantidad: number) {
-      let carrito: any[] = [];
-      try {
-        const raw = localStorage.getItem('carrito') || '[]';
-        carrito = JSON.parse(raw);
-        if (!Array.isArray(carrito)) carrito = [];
-      } catch {
-        carrito = [];
-      }
+    // Removemos la función local actualizarCantidad duplicada
+    // function actualizarCantidad(index: number, nuevaCantidad: number) {
+    //   let carrito: any[] = [];
+    //   try {
+    //     const raw = localStorage.getItem('carrito') || '[]';
+    //     carrito = JSON.parse(raw);
+    //     if (!Array.isArray(carrito)) carrito = [];
+    //   } catch {
+    //     carrito = [];
+    //   }
 
-      // Si la cantidad es 0 o menor, eliminar el producto
-      if (nuevaCantidad <= 0) {
-        carrito.splice(index, 1);
-        localStorage.setItem('carrito', JSON.stringify(carrito));
-        window.dispatchEvent(new Event('carrito:actualizado'));
-        return;
-      }
+    //   // Si la cantidad es 0 o menor, eliminar el producto
+    //   if (nuevaCantidad <= 0) {
+    //     carrito.splice(index, 1);
+    //     localStorage.setItem('carrito', JSON.stringify(carrito));
+    //     window.dispatchEvent(new Event('carrito:actualizado'));
+    //     return;
+    //   }
 
-      // Actualizar la cantidad del producto
-      if (carrito[index]) {
-        carrito[index].cantidad = nuevaCantidad;
-        localStorage.setItem('carrito', JSON.stringify(carrito));
-        window.dispatchEvent(new Event('carrito:actualizado'));
-      }
-    }
+    //   // Actualizar la cantidad del producto
+    //   if (carrito[index]) {
+    //     carrito[index].cantidad = nuevaCantidad;
+    //     localStorage.setItem('carrito', JSON.stringify(carrito));
+    //     window.dispatchEvent(new Event('carrito:actualizado'));
+    //   }
+    // }
 
-    // Función para eliminar producto
-    function eliminarProducto(index: number) {
-      let carrito: any[] = [];
-      try {
-        const raw = localStorage.getItem('carrito') || '[]';
-        carrito = JSON.parse(raw);
-        if (!Array.isArray(carrito)) carrito = [];
-      } catch {
-        carrito = [];
-      }
+    // Removemos la función local eliminarProducto duplicada
+    // function eliminarProducto(index: number) {
+    //   let carrito: any[] = [];
+    //   try {
+    //     const raw = localStorage.getItem('carrito') || '[]';
+    //     carrito = JSON.parse(raw);
+    //     if (!Array.isArray(carrito)) carrito = [];
+    //   } catch {
+    //     carrito = [];
+    //   }
 
-      carrito.splice(index, 1);
-      localStorage.setItem('carrito', JSON.stringify(carrito));
-      window.dispatchEvent(new Event('carrito:actualizado'));
+    //   carrito.splice(index, 1);
+    //   localStorage.setItem('carrito', JSON.stringify(carrito));
+    //   window.dispatchEvent(new Event('carrito:actualizado'));
+    // }
+
+    // Función para manejar el cambio de envío
+    function manejarCambioEnvio() {
+      const envioSeleccionado = envioSelect.value;
+      
+      // Ocultar todos los campos primero
+      camposCorreo.classList.add('hidden');
+      campoMotomandado.classList.add('hidden');
+      emailContainer.classList.add('hidden');
+      
+      // Resetear placeholders y required
+      document.querySelectorAll('.email-container input').forEach((input: any) => {
+        input.required = true;
+      });
+      aclaracionesInput.placeholder = 'Aclaraciones';
+      
+      // Mostrar campos según la opción seleccionada
+      switch (envioSeleccionado) {
+        case 'Corrientes':
+          // Solo aclaraciones con ejemplo
+          aclaracionesInput.placeholder = 'Aclaraciones: Retiro el miércoles, portón negro, no funciona el timbre, otras aclaraciones.';
+          document.querySelectorAll('.email-container input').forEach((input: any) => {
+            input.required = false;
+          });
+          break;
+          
+        case 'Motomandado':
+          // Campo de dirección para motomandado
+          campoMotomandado.classList.remove('hidden');
+          document.querySelectorAll('.email-container input').forEach((input: any) => {
+            input.required = false;
+          });
+          break;
+          
+        case 'Sucursal':
+        case 'Domicilio':
+          // Todos los campos de correo
+          camposCorreo.classList.remove('hidden');
+          emailContainer.classList.remove('hidden');
+          // Hacer required los campos de correo
+          document.querySelectorAll('#campos-correo input').forEach((input: any) => {
+            input.required = true;
+          });
+          document.querySelectorAll('.email-container input').forEach((input: any) => {
+            input.required = true;
+          });
+          break;
+          
+        default:
+          // Opción por defecto o separador
+          break;
+      }
     }
     
     // Cargar el carrito al cargar la página y devolver el total
     document.addEventListener('DOMContentLoaded', () => {
       subTotal = cargarCarrito() as number;
       const totalPrecio = sumarEnvio(subTotal as number);
-      totalPrecioElement.textContent = totalPrecio.toLocaleString('es-AR')
+      totalPrecioElement.textContent = totalPrecio.toLocaleString('es-AR');
+      
+      // Inicializar el estado de los campos de envío
+      manejarCambioEnvio();
     });
+
+    // Event listener para el cambio de envío
+    envioSelect.addEventListener('change', manejarCambioEnvio);
 
     // Event listener para los controles de cantidad
     carritoItems.addEventListener('click', (event) => {
@@ -205,7 +283,26 @@ import Modalidad from "@components/Modalidad.astro";
 
     // Escuchar cambios en el carrito para actualizar el total
     window.addEventListener('carrito:actualizado', () => {
-      subTotal = cargarCarrito() as number;
+      // Actualizar la visualización del carrito en modo silencioso para evitar bucle
+      cargarCarrito(true);
+      
+      // Calcular el total manualmente
+      let carrito: any[] = [];
+      try {
+        const raw = localStorage.getItem('carrito') || '[]';
+        carrito = JSON.parse(raw);
+        if (!Array.isArray(carrito)) carrito = [];
+      } catch {
+        carrito = [];
+      }
+
+      // Calcular el subtotal
+      subTotal = carrito.reduce((total, producto) => {
+        const precio = Number(producto.precio) || 0;
+        const cantidad = Number(producto.cantidad) || 1;
+        return total + (precio * cantidad);
+      }, 0);
+
       const totalEnvio = sumarEnvio(subTotal as number);
       const totalPrecio = sumarMetodoPago(totalEnvio as number);
       totalPrecioElement.textContent = totalPrecio.toLocaleString('es-AR')
@@ -213,7 +310,8 @@ import Modalidad from "@components/Modalidad.astro";
 
   // Evento para vaciar el carrito
   vaciarCarritoBtn.addEventListener('click', () => {
-    subTotal = vaciarCarrito();
+    vaciarCarrito();
+    subTotal = 0; // El carrito está vacío, así que el subtotal es 0
     const totalEnvio = sumarEnvio(subTotal as number);
     const totalPrecio =sumarMetodoPago(totalEnvio as number);
     totalPrecioElement.textContent = totalPrecio.toLocaleString('es-AR')
