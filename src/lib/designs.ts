@@ -1,5 +1,11 @@
 // src/lib/designs.ts
-export type Design = { src: string; name: string; category: string };
+export type Design = { 
+  src: string; 
+  name: string; 
+  category: string;
+  thumbnail: string; // URL optimizada para thumbnails
+  size?: number; // Tamaño del archivo en bytes
+};
 
 function niceName(file: string) {
   return file
@@ -7,6 +13,18 @@ function niceName(file: string) {
     .split("/").pop()!
     .replace(/[-_]+/g, " ")
     .trim();
+}
+
+// Función para generar thumbnail URL
+function generateThumbnailUrl(originalUrl: string): string {
+  // Si ya es un thumbnail, devolver como está
+  if (originalUrl.includes('thumbnail')) {
+    return originalUrl;
+  }
+  
+  // Para desarrollo, usar la imagen original
+  // En producción, esto se reemplazaría con URLs de thumbnails reales
+  return originalUrl;
 }
 
 // Importar desde src/assets/designs/**  (NO public/)
@@ -20,6 +38,49 @@ export const designs: Design[] = Object.entries(modules).map(([path, url]) => {
   const parts = path.split("/");
   const i = parts.lastIndexOf("designs");
   const category = parts[i + 1] || "otros";
-  return { src: url as string, name: niceName(path), category };
+  const originalUrl = url as string;
+  
+  return { 
+    src: originalUrl, 
+    name: niceName(path), 
+    category,
+    thumbnail: generateThumbnailUrl(originalUrl),
+  };
 }).sort((a, b) => a.category.localeCompare(b.category));
+
+// Función para precargar imágenes de forma inteligente
+export function preloadImages(designs: Design[], startIndex: number, count: number, useThumbnails: boolean = true) {
+  const slice = designs.slice(startIndex, startIndex + count);
+  slice.forEach(design => {
+    const img = new Image();
+    // Usar thumbnails para precarga en galería
+    img.src = useThumbnails ? design.thumbnail : design.src;
+  });
+}
+
+// Función para obtener diseños con lazy loading
+export function getDesignsWithLazyLoading(
+  allDesigns: Design[], 
+  currentPage: number, 
+  perPage: number,
+  preloadNext: boolean = true,
+  useThumbnails: boolean = true
+) {
+  const start = currentPage * perPage;
+  const end = start + perPage;
+  
+  // Precargar página actual y siguiente
+  if (preloadNext) {
+    preloadImages(allDesigns, start, perPage * 2, useThumbnails);
+  } else {
+    preloadImages(allDesigns, start, perPage, useThumbnails);
+  }
+  
+  return allDesigns.slice(start, end);
+}
+
+// Función para obtener thumbnail optimizado
+export function getOptimizedImageUrl(design: Design, useThumbnail: boolean = true): string {
+  return useThumbnail ? design.thumbnail : design.src;
+}
 

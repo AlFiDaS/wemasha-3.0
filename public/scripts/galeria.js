@@ -26,6 +26,9 @@ function mount() {
   const deskNext = document.getElementById("desk-next");
   const deskInfo = document.getElementById("desk-page-indicator");
   const mobPages = document.getElementById("mob-pages");
+  const mobPrev  = document.getElementById("mob-prev");
+  const mobNext  = document.getElementById("mob-next");
+  const mobInfo  = document.getElementById("mob-page-indicator");
   const catFilter= document.getElementById("cat-filter");
 
   let payload = {};
@@ -33,7 +36,7 @@ function mount() {
   const jsonDesigns = Array.isArray(payload) ? payload : (payload?.designs ?? []);
   const jsonCats    = Array.isArray(payload?.categories) ? payload.categories : [];
 
-  initPagination({ jsonDesigns, jsonCats, deskGrid, deskPrev, deskNext, deskInfo, mobPages, catFilter });
+  initPagination({ jsonDesigns, jsonCats, deskGrid, deskPrev, deskNext, deskInfo, mobPages, mobPrev, mobNext, mobInfo, catFilter });
 }
 
 export default function initGaleria() {
@@ -63,6 +66,12 @@ function initMockup(refs) {
 
   let side = "adelante";
   let startX = 0, startY = 0, imgX = 0, imgY = 0, dragging = false;
+  let isMobile = window.innerWidth <= 768;
+
+  // Detectar cambios de tamaño de ventana
+  window.addEventListener('resize', () => {
+    isMobile = window.innerWidth <= 768;
+  });
 
   function applyZoneDefaults() {
     const z = ZONES[side];
@@ -152,17 +161,65 @@ function initMockup(refs) {
 
   // Drag touch
   overlay.addEventListener("touchstart", (e) => {
-    const t = e.touches[0]; dragging = true; startX = t.clientX; startY = t.clientY; e.preventDefault();
+    const t = e.touches[0]; 
+    dragging = true; 
+    startX = t.clientX; 
+    startY = t.clientY; 
+    
+    // Solo prevenir el scroll si estamos en el overlay y hay un diseño aplicado
+    if (overlay.src && overlay.style.display !== 'none' && isMobile) {
+      e.preventDefault();
+    }
   }, { passive: false });
+  
   window.addEventListener("touchmove", (e) => {
     if (!dragging) return;
-    const t = e.touches[0]; const dx = t.clientX - startX, dy = t.clientY - startY;
-    overlay.style.left = (imgX + dx) + "px";
-    overlay.style.top  = (imgY + dy) + "px";
-    overlay.style.transform = "translate(-50%,-50%)";
-    e.preventDefault();
+    const t = e.touches[0]; 
+    const dx = t.clientX - startX, dy = t.clientY - startY;
+    
+    // Solo mover el overlay si hay un diseño aplicado
+    if (overlay.src && overlay.style.display !== 'none') {
+      overlay.style.left = (imgX + dx) + "px";
+      overlay.style.top  = (imgY + dy) + "px";
+      overlay.style.transform = "translate(-50%,-50%)";
+      
+      // En móvil, prevenir scroll solo si estamos moviendo el overlay
+      if (isMobile) {
+        e.preventDefault();
+      }
+    }
   }, { passive: false });
-  window.addEventListener("touchend", () => { dragging = false; }, { passive: true });
+  
+  window.addEventListener("touchend", (e) => {
+    if (!dragging) return;
+    dragging = false;
+    
+    // Solo actualizar posición si hay un diseño aplicado
+    if (overlay.src && overlay.style.display !== 'none') {
+      imgX += e.changedTouches[0].clientX - startX; 
+      imgY += e.changedTouches[0].clientY - startY;
+    }
+  }, { passive: true });
+
+  // Permitir scroll en el wrapper en móvil cuando no hay overlay
+  wrapper.addEventListener("touchstart", (e) => {
+    // Si no hay overlay o está oculto, permitir scroll
+    if (!overlay.src || overlay.style.display === 'none') {
+      return; // Permitir comportamiento normal de scroll
+    }
+    
+    // Si hay overlay, verificar si el touch es en el overlay
+    const rect = overlay.getBoundingClientRect();
+    const touch = e.touches[0];
+    
+    if (touch.clientX >= rect.left && touch.clientX <= rect.right &&
+        touch.clientY >= rect.top && touch.clientY <= rect.bottom) {
+      // Touch está en el overlay, no hacer nada (se maneja arriba)
+      return;
+    }
+    
+    // Touch está fuera del overlay, permitir scroll
+  }, { passive: true });
 
   setSide("adelante");
   new ResizeObserver(() => { if (overlay.src) fitOverlayIntoZone(); }).observe(wrapper);
@@ -170,7 +227,7 @@ function initMockup(refs) {
 
 /* ===================== Paginación / Filtrado ===================== */
 function initPagination(refs) {
-  const { jsonDesigns, jsonCats, deskGrid, deskPrev, deskNext, deskInfo, mobPages, catFilter } = refs;
+  const { jsonDesigns, jsonCats, deskGrid, deskPrev, deskNext, deskInfo, mobPages, mobPrev, mobNext, mobInfo, catFilter } = refs;
 
   const nodes = Array.from((deskGrid ?? document).querySelectorAll("[data-design]"));
   const ssrList = nodes.map(n => {
@@ -201,6 +258,18 @@ function initPagination(refs) {
   const DESK_PER_PAGE = 12;
   const MOB_PER_PAGE  = 8;
 
+  // Cache para elementos DOM reutilizables
+  const domCache = new Map();
+  let lastRenderTime = 0;
+  const RENDER_DEBOUNCE = 100; // ms
+  
+  // Virtualización: solo renderizar elementos visibles
+  const VIRTUAL_BUFFER = 2; // Páginas adicionales a renderizar
+  let virtualizedPages = new Set();
+  
+  // Intersection Observer para lazy loading avanzado
+  let imageObserver = null;
+
   const filtered = () =>
     (currentCat === "todos" || !currentCat)
       ? ALL
@@ -213,12 +282,98 @@ function initPagination(refs) {
     history.replaceState({}, "", `?${p.toString()}`);
   }
 
+  // Inicializar Intersection Observer para lazy loading
+  function initImageObserver() {
+    if (!('IntersectionObserver' in window)) return;
+    
+    imageObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const img = entry.target;
+          const designSrc = img.dataset.designSrc;
+          
+          if (designSrc && img.src !== designSrc) {
+            img.src = designSrc;
+            img.removeAttribute('data-design-src');
+            imageObserver.unobserve(img);
+          }
+        }
+      });
+    }, {
+      rootMargin: '50px 0px',
+      threshold: 0.1
+    });
+  }
+
   function activateCatButtons() {
     if (!catFilter) return;
     catFilter.querySelectorAll(".btn-cat").forEach(btn => {
       const isActive = (btn.dataset.cat || "todos") === currentCat;
       btn.dataset.active = isActive ? "true" : "false";
     });
+  }
+
+  // Función optimizada para crear elementos de imagen
+  function createImageElement(design) {
+    const cacheKey = design.src;
+    if (domCache.has(cacheKey)) {
+      const cached = domCache.get(cacheKey);
+      cached.title = design.name;
+      cached.setAttribute("aria-label", `Usar ${design.name}`);
+      return cached.cloneNode(true);
+    }
+
+    const btn = document.createElement("button");
+    btn.className = "aspect-square bg-black rounded-xl overflow-hidden border border-neutral-700 hover:shadow transition";
+    btn.dataset.design = design.src; // Mantener src original para el mockup
+    btn.title = design.name;
+    btn.setAttribute("aria-label", `Usar ${design.name}`);
+    
+    const img = document.createElement("img");
+    // Usar thumbnail para la galería, pero mantener src original para el mockup
+    img.src = design.thumbnail || design.src; 
+    img.alt = design.name; 
+    img.className = "w-full h-full object-contain p-2";
+    img.loading = "lazy"; // Lazy loading nativo
+    
+    // Si hay thumbnail diferente al src, usar Intersection Observer
+    if (design.thumbnail && design.thumbnail !== design.src) {
+      img.dataset.designSrc = design.src;
+      if (imageObserver) {
+        imageObserver.observe(img);
+      }
+    }
+    
+    btn.appendChild(img);
+    
+    // Cache del elemento
+    domCache.set(cacheKey, btn.cloneNode(true));
+    return btn;
+  }
+
+  // Función optimizada para crear elementos móviles
+  function createMobileImageElement(design) {
+    const btn = document.createElement("button");
+    btn.className = "bg-black rounded-xl overflow-hidden border border-neutral-700 h-[72px]";
+    btn.dataset.design = design.src; // Mantener src original para el mockup
+    btn.title = design.name;
+    btn.setAttribute("aria-label", `Usar ${design.name}`);
+    
+    const img = document.createElement("img");
+    // Usar thumbnail para la galería móvil
+    img.src = design.thumbnail || design.src; 
+    img.alt = design.name; 
+    img.className = "w-full h-full object-contain p-2";
+    img.loading = "lazy"; // Lazy loading nativo
+    
+    // Precargar imagen original en background
+    if (design.thumbnail && design.thumbnail !== design.src) {
+      const preloadImg = new Image();
+      preloadImg.src = design.src;
+    }
+    
+    btn.appendChild(img);
+    return btn;
   }
 
   function renderDesktop(list) {
@@ -231,17 +386,13 @@ function initPagination(refs) {
     const end   = start + DESK_PER_PAGE;
     const slice = list.slice(start, end);
 
+    // Limpiar contenido anterior
     deskGrid.innerHTML = "";
+    
+    // Crear fragmento para mejor rendimiento
     const frag = document.createDocumentFragment();
     slice.forEach(d => {
-      const btn = document.createElement("button");
-      btn.className = "aspect-square bg-black rounded-xl overflow-hidden border border-neutral-700 hover:shadow transition";
-      btn.dataset.design = d.src;
-      btn.title = d.name;
-      btn.setAttribute("aria-label", `Usar ${d.name}`);
-      const img = document.createElement("img");
-      img.src = d.src; img.alt = d.name; img.className = "w-full h-full object-contain p-2";
-      btn.appendChild(img);
+      const btn = createImageElement(d);
       frag.appendChild(btn);
     });
     deskGrid.appendChild(frag);
@@ -250,32 +401,77 @@ function initPagination(refs) {
     if (deskPrev) deskPrev.disabled = page === 0;
     if (deskNext) deskNext.disabled = page >= total - 1;
 
-    // precarga próxima página
-    const next = list.slice(end, end + DESK_PER_PAGE);
-    next.forEach(d => { const i = new Image(); i.src = d.src; });
+    // Precarga inteligente solo de la siguiente página
+    if (page < total - 1) {
+      const nextStart = end;
+      const nextEnd = Math.min(nextStart + DESK_PER_PAGE, list.length);
+      const nextSlice = list.slice(nextStart, nextEnd);
+      nextSlice.forEach(d => {
+        const img = new Image();
+        img.src = d.src;
+      });
+    }
   }
 
   function renderMobile(list) {
     if (!mobPages) return;
     const pages = Math.max(1, Math.ceil(list.length / MOB_PER_PAGE));
+    
+    // Actualizar indicador de página móvil
+    if (mobInfo) mobInfo.textContent = `${page + 1} / ${pages}`;
+    
+    // Actualizar estado de las flechas móviles
+    if (mobPrev) mobPrev.disabled = page === 0;
+    if (mobNext) mobNext.disabled = page >= pages - 1;
+    
+    // Virtualización: calcular páginas a renderizar
+    const pagesToRender = new Set();
+    pagesToRender.add(page); // Página actual
+    
+    // Agregar páginas adyacentes para buffer
+    if (page > 0) pagesToRender.add(page - 1);
+    if (page < pages - 1) pagesToRender.add(page + 1);
+    
+    // Limpiar contenido anterior
     mobPages.innerHTML = "";
-    for (let p = 0; p < pages; p++) {
+    
+    // Renderizar solo las páginas necesarias
+    Array.from(pagesToRender).sort((a, b) => a - b).forEach(p => {
       const holder = document.createElement("div");
       holder.className = "shrink-0 w-full snap-start grid grid-cols-4 grid-rows-2 gap-3";
+      holder.dataset.page = p;
+      
       const start = p * MOB_PER_PAGE, end = start + MOB_PER_PAGE;
       list.slice(start, end).forEach(d => {
-        const btn = document.createElement("button");
-        btn.className = "bg-black rounded-xl overflow-hidden border border-neutral-700 h-[72px]";
-        btn.dataset.design = d.src;
-        btn.title = d.name;
-        btn.setAttribute("aria-label", `Usar ${d.name}`);
-        const img = document.createElement("img");
-        img.src = d.src; img.alt = d.name; img.className = "w-full h-full object-contain p-2";
-        btn.appendChild(img);
+        const btn = createMobileImageElement(d);
         holder.appendChild(btn);
       });
       mobPages.appendChild(holder);
+    });
+    
+    // Scroll a la página actual
+    const currentPageElement = mobPages.querySelector(`[data-page="${page}"]`);
+    if (currentPageElement) {
+      currentPageElement.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
     }
+    
+    // Limpiar cache de páginas no visibles
+    virtualizedPages = pagesToRender;
+  }
+
+  // Función debounced para evitar renders excesivos
+  function debouncedRender() {
+    const now = Date.now();
+    if (now - lastRenderTime < RENDER_DEBOUNCE) {
+      clearTimeout(debouncedRender.timeout);
+      debouncedRender.timeout = setTimeout(() => {
+        lastRenderTime = Date.now();
+        renderAll();
+      }, RENDER_DEBOUNCE);
+      return;
+    }
+    lastRenderTime = now;
+    renderAll();
   }
 
   function renderAll() {
@@ -286,6 +482,12 @@ function initPagination(refs) {
     setURL();
   }
 
+  // Inicializar todo
+  function init() {
+    initImageObserver();
+    renderAll();
+  }
+
   catFilter?.addEventListener("click", (e) => {
     const btn = e.target.closest?.(".btn-cat");
     if (!btn) return;
@@ -293,11 +495,33 @@ function initPagination(refs) {
     if (cat === currentCat) return;
     currentCat = cat;
     page = 0;
-    renderAll();
+    debouncedRender();
   });
 
-  deskPrev?.addEventListener("click", () => { if (page > 0) { page--; renderAll(); } });
-  deskNext?.addEventListener("click", () => { page++; renderAll(); });
+  deskPrev?.addEventListener("click", () => { 
+    if (page > 0) { 
+      page--; 
+      debouncedRender(); 
+    } 
+  });
+  
+  deskNext?.addEventListener("click", () => { 
+    page++; 
+    debouncedRender(); 
+  });
+  
+  // Event listeners para flechas móviles
+  mobPrev?.addEventListener("click", () => { 
+    if (page > 0) { 
+      page--; 
+      debouncedRender(); 
+    } 
+  });
+  
+  mobNext?.addEventListener("click", () => { 
+    page++; 
+    debouncedRender(); 
+  });
 
-  renderAll();
+  init();
 }
