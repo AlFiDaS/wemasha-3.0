@@ -1,4 +1,6 @@
 ---
+import { getCategoryDisplayName } from '../lib/utils.ts';
+
 interface Props {
   title: string;
   image: string;
@@ -49,7 +51,7 @@ const { title, image, imageHover, category, slug } = Astro.props;
         {title}
       </h2>
       <p class="text-sm text-gray-600 font-medium">
-        {category}
+        {getCategoryDisplayName(category)}
       </p>
     </div>
     

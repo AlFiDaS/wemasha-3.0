@@ -51,9 +51,9 @@ const { title, image, design, slug, price, category, designSlug } = Astro.props;
     
     <!-- Precio y botón -->
     <div class="flex items-center justify-between gap-3">
-      <p class="text-xl md:text-2xl font-bold text-gray-900">
-        <span class="precio" aria-label={price}>AR$</span>
-      </p>
+      <div class="text-xl md:text-2xl font-bold text-gray-900 flex-shrink-0 min-w-0 precio-container">
+        <span class="precio whitespace-nowrap inline-block" aria-label={price}>AR$0</span>
+      </div>
       
       <a 
         href={`/${category}/${designSlug}/${slug}`} 
@@ -83,6 +83,46 @@ const { title, image, design, slug, price, category, designSlug } = Astro.props;
   @media (min-width: 768px) {
     .product-card {
       min-height: 460px;
+    }
+  }
+  
+  /* Asegurar que el precio se mantenga en una línea */
+  .precio {
+    white-space: nowrap !important;
+    display: inline-block !important;
+    word-break: keep-all !important;
+    overflow-wrap: normal !important;
+  }
+  
+  .precio-container {
+    min-width: 80px;
+    overflow: hidden;
+  }
+  
+  /* Mejorar el layout en mobile */
+  @media (max-width: 767px) {
+    .product-card .flex.items-center.justify-between {
+      flex-wrap: nowrap;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .product-card .flex.items-center.justify-between > * {
+      flex-shrink: 0;
+    }
+    
+    /* Forzar que el precio se mantenga en una línea */
+    .product-card .precio {
+      white-space: nowrap !important;
+      display: inline-block !important;
+      word-break: keep-all !important;
+      overflow-wrap: normal !important;
+      hyphens: none !important;
+    }
+    
+    .product-card .precio-container {
+      min-width: 90px;
+      max-width: 120px;
     }
   }
 </style>

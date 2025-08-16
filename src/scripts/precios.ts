@@ -24,6 +24,16 @@ export function getPrecios() {
 
     // Actualizar el contenido del elemento con el precio encontrado
     if(priceInput) priceInput.value = precioData.precio.toString();
-    precioElement.textContent = `AR$ ${precioData.precio.toLocaleString('es-AR')}`;
+    
+    // Formatear el precio sin espacios que puedan causar saltos de línea
+    const precioFormateado = `AR$${precioData.precio.toLocaleString('es-AR')}`;
+    precioElement.textContent = precioFormateado;
+    
+    // Asegurar que el precio se mantenga en una sola línea
+    precioElement.style.whiteSpace = 'nowrap';
+    precioElement.style.wordBreak = 'keep-all';
+    precioElement.style.overflowWrap = 'normal';
+    precioElement.style.hyphens = 'none';
+    precioElement.style.display = 'inline-block';
   });
 }
