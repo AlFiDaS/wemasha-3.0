@@ -2,90 +2,436 @@
 import Layout from "@layouts/Layout.astro";
 import Hero from "@components/Hero.astro";
 import { clientes } from "@lib/clientes";
+
+// Configuración de paginación
+const ITEMS_PER_PAGE = 12;
+const totalPages = Math.ceil(clientes.length / ITEMS_PER_PAGE);
 ---
 
 <Layout title="Clientes">
 	<div class="max-w-[1440px] mx-auto">
         <Hero title="Clientes" image="/images/categories/personalizado.png" slug="" />
-		<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 items-center gap-3 mt-12 mx-3 lg:mx-auto">
-			{clientes.map((cliente) => {
+		
+		<!-- Grid de clientes con paginación -->
+		<div id="clientes-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 items-center gap-3 mt-12 mx-3 lg:mx-auto">
+			{clientes.slice(0, ITEMS_PER_PAGE).map((cliente, index) => {
 				const { title, image } = cliente;
 				return (
 					<div 
-						class="flex items-center justify-center aspect-square rounded-2xl overflow-hidden md:mx-auto cursor-pointer" 
+						class="flex items-center justify-center aspect-square rounded-2xl overflow-hidden md:mx-auto cursor-pointer hover:scale-105 transition-transform" 
 						data-image={image}
+						data-index={index}
 					>
-						<img src={image} alt={title} class="w-full rounded-lg" />
+						<img src={image} alt={title} class="w-full h-full object-cover rounded-lg" />
 					</div>
 				);
 			})}
 		</div>
+
+		<!-- Paginación -->
+		<div class="flex justify-center items-center gap-2 mt-8 mb-12">
+			<button id="prev-page" class="px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+				Anterior
+			</button>
+			
+			<div id="page-numbers" class="flex gap-1">
+				{Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => (
+					<button 
+						class="px-3 py-2 rounded-lg border hover:bg-gray-100 transition-colors page-btn"
+						data-page={pageNum}
+						data-active={pageNum === 1 ? "true" : "false"}
+					>
+						{pageNum}
+					</button>
+				))}
+			</div>
+			
+			<button id="next-page" class="px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors">
+				Siguiente
+			</button>
+		</div>
 	</div>
 
-    {/* Modal */}
-    <div id="modal" class="hidden fixed inset-0 bg-black bg-opacity-70 justify-center items-center z-50">
-        <div class="relative bg-white rounded-lg overflow-hidden">
-            <button 
-                class="absolute top-3 right-3 text-white bg-black rounded-full px-2 py-1 z-10"
-                id="close-modal"
-            >
-                Cerrar
+    {/* Modal estilo Instagram Stories */}
+    <div id="modal" class="hidden fixed inset-0 bg-black z-50">
+        <!-- Header con indicador de progreso -->
+        <div class="absolute top-0 left-0 right-0 z-20 p-4">
+            <div class="flex items-center justify-between text-white mb-4">
+                <button id="close-modal" class="text-white hover:text-gray-300 transition-colors">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+                <div class="text-sm">
+                    <span id="current-image-index">1</span> / <span id="total-images">{clientes.length}</span>
+                </div>
+            </div>
+            
+            <!-- Barra de progreso -->
+            <div class="w-full bg-gray-700 rounded-full h-1">
+                <div id="progress-bar" class="bg-white h-1 rounded-full transition-all duration-300" style="width: 0%"></div>
+            </div>
+        </div>
+
+        <!-- Imagen principal -->
+        <div class="relative w-full h-full flex items-center justify-center">
+            <img id="modal-image" src="" alt="Imagen ampliada" class="max-w-full max-h-full object-contain" />
+            
+            <!-- Flecha izquierda -->
+            <button id="prev-image" class="absolute left-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white rounded-full p-3 transition-colors">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="15,18 9,12 15,6"></polyline>
+                </svg>
             </button>
-            <img id="modal-image" src="" alt="Imagen ampliada" class="max-w-full max-h-[85vh] object-contain" />
+            
+            <!-- Flecha derecha -->
+            <button id="next-image" class="absolute right-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white rounded-full p-3 transition-colors">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="9,18 15,12 9,6"></polyline>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Miniaturas en la parte inferior -->
+        <div class="absolute bottom-0 left-0 right-0 bg-black/80 backdrop-blur p-4">
+            <div id="thumbnails-container" class="flex gap-2 overflow-x-auto pb-2">
+                {clientes.map((cliente, index) => (
+					<div 
+						class="flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden cursor-pointer thumbnail-item border-2 border-transparent hover:border-white transition-colors"
+						data-index={index}
+					>
+						<img src={cliente.image} alt={cliente.title} class="w-full h-full object-cover" />
+					</div>
+				))}
+            </div>
         </div>
     </div>
 </Layout>
 
 <script>
     document.addEventListener('astro:page-load', ()=> {
+        // Variables globales
+        let currentImageIndex = 0;
+        let allClientes: Array<{title: string, image: string}> = [];
+        let currentPage = 1;
+        const ITEMS_PER_PAGE = 12;
+        
         // Obtención de elementos
-        const modal = document.querySelector<HTMLDivElement>('#modal');
-        const modalImage = document.querySelector<HTMLImageElement>('#modal-image');
-        const closeModalBtn = document.querySelector<HTMLButtonElement>('#close-modal');
+        const modal = document.querySelector('#modal') as HTMLDivElement;
+        const modalImage = document.querySelector('#modal-image') as HTMLImageElement;
+        const closeModalBtn = document.querySelector('#close-modal') as HTMLButtonElement;
+        const prevImageBtn = document.querySelector('#prev-image') as HTMLButtonElement;
+        const nextImageBtn = document.querySelector('#next-image') as HTMLButtonElement;
+        const currentImageIndexEl = document.querySelector('#current-image-index') as HTMLElement;
+        const totalImagesEl = document.querySelector('#total-images') as HTMLElement;
+        const progressBar = document.querySelector('#progress-bar') as HTMLElement;
+        const thumbnailsContainer = document.querySelector('#thumbnails-container') as HTMLElement;
+        const prevPageBtn = document.querySelector('#prev-page') as HTMLButtonElement;
+        const nextPageBtn = document.querySelector('#next-page') as HTMLButtonElement;
+        const clientesGrid = document.querySelector('#clientes-grid') as HTMLElement;
 
-        if (!modal || !modalImage || !closeModalBtn) {
-            console.error('No se encontraron los elementos necesarios para el modal.');
+        // Cargar todos los clientes
+        async function loadAllClientes() {
+            try {
+                const response = await fetch('/api/clientes');
+                allClientes = await response.json();
+            } catch (error) {
+                // Fallback: usar los datos del servidor
+                allClientes = Array.from(document.querySelectorAll('[data-image]')).map((el, index) => ({
+                    title: `Cliente ${index + 1}`,
+                    image: el.getAttribute('data-image') || ''
+                }));
+            }
         }
 
-        // Delegación de eventos para abrir el modal
-        document.addEventListener('click', (event: MouseEvent) => {
-            const target = event.target as HTMLElement;
-            const image = target.closest<HTMLDivElement>('[data-image]')?.dataset.image;
+        // Inicializar
+        loadAllClientes();
 
-            if (image) {
-                openModal(image);
+        // Función para renderizar la página actual
+        function renderPage(pageNum: number) {
+            const startIndex = (pageNum - 1) * ITEMS_PER_PAGE;
+            const endIndex = startIndex + ITEMS_PER_PAGE;
+            const pageClientes = allClientes.slice(startIndex, endIndex);
+            
+            if (clientesGrid) {
+                clientesGrid.innerHTML = '';
+                
+                pageClientes.forEach((cliente, index) => {
+                    const globalIndex = startIndex + index;
+                    const div = document.createElement('div');
+                    div.className = 'flex items-center justify-center aspect-square rounded-2xl overflow-hidden md:mx-auto cursor-pointer hover:scale-105 transition-transform';
+                    div.setAttribute('data-image', cliente.image);
+                    div.setAttribute('data-index', String(globalIndex));
+                    
+                    const img = document.createElement('img');
+                    img.src = cliente.image;
+                    img.alt = cliente.title;
+                    img.className = 'w-full h-full object-cover rounded-lg';
+                    
+                    div.appendChild(img);
+                    clientesGrid.appendChild(div);
+                });
             }
-        });
+        }
+
+        // Función para actualizar la página
+        function updatePage(pageNum: number) {
+            currentPage = pageNum;
+            
+            // Renderizar la página
+            renderPage(currentPage);
+            
+            // Actualizar botones de página
+            document.querySelectorAll('.page-btn').forEach(btn => {
+                const btnPage = parseInt(btn.getAttribute('data-page') || '1');
+                btn.setAttribute('data-active', btnPage === currentPage ? 'true' : 'false');
+            });
+            
+            // Actualizar botones de navegación
+            if (prevPageBtn) prevPageBtn.disabled = currentPage === 1;
+            if (nextPageBtn) nextPageBtn.disabled = currentPage === Math.ceil(allClientes.length / ITEMS_PER_PAGE);
+        }
 
         // Función para abrir el modal
-        function openModal(image: string): void {
+        function openModal(imageIndex: number) {
             if (modal && modalImage) {
-                modalImage.src = image;
+                currentImageIndex = imageIndex;
+                const cliente = allClientes[imageIndex];
+                
+                modalImage.src = cliente.image;
                 modal.classList.remove('hidden');
                 modal.classList.add('flex');
+                
+                // Actualizar UI después de un pequeño delay para asegurar que el modal esté visible
+                setTimeout(() => {
+                    updateModalUI();
+                }, 10);
             }
         }
 
         // Función para cerrar el modal
-        function closeModal(): void {
-            if (modal && modalImage) {
+        function closeModal() {
+            if (modal) {
                 modal.classList.add('hidden');
                 modal.classList.remove('flex');
-                modalImage.src = '';
             }
         }
 
-        // Evento para cerrar el modal al hacer clic en el botón "Cerrar"
-        closeModalBtn?.addEventListener('click', () => {
-            closeModal();
+        // Función para actualizar la UI del modal
+        function updateModalUI() {
+            if (currentImageIndexEl) currentImageIndexEl.textContent = String(currentImageIndex + 1);
+            if (totalImagesEl) totalImagesEl.textContent = String(allClientes.length);
+            
+            // Actualizar barra de progreso
+            const progress = ((currentImageIndex + 1) / allClientes.length) * 100;
+            if (progressBar) progressBar.style.width = `${progress}%`;
+            
+            // Actualizar miniaturas activas
+            document.querySelectorAll('.thumbnail-item').forEach((thumb, index) => {
+                if (index === currentImageIndex) {
+                    thumb.classList.add('border-white');
+                    thumb.classList.remove('border-transparent');
+                } else {
+                    thumb.classList.remove('border-white');
+                    thumb.classList.add('border-transparent');
+                }
+            });
+            
+            // Hacer scroll a la miniatura activa
+            const activeThumbnail = document.querySelector(`.thumbnail-item[data-index="${currentImageIndex}"]`) as HTMLElement;
+            if (activeThumbnail && thumbnailsContainer) {
+                activeThumbnail.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'nearest',
+                    inline: 'center'
+                });
+            }
+            
+            // Actualizar estado de flechas
+            if (prevImageBtn) prevImageBtn.disabled = currentImageIndex === 0;
+            if (nextImageBtn) nextImageBtn.disabled = currentImageIndex === allClientes.length - 1;
+        }
+
+        // Función para navegar a la imagen anterior
+        function prevImage() {
+            if (currentImageIndex > 0) {
+                currentImageIndex--;
+                const cliente = allClientes[currentImageIndex];
+                if (modalImage) modalImage.src = cliente.image;
+                updateModalUI();
+            }
+        }
+
+        // Función para navegar a la imagen siguiente
+        function nextImage() {
+            if (currentImageIndex < allClientes.length - 1) {
+                currentImageIndex++;
+                const cliente = allClientes[currentImageIndex];
+                if (modalImage) modalImage.src = cliente.image;
+                updateModalUI();
+            }
+        }
+
+        // Event Listeners
+        document.addEventListener('click', (event: MouseEvent) => {
+            const target = event.target as HTMLElement;
+            
+            // Abrir modal al hacer clic en una imagen
+            const imageContainer = target.closest('[data-image]') as HTMLElement;
+            if (imageContainer) {
+                const imageIndex = parseInt(imageContainer.getAttribute('data-index') || '0');
+                openModal(imageIndex);
+            }
+            
+            // Navegar con miniaturas
+            const thumbnail = target.closest('.thumbnail-item') as HTMLElement;
+            if (thumbnail) {
+                const index = parseInt(thumbnail.getAttribute('data-index') || '0');
+                currentImageIndex = index;
+                const cliente = allClientes[index];
+                if (modalImage) modalImage.src = cliente.image;
+                updateModalUI();
+            }
+            
+            // Paginación
+            const pageBtn = target.closest('.page-btn') as HTMLElement;
+            if (pageBtn) {
+                const pageNum = parseInt(pageBtn.getAttribute('data-page') || '1');
+                updatePage(pageNum);
+            }
         });
 
-        // Evento para cerrar el modal al hacer clic fuera de la imagen
+        // Botones del modal
+        closeModalBtn?.addEventListener('click', closeModal);
+        prevImageBtn?.addEventListener('click', prevImage);
+        nextImageBtn?.addEventListener('click', nextImage);
+
+        // Navegación con teclado
+        document.addEventListener('keydown', (event: KeyboardEvent) => {
+            if (!modal?.classList.contains('hidden')) {
+                switch (event.key) {
+                    case 'Escape':
+                        closeModal();
+                        break;
+                    case 'ArrowLeft':
+                        prevImage();
+                        break;
+                    case 'ArrowRight':
+                        nextImage();
+                        break;
+                }
+            }
+        });
+
+        // Navegación con paginación
+        prevPageBtn?.addEventListener('click', () => {
+            if (currentPage > 1) {
+                updatePage(currentPage - 1);
+            }
+        });
+
+        nextPageBtn?.addEventListener('click', () => {
+            const totalPages = Math.ceil(allClientes.length / ITEMS_PER_PAGE);
+            if (currentPage < totalPages) {
+                updatePage(currentPage + 1);
+            }
+        });
+
+        // Cerrar modal al hacer clic fuera
         modal?.addEventListener('click', (event: MouseEvent) => {
             if (event.target === modal) {
                 closeModal();
             }
         });
 
+        // Swipe para móvil
+        let startX = 0;
+        let endX = 0;
+
+        modal?.addEventListener('touchstart', (event: TouchEvent) => {
+            startX = event.touches[0].clientX;
+        });
+
+        modal?.addEventListener('touchend', (event: TouchEvent) => {
+            endX = event.changedTouches[0].clientX;
+            const diff = startX - endX;
+            
+            if (Math.abs(diff) > 50) { // Mínimo swipe de 50px
+                if (diff > 0) {
+                    nextImage(); // Swipe izquierda
+                } else {
+                    prevImage(); // Swipe derecha
+                }
+            }
+        });
     });
 </script>
+
+<style>
+    /* Estilos para la paginación */
+    .page-btn[data-active="true"] {
+        background-color: black;
+        color: white;
+    }
+    
+    /* Estilos para las miniaturas */
+    .thumbnail-item {
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+    }
+    
+    .thumbnail-item:hover {
+        transform: scale(1.05);
+    }
+    
+    .thumbnail-item.border-white {
+        border-color: white !important;
+        box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+    }
+    
+    .thumbnail-item.border-transparent {
+        border-color: transparent !important;
+    }
+    
+    /* Scrollbar personalizado para miniaturas */
+    #thumbnails-container::-webkit-scrollbar {
+        height: 4px;
+    }
+    
+    #thumbnails-container::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 2px;
+    }
+    
+    #thumbnails-container::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.5);
+        border-radius: 2px;
+    }
+    
+    #thumbnails-container::-webkit-scrollbar-thumb:hover {
+        background: rgba(255, 255, 255, 0.7);
+    }
+    
+    /* Animaciones del modal */
+    #modal {
+        animation: fadeIn 0.3s ease-out;
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+    
+    /* Responsive para móvil */
+    @media (max-width: 768px) {
+        #prev-image, #next-image {
+            padding: 0.5rem;
+        }
+        
+        .thumbnail-item {
+            width: 3rem;
+            height: 3rem;
+        }
+    }
+</style>
