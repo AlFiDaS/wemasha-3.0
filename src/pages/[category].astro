@@ -25,12 +25,46 @@ if (!categoria) {
 	throw new Error(`No se encontró la categoria con el slug ${category}`);
 }
 
+// Preparar datos para el buscador
+const productosData = productos.map(producto => ({
+	title: producto.data.title,
+	image: producto.data.image,
+	designSlug: producto.data.designSlug
+}));
 ---
 
 <Layout title="WeMasha - Remeras y Buzos Streetwear de tus Artistas Favoritos">
 	<div class="max-w-[1440px] mx-auto">
 		<Hero title={categoria.title} image={categoria.image} slug={categoria.catSlug} />
-		<div class="mx-auto grid grid-cols-2 p-4 md:grid-cols-2 lg:grid-cols-4 items-center gap-3 mt-3">
+		
+		<!-- Buscador -->
+		<div class="px-4 mt-6">
+			<div class="max-w-md mx-auto relative">
+				<div class="relative">
+					<input
+						type="text"
+						id="search-input"
+						placeholder="Buscar diseño..."
+						class="w-full px-4 py-3 pl-12 pr-4 text-gray-700 bg-white border border-gray-300 rounded-lg focus:outline-none focus:border-pink-500 focus:ring-2 focus:ring-pink-200 transition-all duration-200"
+					/>
+					<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+						<svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+						</svg>
+					</div>
+				</div>
+				
+				<!-- Resultados de búsqueda -->
+				<div id="search-results" class="mt-2 hidden absolute z-50 w-full">
+					<div class="bg-white border border-gray-200 rounded-lg shadow-xl max-h-64 overflow-y-auto backdrop-blur-sm">
+						<!-- Los resultados se insertarán aquí dinámicamente -->
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Grid de productos -->
+		<div class="mx-auto grid grid-cols-2 p-4 md:grid-cols-2 lg:grid-cols-4 items-center gap-3 mt-3" id="productos-grid">
 			{ productos.map((producto) => 
 				{
 					const { slug, data } = producto;
@@ -45,3 +79,80 @@ if (!categoria) {
 		<Preguntas />
 	</div>
 </Layout>
+
+<script define:vars={{ productosData, category }}>
+	// Sistema de búsqueda simple y robusto
+	function setupSearch() {
+		const searchInput = document.getElementById('search-input');
+		const searchResults = document.getElementById('search-results');
+		
+		if (!searchInput || !searchResults) return;
+		
+		function handleSearch() {
+			const query = searchInput.value.toLowerCase().trim();
+			
+			if (query.length < 2) {
+				searchResults.classList.add('hidden');
+				return;
+			}
+			
+			const filteredProducts = productosData.filter(producto => 
+				producto.title.toLowerCase().includes(query)
+			).slice(0, 5);
+			
+			if (filteredProducts.length > 0) {
+				searchResults.innerHTML = filteredProducts.map(producto => `
+					<a href="/${category}/${producto.designSlug}" class="block p-3 hover:bg-gray-50 border-b border-gray-100 last:border-b-0 transition-colors bg-white">
+						<div class="flex items-center gap-3">
+							<img src="${producto.image}" alt="${producto.title}" class="w-12 h-12 object-cover rounded-lg">
+							<div>
+								<div class="font-medium text-gray-900">${producto.title}</div>
+								<div class="text-sm text-gray-500">${category}</div>
+							</div>
+						</div>
+					</a>
+				`).join('');
+				
+				searchResults.classList.remove('hidden');
+			} else {
+				searchResults.innerHTML = `
+					<div class="p-4 text-center text-gray-500 bg-white">
+						No se encontraron diseños con "${query}"
+					</div>
+				`;
+				searchResults.classList.remove('hidden');
+			}
+		}
+		
+		function hideResults() {
+			searchResults.classList.add('hidden');
+			searchInput.value = '';
+		}
+		
+		// Event listeners
+		searchInput.addEventListener('input', handleSearch);
+		searchInput.addEventListener('keydown', function(e) {
+			if (e.key === 'Escape') {
+				hideResults();
+				searchInput.blur();
+			}
+		});
+		
+		// Click fuera para ocultar
+		document.addEventListener('click', function(e) {
+			if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
+				hideResults();
+			}
+		});
+	}
+	
+	// Inicializar
+	if (document.readyState === 'loading') {
+		document.addEventListener('DOMContentLoaded', setupSearch);
+	} else {
+		setupSearch();
+	}
+	
+	// Reinicializar en navegación
+	document.addEventListener('astro:page-load', setupSearch);
+</script>
