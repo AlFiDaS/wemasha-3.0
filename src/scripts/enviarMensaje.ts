@@ -11,7 +11,8 @@ export function enviarMensaje() {
   
     const productosEnCarrito  = carrito.map(producto => {
       totalPrecio = (producto.precio * producto.cantidad) + totalPrecio
-      return `- ${producto.titulo} - ${producto.id} - Talle ${producto.talla} - Cant: ${producto.cantidad} - Precio: $${producto.precio}`;
+      const diseñoId = producto.diseñoId || producto.id; // Usar diseñoId si existe, sino id como fallback
+      return `- ${producto.titulo} - ${diseñoId} - Talle ${producto.talla} - Cant: ${producto.cantidad} - Precio: $${producto.precio}`;
     });
   
     // Obtener la información del formulario

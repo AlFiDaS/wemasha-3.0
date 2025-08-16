@@ -63,7 +63,7 @@ const precioFormateado = precioEncontrado ? precioEncontrado.precio.toLocaleStri
               src={prendaImage}
               transition:name={`${design}/${prenda}`}
               alt={prendaTitle}
-              class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500"
+              class="w-full h-full object-contain transform group-hover:scale-105 transition-transform duration-500"
             />
           </div>
           <!-- Overlay de hover -->
@@ -170,8 +170,9 @@ const precioFormateado = precioEncontrado ? precioEncontrado.precio.toLocaleStri
 
           <!-- Campos ocultos para el formulario -->
           <input type="text" id="prenda" value={prendaTitle} hidden />
-          <input type="text" id="diseño" value={`${category}-${design}`} hidden />
           <input type="text" id="image" value={prendaImage} hidden />
+          <input type="text" id="diseño" value={title} hidden />
+          <input type="text" id="diseño-id" value={`${category}-${design}`} hidden />
           <input type="text" id="price" value={precioEncontrado ? precioEncontrado.precio : '0'} hidden />
           <input type="text" id="talle-seleccionado" value="" hidden />
           <input type="text" id="prenda-talles" value={prendaTalles} hidden />

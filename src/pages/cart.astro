@@ -12,23 +12,35 @@ import Modalidad from "@components/Modalidad.astro";
         
         <!-- Aquí comienza el carrito -->
         <div class="flex flex-col">
-            <div class="flex items-center font-bold border-b border-zinc-300 py-2">
-                <h2>Carrito de Compras</h2>
+            <div class="flex items-center justify-between font-bold border-b border-zinc-200 py-4 px-2">
+                <h2 class="text-xl md:text-2xl text-gray-900">🛒 Carrito de Compras</h2>
+                <div class="text-sm text-gray-500">
+                    <span id="carrito-count">0</span> productos
+                </div>
             </div>
 
             <!-- Contenedor de los productos del carrito -->
-            <div id="carrito-items" class="flex flex-col gap-4">
+            <div id="carrito-items" class="flex flex-col gap-2 p-2">
             
             </div>
 
                 <!-- Carrito vacío -->
-                <div id="carrito-vacio" class="items-center gap-4 border-b border-zinc-300 py-4 hidden">
-                    <span class="text-center w-full font-bold">El carrito está vacío</span>
+                <div id="carrito-vacio" class="items-center gap-4 border-b border-zinc-300 py-8 hidden">
+                    <div class="text-center w-full">
+                        <div class="text-6xl mb-4">🛍️</div>
+                        <span class="text-lg font-semibold text-gray-600">Tu carrito está vacío</span>
+                        <p class="text-sm text-gray-500 mt-2">¡Agrega algunos productos para comenzar!</p>
+                    </div>
                 </div>
 
                 <!-- Total del carrito -->
-                <div class="mt-4 mb-4 text-right text-2xl font-semibold text-zinc-900 ">
-                  Total: AR$<span id="total-precio">0</span>
+                <div class="mt-6 mb-4 p-4 bg-gradient-to-r from-pink-50 to-purple-50 rounded-xl border border-pink-100">
+                    <div class="text-right">
+                        <span class="text-sm text-gray-600">Total a pagar:</span>
+                        <div class="text-2xl md:text-3xl font-bold text-pink-600">
+                            AR$<span id="total-precio">0</span>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="items-center gap-4">

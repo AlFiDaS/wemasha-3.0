@@ -10,6 +10,7 @@ export function saveCarrito() {
   const prendaEl = document.querySelector("#prenda") as HTMLInputElement | null;
   const imageEl = document.querySelector("#image") as HTMLInputElement | null;
   const diseñoEl = document.querySelector("#diseño") as HTMLInputElement | null;
+  const diseñoIdEl = document.querySelector("#diseño-id") as HTMLInputElement | null;
   const priceEl = document.querySelector("#price") as HTMLInputElement | null;
 
   // Valores con fallback
@@ -18,6 +19,7 @@ export function saveCarrito() {
   const prenda = (prendaEl?.value ?? "").trim();
   const image = (imageEl?.value ?? "").trim();
   const diseño = (diseñoEl?.value ?? "").trim();
+  const diseñoId = (diseñoIdEl?.value ?? "").trim();
   const precio = parseFloat(priceEl?.value ?? "0") || 0;
 
   // Validaciones básicas
@@ -29,12 +31,14 @@ export function saveCarrito() {
 
   // Producto
   const producto = {
-    id: diseño,          // tu identificador de diseño
+    id: diseñoId,        // ID técnico para identificación
     titulo: prenda,
     precio,
     image,
     talla,
     cantidad,
+    diseño: diseño,      // Nombre amigable para mostrar en carrito
+    diseñoId: diseñoId,  // ID técnico para mensaje de WhatsApp
     url: window.location.pathname, // URL actual del producto
   };
 
