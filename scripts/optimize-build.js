@@ -62,39 +62,88 @@ async function optimizeImages() {
 
 async function updateDesignsFile() {
   console.log('📝 Actualizando archivo de diseños...');
-  
+
   const designsPath = path.join(__dirname, '../src/lib/designs.ts');
-  
-  if (fs.existsSync(designsPath)) {
-    let content = fs.readFileSync(designsPath, 'utf8');
-    
-    // Actualizar función de thumbnail para usar thumbnails reales
-    const thumbnailFunction = `
-// Función para generar thumbnail URL
+  if (!fs.existsSync(designsPath)) {
+    console.log('❌ designs.ts no encontrado, omito actualización');
+    return;
+  }
+
+  let content = fs.readFileSync(designsPath, 'utf8');
+
+  // Nueva versión de la función (sin backticks internos para evitar problemas)
+  const newFn =
+`// ---- Generar URL de thumbnail ----
 function generateThumbnailUrl(originalUrl: string): string {
-  // Si ya es un thumbnail, devolver como está
-  if (originalUrl.includes('thumbnail')) {
-    return originalUrl;
-  }
-  
-  // Generar URL de thumbnail
-  const urlParts = originalUrl.split('/');
+  if (originalUrl.includes("thumbnail")) return originalUrl;
+  const urlParts = originalUrl.split("/");
   const fileName = urlParts[urlParts.length - 1];
-  const thumbnailUrl = \`/thumbnails/\${fileName}\`;
-  
-  return thumbnailUrl;
-}`;
-    
-    // Reemplazar la función existente
-    content = content.replace(
-      /function generateThumbnailUrl\([^)]*\)[^}]*}/s,
-      thumbnailFunction
-    );
-    
-    fs.writeFileSync(designsPath, content);
-    console.log('✅ Archivo de diseños actualizado');
-  }
+  return "/thumbnails/" + fileName;
 }
+`;
+
+  // Busca el inicio de la función existente
+  const startIdx = content.indexOf('function generateThumbnailUrl(');
+
+  if (startIdx !== -1) {
+    // Encontrar el final REAL de la función balanceando llaves
+    // Buscar la primera "{" después de la firma
+    const braceStart = content.indexOf('{', startIdx);
+    if (braceStart === -1) {
+      // Firma corrupta; reemplazo por inserción segura más abajo
+      console.log('⚠️ Firma de función corrupta; reinsertaré la función.');
+    } else {
+      let i = braceStart;
+      let depth = 0;
+      for (; i < content.length; i++) {
+        const ch = content[i];
+        if (ch === '{') depth++;
+        else if (ch === '}') {
+          depth--;
+          if (depth === 0) {
+            i++; // incluir la "}" final
+            break;
+          }
+        }
+      }
+      if (depth === 0) {
+        const before = content.slice(0, startIdx);
+        const after  = content.slice(i);
+        content = before + newFn + after;
+        fs.writeFileSync(designsPath, content);
+        console.log('✅ Función generateThumbnailUrl reemplazada sin duplicados');
+        return;
+      } else {
+        console.log('⚠️ No pude balancear llaves; reinsertaré la función.');
+      }
+    }
+  }
+
+  // Si no existe o estaba corrupta: insertar una sola vez después de niceName()
+  const nnStart = content.indexOf('function niceName(');
+  if (nnStart !== -1) {
+    const braceStart = content.indexOf('{', nnStart);
+    let i = braceStart, depth = 0;
+    for (; i < content.length; i++) {
+      const ch = content[i];
+      if (ch === '{') depth++;
+      else if (ch === '}') {
+        depth--;
+        if (depth === 0) { i++; break; }
+      }
+    }
+    const before = content.slice(0, i);
+    const after  = content.slice(i);
+    content = before + '\n\n' + newFn + '\n' + after;
+  } else {
+    // Si no encontramos niceName, la ponemos al inicio del archivo para no fallar el build
+    content = newFn + '\n' + content;
+  }
+
+  fs.writeFileSync(designsPath, content);
+  console.log('✅ Archivo de diseños actualizado (insertado 1 vez)');
+}
+
 
 async function main() {
   console.log('🚀 Iniciando optimización de build...\n');

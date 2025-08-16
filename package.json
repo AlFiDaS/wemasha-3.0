@@ -3,12 +3,13 @@
   "type": "module",
   "version": "0.0.1",
   "scripts": {
-    "dev": "astro dev",
+    "dev": "astro dev --host",
     "build": "node scripts/optimize-build.js && astro build",
-    "preview": "astro preview",
+    "preview": "astro preview --host",
     "astro": "astro",
     "optimize": "node scripts/optimize-build.js",
-    "analyze": "node scripts/optimize-images.js"
+    "analyze": "node scripts/optimize-images.js",
+    "browserslist:update": "npx update-browserslist-db@latest"
   },
   "dependencies": {
     "@astrojs/tailwind": "^5.1.4",
@@ -17,5 +18,8 @@
     "imagemin-web": "^1.1.1",
     "sharp": "^0.34.3",
     "tailwindcss": "^3.4.17"
+  },
+  "engines": {
+    "node": ">=18.14"
   }
 }
