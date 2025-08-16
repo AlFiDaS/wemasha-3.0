@@ -199,98 +199,8 @@ const precioFormateado = precioEncontrado ? precioEncontrado.precio.toLocaleStri
 
   let talleActual = "";
 
-  // Definir talles directamente en el script para evitar problemas de importación
-  const talles = [
-    {
-      slug: 'remerasTalles',
-      items: [
-        { id: 'XS', label: 'XS (Ancho:46cm - Alto:66cm)' },
-        { id: 'S', label: 'S (Ancho:50cm - Alto:68cm)' },
-        { id: 'M', label: 'M (Ancho:52cm - Alto:70cm)' },
-        { id: 'L', label: 'L (Ancho:55cm - Alto:74cm)' },
-        { id: 'XL', label: 'XL (Ancho:57cm - Alto:77cm)' },
-      ],
-    },
-    {
-      slug: 'oversizeTalles',
-      items: [
-        { id: 'XXS', label: 'XXS (Ancho:52cm - Alto:68cm)' },
-        { id: 'XS', label: 'XS (Ancho:56cm - Alto:70cm)' },
-        { id: 'S', label: 'S (Ancho:62cm - Alto:72cm)' },
-        { id: 'M', label: 'M (Ancho:66cm - Alto:74cm)' },
-        { id: 'L', label: 'L (Ancho:68cm - Alto:76cm)' },
-        { id: 'XL', label: 'XL (Ancho:70cm - Alto:77cm)' },
-        { id: 'XXL', label: 'XXL (Ancho:72cm - Alto:78cm)' },
-      ],
-    },
-    {
-      slug: 'oversizePuperasTalles',
-      items: [
-        { id: 'Unico', label: 'Talle Unico (Ancho:54cm - Alto:43cm)' },
-      ],
-    },
-    {
-      slug: 'musculosasMujerTalles',
-      items: [
-        { id: 'Unico', label: 'Talle Unico (Ancho:39cm - Alto:41cm)' },
-      ],
-    },
-    {
-      slug: 'musculosasHombreTalles',
-      items: [
-        { id: 'S', label: 'S (Ancho:62cm - Alto:72cm)' },
-        { id: 'M', label: 'M (Ancho:66cm - Alto:74cm)' },
-        { id: 'L', label: 'L (Ancho:68cm - Alto:76cm)' },
-        { id: 'XL', label: 'XL (Ancho:70cm - Alto:77cm)' },
-      ],
-    },
-    {
-      slug: 'BuzosTalles',
-      items: [
-        { id: 'M', label: 'M (Ancho:55cm - Alto:67cm)' },
-        { id: 'L', label: 'L (Ancho:57cm - Alto:69cm)' },
-        { id: 'XL', label: 'XL (Ancho:60cm - Alto:71cm)' },
-        { id: 'XXL', label: 'XXL (Ancho:62cm - Alto:74cm)' },
-      ],
-    },
-    {
-      slug: 'remerasTallesBlanco',
-      items: [],
-    },
-    {
-      slug: 'oversizeTallesBlanco',
-      items: [
-        { id: 'XXS', label: 'XXS (Ancho:52cm - Alto:68cm)' },
-        { id: 'XS', label: 'XS (Ancho:56cm - Alto:70cm)' },
-        { id: 'S', label: 'S (Ancho:62cm - Alto:72cm)' },
-        { id: 'M', label: 'M (Ancho:66cm - Alto:74cm)' },
-        { id: 'L', label: 'L (Ancho:68cm - Alto:76cm)' },
-        { id: 'XL', label: 'XL (Ancho:70cm - Alto:77cm)' },
-        { id: 'XXL', label: 'XXL (Ancho:72cm - Alto:78cm)' },
-      ],
-    },
-    {
-      slug: 'oversizePuperasTallesBlanco',
-      items: [
-        { id: 'Unico', label: 'Talle Unico (Ancho:54cm - Alto:43cm)' },
-      ],
-    },
-    {
-      slug: 'musculosasMujerTallesBlanco',
-      items: [],
-    },
-    {
-      slug: 'musculosasHombreTallesBlanco',
-      items: [
-        { id: 'S', label: 'S (Ancho:62cm - Alto:72cm)' },
-        { id: 'XL', label: 'XL (Ancho:70cm - Alto:77cm)' },
-      ],
-    },
-    {
-      slug: 'BuzosTallesBlanco',
-      items: [],
-    },
-  ];
+  // Importar talles desde el archivo centralizado
+  import { talles } from "@lib/talles";
 
   // Función para obtener talles de la prenda
   function obtenerTallesPrenda() {
@@ -327,54 +237,27 @@ const precioFormateado = precioEncontrado ? precioEncontrado.precio.toLocaleStri
 
     const tallesPrenda = obtenerTallesPrenda();
     
-    // Si no hay talles, mostrar talles de prueba para verificar que funciona
+    // Si no hay talles disponibles, mostrar "Sin Stock"
     if (tallesPrenda.length === 0) {
-      const tallesPrueba = [
-        { id: 'XS', label: 'XS (Ancho:46cm - Alto:66cm)' },
-        { id: 'S', label: 'S (Ancho:50cm - Alto:68cm)' },
-        { id: 'M', label: 'M (Ancho:52cm - Alto:70cm)' },
-        { id: 'L', label: 'L (Ancho:55cm - Alto:74cm)' },
-        { id: 'XL', label: 'XL (Ancho:57cm - Alto:77cm)' },
-      ];
+      container.innerHTML = `
+        <div class="col-span-3 flex items-center justify-center py-8">
+          <div class="text-center">
+            <div class="text-2xl font-bold text-gray-400 mb-2">Sin Stock</div>
+            <div class="text-sm text-gray-500">Este producto no está disponible actualmente</div>
+          </div>
+        </div>
+      `;
       
-      container.innerHTML = '';
-      
-      tallesPrueba.forEach(talle => {
-        const button = document.createElement('button');
-        button.className = 'talle-btn py-3 px-4 border-2 border-gray-200 rounded-xl font-semibold text-gray-700 hover:border-pink-500 hover:text-pink-600 transition-all duration-300 transform hover:scale-105';
-        button.textContent = talle.id;
-        button.dataset.talle = talle.id;
-        button.title = talle.label;
-        
-        // Manejar clic en el botón
-        button.addEventListener('click', () => {
-          // Deseleccionar todos los botones
-          document.querySelectorAll('.talle-btn').forEach(btn => {
-            btn.classList.remove('bg-pink-600', 'text-white', 'border-pink-600');
-            btn.classList.add('border-gray-200', 'text-gray-700');
-          });
-
-          // Seleccionar el botón clickeado
-          button.classList.remove('border-gray-200', 'text-gray-700');
-          button.classList.add('bg-pink-600', 'text-white', 'border-pink-600');
-
-          // Actualizar talle seleccionado
-          talleActual = talle.id;
-          talleSeleccionado.value = talle.id;
-
-          // Mostrar información del talle
-          talleSeleccionadoText.textContent = talle.id;
-          talleMedidas.textContent = talle.label;
-          talleInfo.classList.remove('hidden');
-          talleInfo.classList.add('block');
-
-          // Habilitar botón de agregar al carrito
-          btnSubmit.disabled = false;
-          talleError.classList.add('hidden');
-        });
-        
-        container.appendChild(button);
-      });
+      // Deshabilitar botón de agregar al carrito
+      btnSubmit.disabled = true;
+      btnSubmit.innerHTML = `
+        <span class="flex items-center justify-center gap-2">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728L5.636 5.636m12.728 12.728L18.364 5.636M5.636 18.364l12.728-12.728"></path>
+          </svg>
+          Sin Stock
+        </span>
+      `;
       
       return;
     }

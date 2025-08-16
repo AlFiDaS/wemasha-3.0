@@ -3,8 +3,8 @@ export type Design = {
   src: string; 
   name: string; 
   category: string;
-  thumbnail: string; // URL optimizada para thumbnails
-  size?: number; // Tamaño del archivo en bytes
+  thumbnail: string;
+  size?: number;
 };
 
 function niceName(file: string) {
@@ -14,6 +14,7 @@ function niceName(file: string) {
     .replace(/[-_]+/g, " ")
     .trim();
 }
+
 
 // Función para generar thumbnail URL
 function generateThumbnailUrl(originalUrl: string): string {
@@ -27,7 +28,6 @@ function generateThumbnailUrl(originalUrl: string): string {
   return originalUrl;
 }
 
-// Importar desde src/assets/designs/**  (NO public/)
 const modules = import.meta.glob("../assets/designs/**/*.{png,jpg,jpeg,webp,svg}", {
   eager: true,
   query: "?url",
@@ -48,17 +48,14 @@ export const designs: Design[] = Object.entries(modules).map(([path, url]) => {
   };
 }).sort((a, b) => a.category.localeCompare(b.category));
 
-// Función para precargar imágenes de forma inteligente
 export function preloadImages(designs: Design[], startIndex: number, count: number, useThumbnails: boolean = true) {
   const slice = designs.slice(startIndex, startIndex + count);
   slice.forEach(design => {
     const img = new Image();
-    // Usar thumbnails para precarga en galería
     img.src = useThumbnails ? design.thumbnail : design.src;
   });
 }
 
-// Función para obtener diseños con lazy loading
 export function getDesignsWithLazyLoading(
   allDesigns: Design[], 
   currentPage: number, 
@@ -69,7 +66,6 @@ export function getDesignsWithLazyLoading(
   const start = currentPage * perPage;
   const end = start + perPage;
   
-  // Precargar página actual y siguiente
   if (preloadNext) {
     preloadImages(allDesigns, start, perPage * 2, useThumbnails);
   } else {
@@ -79,8 +75,6 @@ export function getDesignsWithLazyLoading(
   return allDesigns.slice(start, end);
 }
 
-// Función para obtener thumbnail optimizado
 export function getOptimizedImageUrl(design: Design, useThumbnail: boolean = true): string {
   return useThumbnail ? design.thumbnail : design.src;
 }
-
