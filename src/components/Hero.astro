@@ -11,20 +11,38 @@ interface Props {
 const { title, image, slug, backTo } = Astro.props;
 ---
 
-<div class="bg-cover bg-center w-full h-[184px] md:h-[384px] pl-9 md:pl-16 pb-8 flex items-end" transition:name={slug} style={`background-image: url('${image}')`} data-slug={slug}>
-  <div class="flex flex-col gap-4">
-    <h1 class="text-3xl sm:text-5xl md:text-6xl max-w-[300px] sm:max-w-[600px] text-white leading-none font-black">{title}</h1>
-    <div>
-      <a
-        id="back-button"
-        href={backTo || "/"}
-        data-backto={backTo || "/"}
-        class="flex items-center gap-1 text-white text-sm md:text-base font-semibold border border-white w-fit px-4 py-2 rounded-lg"
-      >
-        <BackHomeIcon />
-        IR ATRÁS
-      </a>
+<div class="relative bg-cover bg-center w-full h-[200px] md:h-[400px] flex items-end overflow-hidden" transition:name={slug} style={`background-image: url('${image}')`} data-slug={slug}>
+  <!-- Overlay gradiente para mejor legibilidad -->
+  <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
+  
+  <!-- Contenido -->
+  <div class="relative z-10 w-full px-6 md:px-12 pb-8">
+    <div class="max-w-[1200px] mx-auto">
+      <div class="flex flex-col gap-6">
+        <!-- Título -->
+        <h1 class="text-3xl sm:text-5xl md:text-6xl lg:text-7xl max-w-[400px] sm:max-w-[600px] text-white leading-tight font-black drop-shadow-2xl">
+          {title}
+        </h1>
+        
+        <!-- Botón IR ATRÁS -->
+        <div>
+          <a
+            id="back-button"
+            href={backTo || "/"}
+            data-backto={backTo || "/"}
+            class="group inline-flex items-center gap-3 bg-white/20 backdrop-blur-sm border border-white/30 text-white px-6 py-3 rounded-xl font-semibold hover:bg-white/30 hover:border-white/50 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+          >
+            <BackHomeIcon />
+            <span>IR ATRÁS</span>
+            <!-- Efecto de brillo en hover -->
+            <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 rounded-xl"></div>
+          </a>
+        </div>
+      </div>
     </div>
   </div>
+  
+  <!-- Efecto de brillo sutil en el fondo -->
+  <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-500"></div>
 </div>
 

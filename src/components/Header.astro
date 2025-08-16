@@ -43,7 +43,11 @@ const links = [
   <!-- Menú desplegable en mobile -->
   <ul id="nav-links" class="drawer">
     {links.map((l) => (
-      <li><a href={l.href}>{l.text}</a></li>
+      <li class="nav-item">
+        <a href={l.href} class="nav-link">
+          {l.text}
+        </a>
+      </li>
     ))}
   </ul>
 </nav>
@@ -110,6 +114,13 @@ const links = [
     drawer.classList.add('open');
     document.body.style.overflow = 'hidden';
     if (toggle) toggle.setAttribute('aria-expanded', 'true');
+    
+    // Animación de entrada para los elementos del menú
+    const navItems = drawer.querySelectorAll('.nav-item');
+    navItems.forEach((item, index) => {
+      item.style.animationDelay = `${index * 0.1}s`;
+      item.classList.add('nav-item-enter');
+    });
   }
 
   function closeDrawer() {
@@ -117,6 +128,13 @@ const links = [
     drawer.classList.remove('open');
     document.body.style.overflow = '';
     if (toggle) toggle.setAttribute('aria-expanded', 'false');
+    
+    // Remover animaciones
+    const navItems = drawer.querySelectorAll('.nav-item');
+    navItems.forEach((item) => {
+      item.classList.remove('nav-item-enter');
+      item.style.animationDelay = '';
+    });
   }
 
   // Delegación global (sobrevive a reemplazos de DOM)
@@ -198,8 +216,10 @@ const links = [
   .cart { position: relative; display: inline-flex; align-items: center; text-decoration: none; color: #333; }
   .badge {
     position: absolute; top: -8px; right: -10px;
-    background: #BE185D; color: #fff; font-size: .7rem;
+    background: linear-gradient(135deg, #DB2777, #EC4899);
+    color: #fff; font-size: .7rem;
     padding: .15rem .45rem; border-radius: 999px; line-height: 1;
+    box-shadow: 0 2px 8px rgba(219, 39, 119, 0.3);
   }
 
   /* Drawer mobile superpuesto */
@@ -216,8 +236,52 @@ const links = [
     overflow: auto;
   }
   .drawer.open{ display: flex; flex-direction: column; gap: .75rem; }
-  .drawer a { display: block; width: 100%; padding: .5rem 0; text-decoration: none; color: #333; text-align: center; }
-  .drawer a:hover { color: #BE185D; }
+  
+  /* Estilos simplificados y elegantes para los enlaces del menú móvil */
+  .nav-item {
+    position: relative;
+  }
+  
+  .nav-link {
+    display: block;
+    width: 100%;
+    padding: 1rem 1.5rem;
+    text-decoration: none;
+    color: #374151;
+    text-align: center;
+    font-weight: 600;
+    font-size: 1.1rem;
+    background: #f8f9fa;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+  }
+  
+  .nav-link:hover {
+    color: #DB2777;
+    background: #fff;
+    border-color: #DB2777;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(219, 39, 119, 0.15);
+  }
+  
+  .nav-link:active {
+    color: #DB2777;
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(219, 39, 119, 0.1);
+  }
+  
+  /* Animación de entrada simple */
+  .nav-item {
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.3s ease;
+  }
+  
+  .nav-item-enter {
+    opacity: 1;
+    transform: translateY(0);
+  }
 
   /* Visibilidad responsive */
   .mobile-only { display: inline-flex; justify-self: end; }

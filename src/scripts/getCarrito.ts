@@ -126,11 +126,11 @@ export function cargarCarrito(silent: boolean = false): number {
               <h3 class="font-semibold text-sm md:text-base text-gray-900 truncate">${producto.titulo}</h3>
               ${producto.diseño ? `<p class="text-xs md:text-sm text-gray-600 mb-1 font-medium">${producto.diseño}</p>` : ''}
               <p class="text-xs md:text-sm text-gray-500">Tamaño: ${producto.talla}</p>
-              <p class="text-sm md:text-base font-semibold text-pink-600">$${toARS(precio)}</p>
+              <p class="text-sm md:text-base font-semibold text-pink-500">$${toARS(precio)}</p>
             </div>
             
             <!-- Botón eliminar -->
-            <button class="eliminar-btn text-red-400 hover:text-red-600 transition-colors p-1 ml-2 flex-shrink-0" data-index="${index}" title="Eliminar">
+            <button class="eliminar-btn text-red-400 hover:text-red-600 transition-colors p-2 ml-2 flex-shrink-0 rounded-lg hover:bg-red-50" data-index="${index}" title="Eliminar">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M3 6h18"></path>
                 <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
@@ -142,10 +142,10 @@ export function cargarCarrito(silent: boolean = false): number {
           <!-- Controles de cantidad y subtotal -->
           <div class="flex items-center justify-between">
             <!-- Controles de cantidad -->
-            <div class="flex items-center gap-1 bg-gray-100 rounded-lg p-1">
-              <button class="cantidad-btn-minus bg-white hover:bg-gray-200 text-gray-700 font-bold py-1 px-2 rounded-md transition-colors text-sm" data-index="${index}">-</button>
-              <span class="cantidad-display font-semibold text-sm min-w-[1.5rem] text-center">${cantidad}</span>
-              <button class="cantidad-btn-plus bg-white hover:bg-gray-200 text-gray-700 font-bold py-1 px-2 rounded-md transition-colors text-sm" data-index="${index}">+</button>
+            <div class="flex items-center gap-1 bg-gray-100 rounded-xl p-1">
+              <button class="cantidad-btn-minus bg-white hover:bg-pink-500 hover:text-white text-gray-700 font-bold py-2 px-3 rounded-lg transition-all duration-300 text-sm shadow-sm hover:shadow-md" data-index="${index}">-</button>
+              <span class="cantidad-display font-semibold text-sm min-w-[2rem] text-center text-gray-900">${cantidad}</span>
+              <button class="cantidad-btn-plus bg-white hover:bg-pink-500 hover:text-white text-gray-700 font-bold py-2 px-3 rounded-lg transition-all duration-300 text-sm shadow-sm hover:shadow-md" data-index="${index}">+</button>
             </div>
             
             <!-- Subtotal -->

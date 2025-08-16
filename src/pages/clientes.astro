@@ -30,14 +30,14 @@ const totalPages = Math.ceil(clientes.length / ITEMS_PER_PAGE);
 
 		<!-- Paginación -->
 		<div class="flex justify-center items-center gap-2 mt-8 mb-12">
-			<button id="prev-page" class="px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+			<button id="prev-page" class="px-4 py-2 bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white rounded-xl font-medium transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none">
 				Anterior
 			</button>
 			
 			<div id="page-numbers" class="flex gap-1">
 				{Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => (
 					<button 
-						class="px-3 py-2 rounded-lg border hover:bg-gray-100 transition-colors page-btn"
+						class="px-3 py-2 rounded-xl border-2 border-gray-200 hover:border-pink-500 hover:text-pink-500 transition-all duration-300 page-btn font-medium data-[active=true]:bg-gradient-to-r data-[active=true]:from-pink-500 data-[active=true]:to-pink-600 data-[active=true]:border-pink-500 data-[active=true]:text-white data-[active=true]:shadow-lg"
 						data-page={pageNum}
 						data-active={pageNum === 1 ? "true" : "false"}
 					>
@@ -46,7 +46,7 @@ const totalPages = Math.ceil(clientes.length / ITEMS_PER_PAGE);
 				))}
 			</div>
 			
-			<button id="next-page" class="px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors">
+			<button id="next-page" class="px-4 py-2 bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white rounded-xl font-medium transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl">
 				Siguiente
 			</button>
 		</div>
@@ -79,14 +79,14 @@ const totalPages = Math.ceil(clientes.length / ITEMS_PER_PAGE);
             <img id="modal-image" src="" alt="Imagen ampliada" class="max-w-full max-h-full object-contain" />
             
             <!-- Flecha izquierda -->
-            <button id="prev-image" class="absolute left-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white rounded-full p-3 transition-colors">
+            <button id="prev-image" class="absolute left-4 top-1/2 -translate-y-1/2 bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white rounded-full p-3 transition-all duration-300 transform hover:scale-105 shadow-lg">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <polyline points="15,18 9,12 15,6"></polyline>
                 </svg>
             </button>
             
             <!-- Flecha derecha -->
-            <button id="next-image" class="absolute right-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white rounded-full p-3 transition-colors">
+            <button id="next-image" class="absolute right-4 top-1/2 -translate-y-1/2 bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white rounded-full p-3 transition-all duration-300 transform hover:scale-105 shadow-lg">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <polyline points="9,18 15,12 9,6"></polyline>
                 </svg>
@@ -389,8 +389,10 @@ const totalPages = Math.ceil(clientes.length / ITEMS_PER_PAGE);
 <style>
     /* Estilos para la paginación */
     .page-btn[data-active="true"] {
-        background-color: black;
+        background: linear-gradient(to right, #ec4899, #db2777);
         color: white;
+        border-color: #db2777;
+        box-shadow: 0 4px 6px -1px rgba(219, 39, 119, 0.1), 0 2px 4px -1px rgba(219, 39, 119, 0.06);
     }
     
     /* Estilos para las miniaturas */

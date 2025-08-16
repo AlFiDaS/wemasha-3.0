@@ -93,7 +93,15 @@ function initMockup(refs) {
       const scale   = Math.min(zoneW / imgW, zoneH / imgH);
       const targetW = Math.round(imgW * scale);
       overlay.style.width = targetW + "px";
-      rangeSize.value = String(Math.round((targetW / wrapper.clientWidth) * 100));
+      const pct = Math.round((targetW / wrapper.clientWidth) * 100);
+      rangeSize.value = String(pct);
+      
+      // Actualizar el gradiente de la barra con precisión
+      const min = Number(rangeSize.min || 10);
+      const max = Number(rangeSize.max || 100);
+      const range = max - min;
+      const normalizedPct = ((pct - min) / range) * 100;
+      rangeSize.style.background = `linear-gradient(to right, #ec4899 0%, #ec4899 ${normalizedPct}%, #e5e7eb ${normalizedPct}%, #e5e7eb 100%)`;
     };
 
     if (overlay.complete && overlay.naturalWidth) fit();
@@ -104,7 +112,7 @@ function initMockup(refs) {
     side = next;
     base.src = next === "adelante" ? "/images/mockups/adelante.webp" : "/images/mockups/atras.webp";
 
-    const on = ["bg-black","text-white"], off = ["bg-white","text-gray-800"];
+    const on = ["bg-gradient-to-r","from-pink-500","to-pink-600","text-white"], off = ["bg-white","text-gray-700"];
     if (next === "adelante") {
       btnAdelante.classList.add(...on); btnAdelante.classList.remove(...off);
       btnAtras.classList.add(...off);   btnAtras.classList.remove(...on);
@@ -121,12 +129,48 @@ function initMockup(refs) {
     overlay.style.display = "block";
     applyZoneDefaults();
     fitOverlayIntoZone();
+    
+    // Remover borde rosa de todos los botones de diseño
+    document.querySelectorAll('[data-design]').forEach(btn => {
+      btn.classList.remove('border-pink-500', 'border-2');
+      btn.classList.add('border-neutral-700');
+      btn.style.borderColor = '#374151';
+      btn.style.borderWidth = '1px';
+      btn.style.boxShadow = 'none';
+      btn.style.transform = 'scale(1)';
+    });
+    
+    // Agregar borde rosa al botón del diseño seleccionado
+    const selectedBtn = document.querySelector(`[data-design="${src}"]`);
+    if (selectedBtn) {
+      selectedBtn.classList.remove('border-neutral-700');
+      selectedBtn.classList.add('border-pink-500', 'border-2');
+      selectedBtn.style.borderColor = '#ec4899';
+      selectedBtn.style.borderWidth = '3px';
+      selectedBtn.style.boxShadow = '0 0 0 2px rgba(236, 72, 153, 0.5), 0 4px 12px rgba(236, 72, 153, 0.3)';
+      selectedBtn.style.transform = 'scale(1.02)';
+    }
   }
 
   function setSize() {
+    // Actualizar el gradiente de la barra con precisión
+    const pct = Number(rangeSize.value || "35");
+    const track = rangeSize.style;
+    
+    // Calcular la posición exacta del gradiente
+    const min = Number(rangeSize.min || 10);
+    const max = Number(rangeSize.max || 100);
+    const range = max - min;
+    const normalizedPct = ((pct - min) / range) * 100;
+    
+    track.background = `linear-gradient(to right, #ec4899 0%, #ec4899 ${normalizedPct}%, #e5e7eb ${normalizedPct}%, #e5e7eb 100%)`;
+    
+    // Solo funcionar si hay un diseño aplicado
     if (!overlay.src) return;
-    const pct = Number(rangeSize.value || "35") / 100;
-    overlay.style.width = (wrapper.clientWidth * pct) + "px";
+    
+    const pctDecimal = pct / 100;
+    const newWidth = Math.max(50, wrapper.clientWidth * pctDecimal);
+    overlay.style.width = newWidth + "px";
   }
 
   function centerOverlay() { applyZoneDefaults(); }
@@ -142,6 +186,7 @@ function initMockup(refs) {
   });
 
   rangeSize.addEventListener("input", setSize);
+  rangeSize.addEventListener("change", setSize);
   btnCentro.addEventListener("click", centerOverlay);
 
   // Drag mouse
@@ -222,6 +267,15 @@ function initMockup(refs) {
   }, { passive: true });
 
   setSide("adelante");
+  
+  // Inicializar el gradiente de la barra con precisión
+  const initialPct = Number(rangeSize.value || "35");
+  const min = Number(rangeSize.min || 10);
+  const max = Number(rangeSize.max || 100);
+  const range = max - min;
+  const normalizedInitialPct = ((initialPct - min) / range) * 100;
+  rangeSize.style.background = `linear-gradient(to right, #ec4899 0%, #ec4899 ${normalizedInitialPct}%, #e5e7eb ${normalizedInitialPct}%, #e5e7eb 100%)`;
+  
   new ResizeObserver(() => { if (overlay.src) fitOverlayIntoZone(); }).observe(wrapper);
 }
 
@@ -480,6 +534,30 @@ function initPagination(refs) {
     renderDesktop(list);
     renderMobile(list);
     setURL();
+    
+    // Mantener el borde rosa del diseño seleccionado después de renderizar
+    const overlay = document.getElementById("mockup-overlay");
+    if (overlay && overlay.src) {
+      const selectedBtn = document.querySelector(`[data-design="${overlay.src}"]`);
+      if (selectedBtn) {
+        // Remover borde rosa de todos los botones
+        document.querySelectorAll('[data-design]').forEach(btn => {
+          btn.classList.remove('border-pink-500', 'border-2');
+          btn.classList.add('border-neutral-700');
+          btn.style.borderColor = '#374151';
+          btn.style.borderWidth = '1px';
+          btn.style.boxShadow = 'none';
+          btn.style.transform = 'scale(1)';
+        });
+        // Agregar borde rosa al botón seleccionado
+        selectedBtn.classList.remove('border-neutral-700');
+        selectedBtn.classList.add('border-pink-500', 'border-2');
+        selectedBtn.style.borderColor = '#ec4899';
+        selectedBtn.style.borderWidth = '3px';
+        selectedBtn.style.boxShadow = '0 0 0 2px rgba(236, 72, 153, 0.5), 0 4px 12px rgba(236, 72, 153, 0.3)';
+        selectedBtn.style.transform = 'scale(1.02)';
+      }
+    }
   }
 
   // Inicializar todo

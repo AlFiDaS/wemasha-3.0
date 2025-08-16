@@ -33,7 +33,7 @@ const categories = ["todos", ...Array.from(new Set(designs.map(d => d.category))
     <nav id="cat-filter" class="lg:col-span-2 flex flex-wrap gap-2 justify-center">
       {categories.map((cat) => (
         <button
-          class="btn-cat px-3 py-1.5 rounded-full border text-sm capitalize hover:bg-neutral-100 data-[active=true]:bg-black data-[active=true]:text-white"
+          class="btn-cat px-4 py-2 rounded-xl border-2 border-gray-200 text-sm capitalize font-medium transition-all duration-300 hover:border-pink-500 hover:text-pink-500 data-[active=true]:bg-gradient-to-r data-[active=true]:from-pink-500 data-[active=true]:to-pink-600 data-[active=true]:border-pink-500 data-[active=true]:text-white data-[active=true]:shadow-lg"
           data-cat={cat}
         >
           {cat === 'todos' ? 'Todos' : cat.replace(/-/g, ' ')}
@@ -45,11 +45,11 @@ const categories = ["todos", ...Array.from(new Set(designs.map(d => d.category))
     <section class="grid gap-4 content-start">
       <!-- Toggle centrado 50/50 -->
       <div class="w-full max-w-md mx-auto self-center md:self-start">
-        <div class="flex w-full rounded-xl overflow-hidden border">
-          <button id="btn-adelante" class="flex-1 px-4 py-2 text-sm font-medium bg-black text-white" data-side="adelante">
+        <div class="flex w-full rounded-xl overflow-hidden border-2 border-gray-200 shadow-lg">
+          <button id="btn-adelante" class="flex-1 px-4 py-2 text-sm font-medium bg-gradient-to-r from-pink-500 to-pink-600 text-white transition-all duration-300" data-side="adelante">
             Adelante
           </button>
-          <button id="btn-atras" class="flex-1 px-4 py-2 text-sm font-medium bg-white text-gray-800" data-side="atras">
+          <button id="btn-atras" class="flex-1 px-4 py-2 text-sm font-medium bg-white text-gray-700 hover:text-pink-500 transition-all duration-300" data-side="atras">
             Atrás
           </button>
         </div>
@@ -59,9 +59,9 @@ const categories = ["todos", ...Array.from(new Set(designs.map(d => d.category))
       <div class="order-3 md:order-3 grid grid-cols-1 sm:grid-cols-[1fr_auto] gap-3 items-end">
         <label class="flex flex-col gap-1 text-sm">
           Tamaño
-          <input id="range-size" type="range" min="10" max="100" value="35" />
+          <input id="range-size" type="range" min="10" max="100" value="35" step="1" />
         </label>
-        <button id="btn-centro" class="px-4 py-2 rounded-lg bg-neutral-200 hover:bg-neutral-300 text-sm">
+        <button id="btn-centro" class="px-4 py-2 rounded-xl bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white font-medium text-sm transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl">
           Centrar diseño
         </button>
       </div>
@@ -97,7 +97,7 @@ const categories = ["todos", ...Array.from(new Set(designs.map(d => d.category))
       </div>
 
       <div class="flex items-center gap-3">
-        <button id="desk-prev" class="p-2 rounded-lg border hover:bg-neutral-100" aria-label="Anterior">‹</button>
+        <button id="desk-prev" class="p-3 rounded-xl border-2 border-gray-200 hover:border-pink-500 hover:text-pink-500 transition-all duration-300 transform hover:scale-105" aria-label="Anterior">‹</button>
 
         <div id="desk-grid" class="grid grid-cols-3 gap-3 flex-1">
           <!-- Fallback SSR: primera página (12) -->
@@ -113,7 +113,7 @@ const categories = ["todos", ...Array.from(new Set(designs.map(d => d.category))
           ))}
         </div>
 
-        <button id="desk-next" class="p-2 rounded-lg border hover:bg-neutral-100" aria-label="Siguiente">›</button>
+        <button id="desk-next" class="p-3 rounded-xl border-2 border-gray-200 hover:border-pink-500 hover:text-pink-500 transition-all duration-300 transform hover:scale-105" aria-label="Siguiente">›</button>
       </div>
     </section>
   </div>
@@ -127,7 +127,7 @@ const categories = ["todos", ...Array.from(new Set(designs.map(d => d.category))
 
     <div class="flex items-center gap-3 px-3">
       <!-- Flecha izquierda -->
-      <button id="mob-prev" class="flex-shrink-0 p-3 rounded-full bg-white/20 hover:bg-white/30 text-white backdrop-blur transition-colors" aria-label="Anterior">
+      <button id="mob-prev" class="flex-shrink-0 p-3 rounded-full bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white backdrop-blur transition-all duration-300 transform hover:scale-105 shadow-lg" aria-label="Anterior">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <polyline points="15,18 9,12 15,6"></polyline>
         </svg>
@@ -153,7 +153,7 @@ const categories = ["todos", ...Array.from(new Set(designs.map(d => d.category))
       </div>
 
       <!-- Flecha derecha -->
-      <button id="mob-next" class="flex-shrink-0 p-3 rounded-full bg-white/20 hover:bg-white/30 text-white backdrop-blur transition-colors" aria-label="Siguiente">
+      <button id="mob-next" class="flex-shrink-0 p-3 rounded-full bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white backdrop-blur transition-all duration-300 transform hover:scale-105 shadow-lg" aria-label="Siguiente">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <polyline points="9,18 15,12 9,6"></polyline>
         </svg>
@@ -197,6 +197,80 @@ const categories = ["todos", ...Array.from(new Set(designs.map(d => d.category))
   #mob-next:not(:disabled):hover {
     background-color: rgba(255, 255, 255, 0.4);
     transform: scale(1.05);
+  }
+  
+  /* Estilos para la barra de tamaño */
+  #range-size {
+    width: 100%;
+    height: 8px;
+    border-radius: 4px;
+    background: #e5e7eb;
+    outline: none;
+    cursor: pointer;
+    -webkit-appearance: none;
+    appearance: none;
+    margin: 0;
+    padding: 0;
+  }
+  
+  #range-size::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #ec4899;
+    cursor: pointer;
+    border: 3px solid white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    margin-top: -6px;
+  }
+  
+  #range-size::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #ec4899;
+    cursor: pointer;
+    border: 3px solid white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+  
+  #range-size::-webkit-slider-track {
+    background: #e5e7eb;
+    border-radius: 4px;
+    height: 8px;
+  }
+  
+  #range-size::-moz-range-track {
+    background: #e5e7eb;
+    border-radius: 4px;
+    height: 8px;
+  }
+  
+  /* Efecto hover para mejor feedback visual */
+  #range-size:hover::-webkit-slider-thumb {
+    transform: scale(1.1);
+  }
+  
+  #range-size:hover::-moz-range-thumb {
+    transform: scale(1.1);
+  }
+  
+  /* Focus states para accesibilidad */
+  #range-size:focus {
+    outline: 2px solid #ec4899;
+    outline-offset: 2px;
+  }
+  
+
+  
+  /* Estilos para el borde rosa de los diseños seleccionados */
+  [data-design].border-pink-500 {
+    border-color: #ec4899 !important;
+    border-width: 3px !important;
+    box-shadow: 0 0 0 2px rgba(236, 72, 153, 0.5), 0 4px 12px rgba(236, 72, 153, 0.3);
+    transform: scale(1.02);
   }
   
   /* Optimización de scroll para móvil */

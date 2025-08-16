@@ -1,15 +1,268 @@
-<div class="mt-16">
-    <h1 class="text-5xl text-zinc-900 font-black text-center mb-4">Clientes</h1>
-    <p class="text-center text-zinc-700">¡Queremos ver tus mejores fotos con Wemasha!<br />¿Que estas esperando?</p>
-    <div class=" max-w-[1200px] mx-auto mt-8 grid grid-cols-1 md:grid-cols-4 gap-4">
-        <a href="/clientes" class="w-full h-[240px] bg-[url('/images/clientes/cliente-28.jpg')] bg-full bg-center rounded-lg bg-slate-600 md:col-span-2 overflow-hidden"></a>
-        <a href="/clientes" class="w-full h-[240px] bg-[url('/images/clientes/cliente-29.jpg')] bg-full bg-center rounded-lg bg-slate-600 col-span-1 overflow-hidden"></a>
-        <a href="/clientes" class="w-full h-[240px] bg-[url('/images/clientes/cliente-30.jpg')] bg-full bg-center rounded-lg bg-slate-600 col-span-1 overflow-hidden"></a>
-        <a href="/clientes" class="hidden md:block w-full h-[240px] bg-[url('/images/clientes/cliente-31.jpg')] bg-full bg-center rounded-lg bg-slate-600 col-span-1 overflow-hidden"></a>
-        <a href="/clientes" class="hidden md:block w-full h-[240px] bg-[url('/images/clientes/cliente-27.jpg')] bg-full bg-center rounded-lg bg-slate-600 md:col-span-2 overflow-hidden"></a>
-        <a href="/clientes" class="hidden md:block w-full h-[240px] bg-[url('/images/clientes/cliente-34.jpg')] bg-full bg-center rounded-lg bg-slate-600 col-span-1 overflow-hidden"></a>
-    </div>
-    <div class="flex items-center justify-center mt-6">
-        <a href="/clientes" class="text-zinc-900 border border-zinc-900 rounded-lg py-3 px-6 text-center">Ver más</a>
+<div class="mt-20 bg-gradient-to-br from-gray-50 to-gray-100 py-16 rounded-3xl">
+    <div class="max-w-[1200px] mx-auto px-4">
+        <!-- Header -->
+        <div class="text-center mb-12">
+            <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">Nuestros Clientes</h2>
+            <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+                ¡Mirá cómo se ven nuestros diseños en la vida real! <br>
+                <span class="font-semibold text-pink-500">¿Qué estás esperando para unirte?</span>
+            </p>
+        </div>
+
+        <!-- Grid de imágenes -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+            <!-- Imágenes para mobile (4 pequeñas) -->
+            <a href="/clientes" class="client-card md:hidden bg-black">
+                <div class="client-image-container">
+                    <img 
+                        src="/images/clientes/cliente-29.jpg" 
+                        alt="Cliente WeMasha" 
+                        loading="lazy"
+                        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                    />
+                    <div class="fallback-content" style="display: none;">
+                        <svg class="w-8 h-8 mx-auto mb-1" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                        </svg>
+                        <p class="text-xs font-semibold">Cliente</p>
+                    </div>
+                    <div class="overlay"></div>
+                </div>
+            </a>
+
+            <a href="/clientes" class="client-card md:hidden bg-black">
+                <div class="client-image-container">
+                    <img 
+                        src="/images/clientes/cliente-30.jpg" 
+                        alt="Cliente WeMasha" 
+                        loading="lazy"
+                        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                    />
+                    <div class="fallback-content" style="display: none;">
+                        <svg class="w-8 h-8 mx-auto mb-1" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                        </svg>
+                        <p class="text-xs font-semibold">Cliente</p>
+                    </div>
+                    <div class="overlay"></div>
+                </div>
+            </a>
+
+            <a href="/clientes" class="client-card md:hidden bg-black">
+                <div class="client-image-container">
+                    <img 
+                        src="/images/clientes/cliente-31.jpg" 
+                        alt="Cliente WeMasha" 
+                        loading="lazy"
+                        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                    />
+                    <div class="fallback-content" style="display: none;">
+                        <svg class="w-8 h-8 mx-auto mb-1" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                        </svg>
+                        <p class="text-xs font-semibold">Cliente</p>
+                    </div>
+                    <div class="overlay"></div>
+                </div>
+            </a>
+
+            <a href="/clientes" class="client-card md:hidden bg-black">
+                <div class="client-image-container">
+                    <img 
+                        src="/images/clientes/cliente-34.jpg" 
+                        alt="Cliente WeMasha" 
+                        loading="lazy"
+                        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                    />
+                    <div class="fallback-content" style="display: none;">
+                        <svg class="w-8 h-8 mx-auto mb-1" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                        </svg>
+                        <p class="text-xs font-semibold">Cliente</p>
+                    </div>
+                    <div class="overlay"></div>
+                </div>
+            </a>
+
+            <!-- Imágenes para desktop (layout original) -->
+            <a href="/clientes" class="hidden md:block md:col-span-2 client-card bg-black">
+                <div class="client-image-container">
+                    <img 
+                        src="/images/clientes/cliente-28.jpg" 
+                        alt="Cliente WeMasha" 
+                        loading="lazy"
+                        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                    />
+                    <div class="fallback-content" style="display: none;">
+                        <svg class="w-12 h-12 mx-auto mb-2" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                        </svg>
+                        <p class="font-semibold">Cliente WeMasha</p>
+                    </div>
+                    <div class="overlay"></div>
+                    <div class="text-overlay">
+                        <div class="bg-white/90 backdrop-blur-sm rounded-lg p-3">
+                            <p class="text-sm font-semibold text-gray-900">¡Mirá más fotos!</p>
+                        </div>
+                    </div>
+                </div>
+            </a>
+
+            <a href="/clientes" class="hidden md:block client-card bg-black">
+                <div class="client-image-container">
+                    <img 
+                        src="/images/clientes/cliente-29.jpg" 
+                        alt="Cliente WeMasha" 
+                        loading="lazy"
+                        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                    />
+                    <div class="fallback-content" style="display: none;">
+                        <svg class="w-8 h-8 mx-auto mb-1" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                        </svg>
+                        <p class="text-xs font-semibold">Cliente</p>
+                    </div>
+                    <div class="overlay"></div>
+                </div>
+            </a>
+
+            <a href="/clientes" class="hidden md:block client-card bg-black">
+                <div class="client-image-container">
+                    <img 
+                        src="/images/clientes/cliente-30.jpg" 
+                        alt="Cliente WeMasha" 
+                        loading="lazy"
+                        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                    />
+                    <div class="fallback-content" style="display: none;">
+                        <svg class="w-8 h-8 mx-auto mb-1" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                        </svg>
+                        <p class="text-xs font-semibold">Cliente</p>
+                    </div>
+                    <div class="overlay"></div>
+                </div>
+            </a>
+
+            <a href="/clientes" class="hidden md:block client-card bg-black">
+                <div class="client-image-container">
+                    <img 
+                        src="/images/clientes/cliente-31.jpg" 
+                        alt="Cliente WeMasha" 
+                        loading="lazy"
+                        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                    />
+                    <div class="fallback-content" style="display: none;">
+                        <svg class="w-8 h-8 mx-auto mb-1" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                        </svg>
+                        <p class="text-xs font-semibold">Cliente</p>
+                    </div>
+                    <div class="overlay"></div>
+                </div>
+            </a>
+
+            <a href="/clientes" class="hidden md:block md:col-span-2 client-card bg-black">
+                <div class="client-image-container">
+                    <img 
+                        src="/images/clientes/cliente-27.jpg" 
+                        alt="Cliente WeMasha" 
+                        loading="lazy"
+                        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                    />
+                    <div class="fallback-content" style="display: none;">
+                        <svg class="w-12 h-12 mx-auto mb-2" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                        </svg>
+                        <p class="font-semibold">Cliente WeMasha</p>
+                    </div>
+                    <div class="overlay"></div>
+                </div>
+            </a>
+
+            <a href="/clientes" class="hidden md:block client-card bg-black">
+                <div class="client-image-container">
+                    <img 
+                        src="/images/clientes/cliente-34.jpg" 
+                        alt="Cliente WeMasha" 
+                        loading="lazy"
+                        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                    />
+                    <div class="fallback-content" style="display: none;">
+                        <svg class="w-8 h-8 mx-auto mb-1" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                        </svg>
+                        <p class="text-xs font-semibold">Cliente</p>
+                    </div>
+                    <div class="overlay"></div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Botón CTA -->
+        <div class="text-center">
+            <a href="/clientes" class="inline-flex items-center gap-2 bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white px-8 py-4 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                </svg>
+                Ver Galería Completa
+            </a>
+        </div>
     </div>
 </div>
+
+<style>
+    .client-card {
+        @apply relative overflow-hidden rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105;
+    }
+
+    .client-image-container {
+        @apply relative w-full;
+        height: 128px; /* h-32 */
+    }
+
+    @media (min-width: 768px) {
+        .client-image-container {
+            height: 160px; /* h-40 */
+        }
+    }
+
+    /* Para las cards grandes */
+    .client-card.md\:col-span-2 .client-image-container {
+        height: 256px; /* h-64 */
+    }
+
+    @media (min-width: 768px) {
+        .client-card.md\:col-span-2 .client-image-container {
+            height: 350px; /* h-80 */
+        }
+    }
+
+    /* Para las imágenes pequeñas - proporción 3/4 */
+    .client-card:not(.md\:col-span-2) .client-image-container {
+        aspect-ratio: 3/4;
+        height: auto; /* Override las alturas fijas para las pequeñas */
+    }
+
+    .client-image-container img {
+        @apply w-full h-full;
+        object-fit: cover;
+        object-position: center;
+    }
+
+    .fallback-content {
+        @apply absolute inset-0 bg-gradient-to-br from-pink-400 to-purple-600 flex items-center justify-center text-white text-center;
+    }
+
+    .overlay {
+        @apply absolute inset-0 bg-black bg-opacity-20 transition-all duration-300;
+    }
+
+    .client-card:hover .overlay {
+        @apply bg-opacity-30;
+    }
+
+    .text-overlay {
+        @apply absolute bottom-4 left-4 right-4;
+    }
+</style>

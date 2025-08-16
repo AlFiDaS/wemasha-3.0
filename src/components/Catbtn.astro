@@ -5,6 +5,12 @@ interface Props {
 
 const { slug } = Astro.props;
 ---
+
 <div>
-	<a href=`${slug}/` class="text-white border border-white rounded-lg py-3 px-6 text-center">Ver más</a>
+	<a href={`/${slug}/`} class="inline-flex items-center gap-3 bg-white/20 backdrop-blur-sm border border-white/30 text-white rounded-xl py-4 px-8 text-lg font-semibold hover:bg-white/30 hover:border-white/50 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl group">
+		<span>Ver más</span>
+		<svg class="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+			<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+		</svg>
+	</a>
 </div>
