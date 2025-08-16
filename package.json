@@ -9,7 +9,10 @@
     "astro": "astro",
     "optimize": "node scripts/optimize-build.js",
     "analyze": "node scripts/optimize-images.js",
-    "browserslist:update": "npx update-browserslist-db@latest"
+    "optimize-images": "node scripts/optimize-images.js",
+    "lighthouse": "npx lighthouse http://localhost:4321 --output=html --output-path=./lighthouse-report.html",
+    "browserslist:update": "npx update-browserslist-db@latest",
+    "performance": "npm run build && npm run lighthouse"
   },
   "dependencies": {
     "@astrojs/tailwind": "^5.1.4",

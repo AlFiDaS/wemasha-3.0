@@ -110,11 +110,11 @@ const categories = ["todos", ...Array.from(new Set(designs.map(d => d.category))
           {firstDesk.map((d) => (
             <button
               class="aspect-square bg-black rounded-xl overflow-hidden border border-neutral-700 hover:shadow transition"
-              data-design={d.src}
+              data-design={d.optimized}
               aria-label={`Usar ${d.name}`}
               title={d.name}
             >
-              <img src={d.src} alt={d.name} class="w-full h-full object-contain p-2" loading="lazy" />
+              <img src={d.thumbnail} alt={d.name} class="w-full h-full object-contain p-2" loading="lazy" />
             </button>
           ))}
         </div>
@@ -147,11 +147,11 @@ const categories = ["todos", ...Array.from(new Set(designs.map(d => d.category))
             {firstMob.map((d) => (
               <button
                 class="bg-black rounded-xl overflow-hidden border border-neutral-700 h-[72px]"
-                data-design={d.src}
+                data-design={d.optimized}
                 aria-label={`Usar ${d.name}`}
                 title={d.name}
               >
-                <img src={d.src} alt={d.name} class="w-full h-full object-contain p-2" loading="lazy" />
+                <img src={d.thumbnail} alt={d.name} class="w-full h-full object-contain p-2" loading="lazy" />
               </button>
             ))}
           </div>

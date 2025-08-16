@@ -1,132 +1,198 @@
-// Service Worker para WeMasha 3.0
-// Cache de imágenes y optimización de rendimiento
+// Service Worker para WeMasha
+const CACHE_NAME = 'wemasha-v1.0.0';
+const STATIC_CACHE = 'wemasha-static-v1.0.0';
+const IMAGE_CACHE = 'wemasha-images-v1.0.0';
 
-const CACHE_NAME = 'wemasha-gallery-v1';
-const IMAGE_CACHE_NAME = 'wemasha-images-v1';
-
-// Archivos a cachear inmediatamente
-const STATIC_ASSETS = [
+// Archivos críticos para cache inmediato
+const CRITICAL_FILES = [
   '/',
   '/galeria',
-  '/images/mockups/adelante.webp',
-  '/images/mockups/atras.webp',
+  '/clientes',
+  '/cart',
   '/logo.svg',
   '/favicon.svg'
 ];
 
-// Estrategia: Cache First para imágenes
-async function cacheFirst(request) {
-  const cache = await caches.open(IMAGE_CACHE_NAME);
-  const cachedResponse = await cache.match(request);
-  
-  if (cachedResponse) {
-    return cachedResponse;
-  }
-  
-  try {
-    const networkResponse = await fetch(request);
-    if (networkResponse.ok) {
-      cache.put(request, networkResponse.clone());
-    }
-    return networkResponse;
-  } catch (error) {
-    // Si falla la red, devolver una imagen placeholder
-    return new Response('', {
-      status: 404,
-      statusText: 'Image not found'
-    });
-  }
-}
+// Archivos estáticos para cache
+const STATIC_FILES = [
+  '/scripts/galeria.js',
+  '/scripts/carritoFunctions.js'
+];
 
-// Estrategia: Network First para páginas
-async function networkFirst(request) {
-  try {
-    const networkResponse = await fetch(request);
-    const cache = await caches.open(CACHE_NAME);
-    cache.put(request, networkResponse.clone());
-    return networkResponse;
-  } catch (error) {
-    const cachedResponse = await caches.match(request);
-    return cachedResponse || new Response('Offline', { status: 503 });
-  }
-}
+// Patrones para cache de imágenes
+const IMAGE_PATTERNS = [
+  /\/images\/categories\//,
+  /\/images\/clientes\//,
+  /\/thumbnails\//,
+  /\/optimized\//,
+  /\.webp$/,
+  /\.jpg$/,
+  /\.png$/
+];
 
 // Instalación del Service Worker
-self.addEventListener('install', event => {
-  console.log('🔄 Service Worker instalando...');
+self.addEventListener('install', (event) => {
+  console.log('🚀 Service Worker instalando...');
+  
   event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => {
-      console.log('📦 Cacheando assets estáticos...');
-      return cache.addAll(STATIC_ASSETS);
+    Promise.all([
+      // Cache de archivos críticos
+      caches.open(CACHE_NAME).then((cache) => {
+        console.log('📦 Cacheando archivos críticos...');
+        return cache.addAll(CRITICAL_FILES);
+      }),
+      
+      // Cache de archivos estáticos
+      caches.open(STATIC_CACHE).then((cache) => {
+        console.log('📦 Cacheando archivos estáticos...');
+        return cache.addAll(STATIC_FILES);
+      })
+    ]).then(() => {
+      console.log('✅ Service Worker instalado correctamente');
+      return self.skipWaiting();
     })
   );
-  self.skipWaiting();
 });
 
 // Activación del Service Worker
-self.addEventListener('activate', event => {
-  console.log('✅ Service Worker activado');
+self.addEventListener('activate', (event) => {
+  console.log('🔄 Service Worker activando...');
+  
   event.waitUntil(
-    caches.keys().then(cacheNames => {
-      return Promise.all(
-        cacheNames.map(cacheName => {
-          if (cacheName !== CACHE_NAME && cacheName !== IMAGE_CACHE_NAME) {
-            console.log('🗑️ Eliminando cache antiguo:', cacheName);
-            return caches.delete(cacheName);
-          }
-        })
-      );
+    Promise.all([
+      // Limpiar caches antiguos
+      caches.keys().then((cacheNames) => {
+        return Promise.all(
+          cacheNames.map((cacheName) => {
+            if (cacheName !== CACHE_NAME && 
+                cacheName !== STATIC_CACHE && 
+                cacheName !== IMAGE_CACHE) {
+              console.log('🗑️ Eliminando cache antiguo:', cacheName);
+              return caches.delete(cacheName);
+            }
+          })
+        );
+      }),
+      
+      // Tomar control inmediatamente
+      self.clients.claim()
+    ]).then(() => {
+      console.log('✅ Service Worker activado');
     })
   );
-  self.clients.claim();
 });
 
 // Interceptar requests
-self.addEventListener('fetch', event => {
+self.addEventListener('fetch', (event) => {
   const { request } = event;
   const url = new URL(request.url);
   
-  // Cachear imágenes de la galería
-  if (request.destination === 'image' || 
-      url.pathname.includes('/images/') || 
-      url.pathname.includes('/assets/')) {
-    event.respondWith(cacheFirst(request));
+  // Solo procesar requests del mismo origen
+  if (url.origin !== location.origin) {
     return;
   }
   
-  // Cachear páginas HTML
-  if (request.destination === 'document' || 
-      request.headers.get('accept')?.includes('text/html')) {
-    event.respondWith(networkFirst(request));
+  // Estrategia para páginas HTML
+  if (request.destination === 'document') {
+    event.respondWith(
+      caches.match(request).then((response) => {
+        if (response) {
+          // Actualizar cache en background
+          fetch(request).then((freshResponse) => {
+            if (freshResponse.ok) {
+              caches.open(CACHE_NAME).then((cache) => {
+                cache.put(request, freshResponse.clone());
+              });
+            }
+          });
+          return response;
+        }
+        
+        return fetch(request).then((response) => {
+          if (response.ok) {
+            caches.open(CACHE_NAME).then((cache) => {
+              cache.put(request, response.clone());
+            });
+          }
+          return response;
+        });
+      })
+    );
     return;
   }
   
-  // Para otros recursos, usar estrategia por defecto
-  event.respondWith(fetch(request));
+  // Estrategia para imágenes
+  if (request.destination === 'image' || IMAGE_PATTERNS.some(pattern => pattern.test(url.pathname))) {
+    event.respondWith(
+      caches.match(request).then((response) => {
+        if (response) {
+          return response;
+        }
+        
+        return fetch(request).then((response) => {
+          if (response.ok) {
+            caches.open(IMAGE_CACHE).then((cache) => {
+              cache.put(request, response.clone());
+            });
+          }
+          return response;
+        });
+      })
+    );
+    return;
+  }
+  
+  // Estrategia para archivos estáticos
+  if (request.destination === 'script' || request.destination === 'style') {
+    event.respondWith(
+      caches.match(request).then((response) => {
+        if (response) {
+          // Actualizar cache en background
+          fetch(request).then((freshResponse) => {
+            if (freshResponse.ok) {
+              caches.open(STATIC_CACHE).then((cache) => {
+                cache.put(request, freshResponse.clone());
+              });
+            }
+          });
+          return response;
+        }
+        
+        return fetch(request).then((response) => {
+          if (response.ok) {
+            caches.open(STATIC_CACHE).then((cache) => {
+              cache.put(request, response.clone());
+            });
+          }
+          return response;
+        });
+      })
+    );
+    return;
+  }
 });
 
-// Mensajes del cliente
-self.addEventListener('message', event => {
+// Mensajes del Service Worker
+self.addEventListener('message', (event) => {
   if (event.data && event.data.type === 'SKIP_WAITING') {
     self.skipWaiting();
   }
   
-  if (event.data && event.data.type === 'CACHE_IMAGES') {
-    const images = event.data.images || [];
-    event.waitUntil(
-      caches.open(IMAGE_CACHE_NAME).then(cache => {
-        return Promise.all(
-          images.map(imageUrl => {
-            return fetch(imageUrl).then(response => {
-              if (response.ok) {
-                return cache.put(imageUrl, response);
-              }
-            }).catch(error => {
-              console.log('Error cacheando imagen:', imageUrl, error);
-            });
-          })
-        );
-      })
-    );
+  if (event.data && event.data.type === 'GET_CACHE_INFO') {
+    caches.keys().then((cacheNames) => {
+      event.ports[0].postMessage({
+        type: 'CACHE_INFO',
+        cacheNames: cacheNames
+      });
+    });
   }
+});
+
+// Manejo de errores
+self.addEventListener('error', (event) => {
+  console.error('❌ Error en Service Worker:', event.error);
+});
+
+self.addEventListener('unhandledrejection', (event) => {
+  console.error('❌ Promise rechazada en Service Worker:', event.reason);
 });
