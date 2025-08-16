@@ -1,0 +1,72 @@
+---
+interface Props {
+  type: 'website' | 'product' | 'organization';
+  title: string;
+  description: string;
+  url: string;
+  image?: string;
+  price?: string;
+  availability?: string;
+  brand?: string;
+}
+
+const { type, title, description, url, image, price, availability, brand } = Astro.props;
+
+let structuredData: any = {};
+
+if (type === 'website') {
+  structuredData = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "WeMasha",
+    "description": description,
+    "url": url,
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": {
+        "@type": "EntryPoint",
+        "urlTemplate": "https://wemasha.com/galeria?search={search_term_string}"
+      },
+      "query-input": "required name=search_term_string"
+    }
+  };
+} else if (type === 'product') {
+  structuredData = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": title,
+    "description": description,
+    "image": image,
+    "url": url,
+    "brand": {
+      "@type": "Brand",
+      "name": brand || "WeMasha"
+    },
+    "offers": {
+      "@type": "Offer",
+      "price": price,
+      "priceCurrency": "ARS",
+      "availability": availability || "https://schema.org/InStock",
+      "seller": {
+        "@type": "Organization",
+        "name": "WeMasha"
+      }
+    }
+  };
+} else if (type === 'organization') {
+  structuredData = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "WeMasha",
+    "description": "Remeras y buzos streetwear con diseños exclusivos de artistas",
+    "url": "https://wemasha.com",
+    "logo": "https://wemasha.com/logo.svg",
+    "sameAs": [
+      "https://instagram.com/wemasha",
+      "https://facebook.com/wemasha"
+    ]
+  };
+}
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(structuredData)} />

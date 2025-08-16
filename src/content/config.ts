@@ -22,6 +22,8 @@ const categoriasCollection = defineCollection({
         title: z.string(),
         catSlug: z.string(),
         image: z.string(),
+        description: z.string().optional(),
+        keywords: z.string().optional(),
     }),
 });
 

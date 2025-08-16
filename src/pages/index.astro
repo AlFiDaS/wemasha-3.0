@@ -4,6 +4,7 @@ import NuestrosDisenos from '@components/NuestrosDisenos.astro';
 import Layout from '../layouts/Layout.astro';
 import Clientes from '@components/Clientes.astro';
 import Preguntas from '@components/Preguntas.astro';
+import JsonLd from '@components/JsonLd.astro';
 import { getCollection } from 'astro:content';
 
 const categorias = await getCollection('categorias');
@@ -11,7 +12,13 @@ const categorias = await getCollection('categorias');
 const destacado = categorias.find(item => item.slug === 'personalizados');
 ---
 
-<Layout title="WeMasha - Remeras y Buzos Streetwear de tus Artistas Favoritos">
+<Layout 
+	title="WeMasha - Remeras y Buzos Streetwear de tus Artistas Favoritos"
+	description="Descubre nuestra colección de remeras y buzos oversize con diseños exclusivos de artistas internacionales como Jonas Brothers, Harry Styles, Taylor Swift, Slipknot y más, así como íconos argentinos como Duki, Emilia Mernes, Messi y muchos otros. También personalizamos tus prendas con diseños únicos de tus artistas favoritos y mascotas. Además, explora nuestras opciones streetwear, con estilos como mariposas y más. ¡Haz tu estilo único con nosotros!"
+	keywords="remeras, buzos, streetwear, artistas, duki, jonas brothers, taylor swift, personalizados, oversize, messi, emilia mernes, slipknot, harry styles"
+	ogImage="/images/categories/artistas.jpg"
+	canonical="https://wemasha.com"
+>
 	<div class="max-w-[1440px] mx-auto">
 		<div class="mx-auto grid grid-cols-1 md:grid-cols-2 items-center gap-3">
 			<div class="col-span-1 md:col-span-2">
@@ -32,4 +39,11 @@ const destacado = categorias.find(item => item.slug === 'personalizados');
 		<Clientes />
 		<Preguntas />
 	</div>
+	
+	<JsonLd 
+		type="website"
+		title="WeMasha - Remeras y Buzos Streetwear"
+		description="Descubre nuestra colección de remeras y buzos oversize con diseños exclusivos de artistas internacionales como Jonas Brothers, Harry Styles, Taylor Swift, Slipknot y más, así como íconos argentinos como Duki, Emilia Mernes, Messi y muchos otros."
+		url="https://wemasha.com"
+	/>
 </Layout>

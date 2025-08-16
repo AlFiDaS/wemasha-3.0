@@ -5,6 +5,7 @@ import Layout from '@layouts/Layout.astro';
 import Hero from '@components/Hero.astro';
 import Preguntas from '@components/Preguntas.astro';
 import Designs from '@components/Designs.astro';
+import { getMetadataForArtist, getMetadataForCategory, generateCanonicalUrl } from '../lib/metadata.ts';
 
 export async function getStaticPaths() {
 	const categorias = await getCollection('categorias');
@@ -31,9 +32,27 @@ const productosData = productos.map(producto => ({
 	image: producto.data.image,
 	designSlug: producto.data.designSlug
 }));
+
+// Obtener metadatos específicos para la categoría
+const artistMetadata = getMetadataForArtist(category);
+const categoryMetadata = getMetadataForCategory(category);
+const specificMetadata = artistMetadata || categoryMetadata;
+
+// Usar metadatos específicos si están disponibles, sino usar los de la categoría
+const pageTitle = specificMetadata?.title || `${categoria.title} - WeMasha | Remeras y Buzos Streetwear`;
+const pageDescription = specificMetadata?.description || categoria.description || `Descubre nuestra colección de remeras y buzos ${categoria.title.toLowerCase()} con diseños exclusivos y únicos.`;
+const pageKeywords = specificMetadata?.keywords || categoria.keywords || `remeras ${categoria.title.toLowerCase()}, buzos ${categoria.title.toLowerCase()}, streetwear, diseños únicos`;
+const pageOgImage = specificMetadata?.ogImage || categoria.image;
+const pageCanonical = generateCanonicalUrl(`/${category}`);
 ---
 
-<Layout title="WeMasha - Remeras y Buzos Streetwear de tus Artistas Favoritos">
+<Layout 
+	title={pageTitle}
+	description={pageDescription}
+	keywords={pageKeywords}
+	ogImage={pageOgImage}
+	canonical={pageCanonical}
+>
 	<div class="max-w-[1440px] mx-auto">
 		<Hero title={categoria.title} image={categoria.image} slug={categoria.catSlug} />
 		
