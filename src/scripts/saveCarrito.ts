@@ -1,34 +1,29 @@
 export function saveCarrito() {
-  const form = document.querySelector("form") as HTMLFormElement | null;
   const btnSubmit = document.querySelector("#btn-submit") as HTMLButtonElement | null;
-  if (!form || !btnSubmit) return;
+  if (!btnSubmit) return;
 
-  const alertSuccess = document.querySelector("#alert-success") as HTMLParagraphElement | null;
-  const alertError   = form.querySelector("#alert-error") as HTMLParagraphElement | null;
-
-  btnSubmit.setAttribute("disabled", "disabled");
+  const alertSuccess = document.querySelector("#alert-success") as HTMLDivElement | null;
+  const talleError = document.querySelector("#talle-error") as HTMLParagraphElement | null;
 
   // Inputs
-  const tallaElement   = form.querySelector("#talle")  as HTMLSelectElement | null;
-  const cantidadEl     = form.querySelector("#cantidad") as HTMLInputElement | null;
-  const prendaEl       = form.querySelector("#prenda") as HTMLInputElement | null;
-  const imageEl        = form.querySelector("#image")  as HTMLInputElement | null;
-  const diseñoEl       = form.querySelector("#diseño") as HTMLInputElement | null;
-  const priceEl        = form.querySelector("#price")  as HTMLInputElement | null;
+  const talleSeleccionado = document.querySelector("#talle-seleccionado") as HTMLInputElement | null;
+  const prendaEl = document.querySelector("#prenda") as HTMLInputElement | null;
+  const imageEl = document.querySelector("#image") as HTMLInputElement | null;
+  const diseñoEl = document.querySelector("#diseño") as HTMLInputElement | null;
+  const priceEl = document.querySelector("#price") as HTMLInputElement | null;
 
   // Valores con fallback
-  const talla    = (tallaElement?.value ?? "0").trim();
-  const cantidad = Math.max(1, parseInt(cantidadEl?.value ?? "1", 10) || 1);
-  const prenda   = (prendaEl?.value ?? "").trim();
-  const image    = (imageEl?.value ?? "").trim();
-  const diseño   = (diseñoEl?.value ?? "").trim();
-  const precio   = parseFloat(priceEl?.value ?? "0") || 0;
+  const talla = (talleSeleccionado?.value ?? "").trim();
+  const cantidad = 1; // Siempre agregar 1 unidad
+  const prenda = (prendaEl?.value ?? "").trim();
+  const image = (imageEl?.value ?? "").trim();
+  const diseño = (diseñoEl?.value ?? "").trim();
+  const precio = parseFloat(priceEl?.value ?? "0") || 0;
 
   // Validaciones básicas
-  if (talla === "0" || cantidad <= 0 || !prenda || !diseño) {
-    alertError?.classList.remove("hidden");
-    btnSubmit.removeAttribute("disabled");
-    setTimeout(() => alertError?.classList.add("hidden"), 2500);
+  if (!talla || !prenda || !diseño) {
+    talleError?.classList.remove("hidden");
+    setTimeout(() => talleError?.classList.add("hidden"), 2500);
     return;
   }
 
@@ -40,6 +35,7 @@ export function saveCarrito() {
     image,
     talla,
     cantidad,
+    url: window.location.pathname, // URL actual del producto
   };
 
   // Leer carrito
@@ -66,9 +62,6 @@ export function saveCarrito() {
   window.dispatchEvent(new Event("carrito:actualizado")); // <-- importante para actualizar badges
 
   // UI feedback
-  btnSubmit.removeAttribute("disabled");
   alertSuccess?.classList.remove("hidden");
-  if (tallaElement) tallaElement.value = "0";
-  if (cantidadEl) cantidadEl.value = "";
   setTimeout(() => alertSuccess?.classList.add("hidden"), 2500);
 }

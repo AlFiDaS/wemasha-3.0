@@ -5,4 +5,5 @@ export interface ProductoCarrito {
     cantidad: number;
     precio: number;
     image: string;
+    url?: string; // URL del producto para navegación
 }

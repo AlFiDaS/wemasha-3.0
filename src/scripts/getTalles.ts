@@ -1,35 +1,30 @@
 import { talles } from '@lib/talles';
 
 export function getTalles() {
-    const selectElement = document.getElementById("talle") as HTMLSelectElement;
-    const prendaTalles = selectElement.getAttribute("aria-label");
-    if (!prendaTalles) return;
+    const prendaTallesElement = document.getElementById("prenda-talles") as HTMLInputElement;
+    if (!prendaTallesElement) {
+        console.error("No se encontró el elemento prenda-talles");
+        return [];
+    }
+
+    const prendaTalles = prendaTallesElement.value;
+    if (!prendaTalles) {
+        console.error("No se encontró el valor de talles para la prenda");
+        return [];
+    }
 
     const tallesArray = talles.find((t) => t.slug === prendaTalles);
 
     if (!tallesArray) {
-      console.error(
-        `No se encontró un grupo de talles con el slug: ${prendaTalles}`
-      );
-      return;
+        console.error(`No se encontró un grupo de talles con el slug: ${prendaTalles}`);
+        return [];
     }
 
-    if(!tallesArray.items.length){
-      // Mostrar mensaje que no hay stock disponible
-      selectElement.innerHTML =
-      '<option value="0" selected disabled>Sin Stock Disponible</option>';
-      return;
+    if (!tallesArray.items.length) {
+        console.warn("No hay talles disponibles para esta prenda");
+        return [];
     }
 
-    // Limpiar las opciones actuales (excepto el placeholder inicial)
-    selectElement.innerHTML =
-      '<option value="0" selected disabled>Talles disponibles</option>';
-
-    // Agregar las nuevas opciones al select
-    tallesArray.items.forEach(({ id, label }) => {
-      const option = document.createElement("option");
-      option.value = id;
-      option.textContent = label;
-      selectElement.appendChild(option);
-    });
-  }
+    // Retornar solo los IDs de los talles para los botones
+    return tallesArray.items.map(item => item.id);
+}

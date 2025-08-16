@@ -36,74 +36,142 @@ const {
   price: prendaPrice,
   talles: prendaTalles,
 } = prendaMetadata[0];
+
 ---
 
 <Layout title="WeMasha - Remeras y Buzos Streetwear de tus Artistas Favoritos">
   <div class="max-w-[1440px] mx-auto">
     <Hero 
-  title={title} 
-  image={image} 
-  slug={prenda} 
-  backTo={`/${category}/${design}`} 
-/>
+      title={title} 
+      image={image} 
+      slug={prenda} 
+      backTo={`/${category}/${design}`} 
+    />
 
-    <div
-      class="max-w-[1200px] mx-auto grid grid-cols-1 md:grid-cols-2 items-center gap-2 md:gap-8 mt-0 md:mt-16 px-1 md:px-4"
-    >
-      <div
-        class="rounded-2xl overflow-hidden p-6 md:p-8 flex flex-col gap-1"
-      >
-        <h2 class="text-2xl font-bold text-zinc-900">{prendaTitle}</h2>
-        <p class="text-base text-zinc-500">{title}</p>
-        <p class="text-2xl font-bold text-zinc-700 precio" aria-label={prendaPrice}>AR$ </p>
-        <form class="mt-4 flex flex-col gap-4" action="">
-          <select
-            name="talle"
-            aria-label={prendaTalles}
-            id="talle"
-            class="w-full rounded-lg border border-zinc-300 p-2"
-            required
-          >
-            <option value="0" selected disabled>Talles disponibles</option>
-          </select>
+    <div class="max-w-[1200px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8 lg:mt-16 px-4 lg:px-8 lg:items-stretch">
+      
+      <!-- Imagen del producto -->
+      <div class="order-2 lg:order-1 lg:h-full">
+        <div class="relative group h-full">
+          <div class="overflow-hidden rounded-2xl shadow-2xl bg-gradient-to-br from-gray-50 to-gray-100 h-full">
+            <img
+              src={prendaImage}
+              transition:name={`${design}/${prenda}`}
+              alt={prendaTitle}
+              class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500"
+            />
+          </div>
+          <!-- Overlay de hover -->
+          <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300 rounded-2xl"></div>
+        </div>
+      </div>
 
-          <input
-            type="number"
-            id="cantidad"
-            class="w-full rounded-lg border border-zinc-300 p-2"
-            placeholder="Cantidad de prendas"
-            min="1"
-            max="99"
-            required
-          />
+      <!-- Información del producto -->
+      <div class="order-1 lg:order-2 flex flex-col justify-center lg:h-full">
+        <div class="bg-white rounded-2xl p-6 lg:p-8 shadow-xl border border-gray-100 h-full flex flex-col justify-center">
+          
+          <!-- Título y descripción -->
+          <div class="mb-6">
+            <h1 class="text-3xl lg:text-4xl font-bold text-gray-900 mb-2">{prendaTitle}</h1>
+            <p class="text-lg text-gray-600 mb-4">{title}</p>
+            <div class="flex items-center gap-2">
+              <span class="text-3xl lg:text-4xl font-bold text-pink-600 precio" aria-label={prendaPrice}>AR$ </span>
+              <span class="text-sm text-gray-500">Envío gratis a partir de $100.000</span>
+            </div>
+          </div>
+
+          <!-- Selección de talle -->
+          <div class="mb-8">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">Seleccionar talle</h3>
+            <!-- Contenedor de talles -->
+            <div id="talles-container" class="grid grid-cols-3 gap-3 mb-4">
+              <!-- Los botones se generan dinámicamente -->
+            </div>
+
+            <!-- Información del talle seleccionado -->
+            <div id="talle-info" class="hidden mb-4 p-3 bg-gray-50 rounded-lg border border-gray-200">
+              <div class="flex items-center gap-2">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-gray-600">
+                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
+                </svg>
+                <span class="text-sm font-medium text-gray-700">Talle seleccionado:</span>
+                <span id="talle-seleccionado-text" class="text-sm font-semibold text-gray-900"></span>
+              </div>
+              <div id="talle-medidas" class="mt-1 text-xs text-gray-600"></div>
+            </div>
+            <p id="talle-error" class="hidden text-red-500 text-sm mt-2">Por favor selecciona un talle</p>
+          </div>
+
+          <!-- Botones de acción -->
+          <div class="space-y-4">
+            <button
+              id="btn-submit"
+              class="w-full bg-gradient-to-r from-pink-600 to-pink-700 hover:from-pink-700 hover:to-pink-800 text-white font-semibold py-4 px-6 rounded-xl transition-all duration-300 transform hover:scale-[1.02] shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+              disabled
+            >
+              <span class="flex items-center justify-center gap-2">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="9" cy="21" r="1"></circle>
+                  <circle cx="20" cy="21" r="1"></circle>
+                  <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                </svg>
+                Agregar al carrito
+              </span>
+            </button>
+
+            <a 
+              id="btn-cart" 
+              class="block w-full bg-gray-900 hover:bg-gray-800 text-white font-semibold py-4 px-6 rounded-xl transition-all duration-300 transform hover:scale-[1.02] shadow-lg hover:shadow-xl text-center"
+            >
+              <span class="flex items-center justify-center gap-2">
+                <MCart />
+                Ver carrito
+              </span>
+            </a>
+          </div>
+
+          <!-- Mensajes de estado -->
+          <div id="toast-container" class="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-50 pointer-events-none">
+            <div id="alert-success" class="hidden bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-4 rounded-xl shadow-2xl transform transition-all duration-300 translate-y-full opacity-0 pointer-events-auto">
+              <div class="flex items-center gap-3">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                  <polyline points="22,4 12,14.01 9,11.01"></polyline>
+                </svg>
+                <span class="font-semibold">¡Producto agregado al carrito! 🎉</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Información adicional -->
+          <div class="mt-8 pt-6 border-t border-gray-200">
+            <div class="grid grid-cols-2 gap-4 text-sm text-gray-600">
+              <div class="flex items-center gap-2">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
+                </svg>
+                <span>Calidad Premium</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
+                </svg>
+                <span>Envío gratis a partir de $100.000</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Campos ocultos para el formulario -->
           <input type="text" id="prenda" value={prendaTitle} hidden />
-          <input type="text" id="diseño" value=`${category}-${design}` hidden />
+          <input type="text" id="diseño" value={`${category}-${design}`} hidden />
           <input type="text" id="image" value={prendaImage} hidden />
           <input type="text" id="price" value={prendaPrice} hidden />
-
-          <div class="mt-1 flex flex-col gap-4 justify-center">
-            <p id="alert-error" class="hidden bg-pink-900 text-white text-center py-2">Selecciona un talle y una cantidad válida.</p>
-            <p id="alert-success" class="hidden bg-pink-900 text-white text-center py-2">Producto agregado correctamente al carrito</p>
-            <button
-              type="submit"
-              id="btn-submit"
-              class="text-white bg-pink-700 text-center rounded-lg w-full py-2 disabled:opacity-90"
-              >Agregar al carrito</button>
-              <a id="btn-cart" class="text-white bg-zinc-900 cursor-pointer flex flex-row justify-center items-center gap-2 rounded-lg w-full py-2 disabled:opacity-90">
-                Ver carrito <span class=" text-white"><MCart></span> 
-              </a>
-          </div>
-        </form>
-      </div>
-      <div class="overflow-hidden max-w-[550px] mx-auto">
-        <img
-          src={prendaImage}
-          transition:name=`${design}/${prenda}`
-          alt={prendaTitle}
-          class="w-full h-full object-cover rounded-lg"
-        />
+          <input type="text" id="talle-seleccionado" value="" hidden />
+          <input type="text" id="prenda-talles" value={prendaTalles} hidden />
+        </div>
       </div>
     </div>
+
     <Modalidad />
   </div>
 </Layout>
@@ -111,20 +179,389 @@ const {
 <script>
   import {saveCarrito} from "@scripts/saveCarrito";
   import { getPrecios } from '@scripts/precios';
-  import { getTalles } from '@scripts/getTalles';
 
-  const form = document.querySelector("form") as HTMLFormElement;
-  const btnCart = document.querySelector("#btn-cart") as HTMLButtonElement;
+  const btnSubmit = document.getElementById('btn-submit') as HTMLButtonElement;
+  const btnCart = document.getElementById('btn-cart') as HTMLButtonElement;
+  const talleSeleccionado = document.getElementById('talle-seleccionado') as HTMLInputElement;
+  const talleError = document.getElementById('talle-error') as HTMLElement;
+  const alertSuccess = document.getElementById('alert-success') as HTMLElement;
+  const talleInfo = document.getElementById('talle-info') as HTMLElement;
+  const talleSeleccionadoText = document.getElementById('talle-seleccionado-text') as HTMLElement;
+  const talleMedidas = document.getElementById('talle-medidas') as HTMLElement;
 
-  // Envío del formulario y guardado del carrito
-  form.addEventListener("submit", (e) => {
-    e.preventDefault();
+  let talleActual = "";
+
+  // Definir talles directamente en el script para evitar problemas de importación
+  const talles = [
+    {
+      slug: 'remerasTalles',
+      items: [
+        { id: 'XS', label: 'XS (Ancho:46cm - Alto:66cm)' },
+        { id: 'S', label: 'S (Ancho:50cm - Alto:68cm)' },
+        { id: 'M', label: 'M (Ancho:52cm - Alto:70cm)' },
+        { id: 'L', label: 'L (Ancho:55cm - Alto:74cm)' },
+        { id: 'XL', label: 'XL (Ancho:57cm - Alto:77cm)' },
+      ],
+    },
+    {
+      slug: 'oversizeTalles',
+      items: [
+        { id: 'XXS', label: 'XXS (Ancho:52cm - Alto:68cm)' },
+        { id: 'XS', label: 'XS (Ancho:56cm - Alto:70cm)' },
+        { id: 'S', label: 'S (Ancho:62cm - Alto:72cm)' },
+        { id: 'M', label: 'M (Ancho:66cm - Alto:74cm)' },
+        { id: 'L', label: 'L (Ancho:68cm - Alto:76cm)' },
+        { id: 'XL', label: 'XL (Ancho:70cm - Alto:77cm)' },
+        { id: 'XXL', label: 'XXL (Ancho:72cm - Alto:78cm)' },
+      ],
+    },
+    {
+      slug: 'oversizePuperasTalles',
+      items: [
+        { id: 'Unico', label: 'Talle Unico (Ancho:54cm - Alto:43cm)' },
+      ],
+    },
+    {
+      slug: 'musculosasMujerTalles',
+      items: [
+        { id: 'Unico', label: 'Talle Unico (Ancho:39cm - Alto:41cm)' },
+      ],
+    },
+    {
+      slug: 'musculosasHombreTalles',
+      items: [
+        { id: 'S', label: 'S (Ancho:62cm - Alto:72cm)' },
+        { id: 'M', label: 'M (Ancho:66cm - Alto:74cm)' },
+        { id: 'L', label: 'L (Ancho:68cm - Alto:76cm)' },
+        { id: 'XL', label: 'XL (Ancho:70cm - Alto:77cm)' },
+      ],
+    },
+    {
+      slug: 'BuzosTalles',
+      items: [
+        { id: 'M', label: 'M (Ancho:55cm - Alto:67cm)' },
+        { id: 'L', label: 'L (Ancho:57cm - Alto:69cm)' },
+        { id: 'XL', label: 'XL (Ancho:60cm - Alto:71cm)' },
+        { id: 'XXL', label: 'XXL (Ancho:62cm - Alto:74cm)' },
+      ],
+    },
+    {
+      slug: 'remerasTallesBlanco',
+      items: [],
+    },
+    {
+      slug: 'oversizeTallesBlanco',
+      items: [
+        { id: 'XXS', label: 'XXS (Ancho:52cm - Alto:68cm)' },
+        { id: 'XS', label: 'XS (Ancho:56cm - Alto:70cm)' },
+        { id: 'S', label: 'S (Ancho:62cm - Alto:72cm)' },
+        { id: 'M', label: 'M (Ancho:66cm - Alto:74cm)' },
+        { id: 'L', label: 'L (Ancho:68cm - Alto:76cm)' },
+        { id: 'XL', label: 'XL (Ancho:70cm - Alto:77cm)' },
+        { id: 'XXL', label: 'XXL (Ancho:72cm - Alto:78cm)' },
+      ],
+    },
+    {
+      slug: 'oversizePuperasTallesBlanco',
+      items: [
+        { id: 'Unico', label: 'Talle Unico (Ancho:54cm - Alto:43cm)' },
+      ],
+    },
+    {
+      slug: 'musculosasMujerTallesBlanco',
+      items: [],
+    },
+    {
+      slug: 'musculosasHombreTallesBlanco',
+      items: [
+        { id: 'S', label: 'S (Ancho:62cm - Alto:72cm)' },
+        { id: 'XL', label: 'XL (Ancho:70cm - Alto:77cm)' },
+      ],
+    },
+    {
+      slug: 'BuzosTallesBlanco',
+      items: [],
+    },
+  ];
+
+  // Función para obtener talles de la prenda
+  function obtenerTallesPrenda() {
+    const prendaTallesElement = document.getElementById("prenda-talles") as HTMLInputElement;
+    
+    if (!prendaTallesElement) {
+      return [];
+    }
+
+    const prendaTalles = prendaTallesElement.value;
+    
+    if (!prendaTalles) {
+      return [];
+    }
+
+    const tallesArray = talles.find((t) => t.slug === prendaTalles);
+    
+    if (!tallesArray || !tallesArray.items.length) {
+      return [];
+    }
+
+    return tallesArray.items;
+  }
+
+  // Función para crear botones de talles
+  function crearBotonesTalles() {
+    const container = document.querySelector("#talles-container");
+    
+    if (!container) {
+      // Si no encuentra el container, intentar de nuevo después de un delay
+      setTimeout(crearBotonesTalles, 200);
+      return;
+    }
+
+    const tallesPrenda = obtenerTallesPrenda();
+    
+    // Si no hay talles, mostrar talles de prueba para verificar que funciona
+    if (tallesPrenda.length === 0) {
+      const tallesPrueba = [
+        { id: 'XS', label: 'XS (Ancho:46cm - Alto:66cm)' },
+        { id: 'S', label: 'S (Ancho:50cm - Alto:68cm)' },
+        { id: 'M', label: 'M (Ancho:52cm - Alto:70cm)' },
+        { id: 'L', label: 'L (Ancho:55cm - Alto:74cm)' },
+        { id: 'XL', label: 'XL (Ancho:57cm - Alto:77cm)' },
+      ];
+      
+      container.innerHTML = '';
+      
+      tallesPrueba.forEach(talle => {
+        const button = document.createElement('button');
+        button.className = 'talle-btn py-3 px-4 border-2 border-gray-200 rounded-xl font-semibold text-gray-700 hover:border-pink-500 hover:text-pink-600 transition-all duration-300 transform hover:scale-105';
+        button.textContent = talle.id;
+        button.dataset.talle = talle.id;
+        button.title = talle.label;
+        
+        // Manejar clic en el botón
+        button.addEventListener('click', () => {
+          // Deseleccionar todos los botones
+          document.querySelectorAll('.talle-btn').forEach(btn => {
+            btn.classList.remove('bg-pink-600', 'text-white', 'border-pink-600');
+            btn.classList.add('border-gray-200', 'text-gray-700');
+          });
+
+          // Seleccionar el botón clickeado
+          button.classList.remove('border-gray-200', 'text-gray-700');
+          button.classList.add('bg-pink-600', 'text-white', 'border-pink-600');
+
+          // Actualizar talle seleccionado
+          talleActual = talle.id;
+          talleSeleccionado.value = talle.id;
+
+          // Mostrar información del talle
+          talleSeleccionadoText.textContent = talle.id;
+          talleMedidas.textContent = talle.label;
+          talleInfo.classList.remove('hidden');
+          talleInfo.classList.add('block');
+
+          // Habilitar botón de agregar al carrito
+          btnSubmit.disabled = false;
+          talleError.classList.add('hidden');
+        });
+        
+        container.appendChild(button);
+      });
+      
+      return;
+    }
+
+    container.innerHTML = '';
+    
+    tallesPrenda.forEach(talle => {
+      const button = document.createElement('button');
+      button.className = 'talle-btn py-3 px-4 border-2 border-gray-200 rounded-xl font-semibold text-gray-700 hover:border-pink-500 hover:text-pink-600 transition-all duration-300 transform hover:scale-105';
+      button.textContent = talle.id;
+      button.dataset.talle = talle.id;
+      button.title = talle.label; // Mostrar medidas en tooltip
+      
+      // Manejar clic en el botón
+      button.addEventListener('click', () => {
+        // Deseleccionar todos los botones
+        document.querySelectorAll('.talle-btn').forEach(btn => {
+          btn.classList.remove('bg-pink-600', 'text-white', 'border-pink-600');
+          btn.classList.add('border-gray-200', 'text-gray-700');
+        });
+
+        // Seleccionar el botón clickeado
+        button.classList.remove('border-gray-200', 'text-gray-700');
+        button.classList.add('bg-pink-600', 'text-white', 'border-pink-600');
+
+        // Actualizar talle seleccionado
+        talleActual = talle.id;
+        talleSeleccionado.value = talle.id;
+
+        // Mostrar información del talle
+        talleSeleccionadoText.textContent = talle.id;
+        talleMedidas.textContent = talle.label;
+        talleInfo.classList.remove('hidden');
+        talleInfo.classList.add('block');
+
+        // Habilitar botón de agregar al carrito
+        btnSubmit.disabled = false;
+        talleError.classList.add('hidden');
+      });
+      
+      container.appendChild(button);
+    });
+  }
+
+  // Función para agregar al carrito
+  function agregarAlCarrito() {
+    if (!talleActual) {
+      talleError.classList.remove('hidden');
+      return;
+    }
+
+    // Simular el proceso de agregar al carrito
+    btnSubmit.disabled = true;
+    btnSubmit.innerHTML = `
+      <span class="flex items-center justify-center gap-2">
+        <svg class="animate-spin" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 12a9 9 0 11-6.219-8.56"></path>
+        </svg>
+        Agregando...
+      </span>
+    `;
+
+    // Llamar a la función original de saveCarrito
     saveCarrito();
+
+    // Mostrar toast de éxito
+    mostrarToast();
+
+    // Resetear después de un delay
+    setTimeout(() => {
+      btnSubmit.disabled = false;
+      btnSubmit.innerHTML = `
+        <span class="flex items-center justify-center gap-2">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="9" cy="21" r="1"></circle>
+            <circle cx="20" cy="21" r="1"></circle>
+            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+          </svg>
+          Agregar al carrito
+        </span>
+      `;
+      
+      // Resetear selección de talle
+      document.querySelectorAll('.talle-btn').forEach(btn => {
+        btn.classList.remove('bg-pink-600', 'text-white', 'border-pink-600');
+        btn.classList.add('border-gray-200', 'text-gray-700');
+      });
+      talleActual = "";
+      talleSeleccionado.value = "";
+      
+      // Ocultar información del talle
+      talleInfo.classList.add('hidden');
+      talleInfo.classList.remove('block');
+      talleSeleccionadoText.textContent = "";
+      talleMedidas.textContent = "";
+    }, 800);
+  }
+
+  // Función para mostrar el toast
+  function mostrarToast() {
+    const toast = document.getElementById('alert-success');
+    if (!toast) return;
+
+    // Mostrar el toast
+    toast.classList.remove('hidden');
+    
+    // Animar entrada
+    setTimeout(() => {
+      toast.classList.remove('translate-y-full', 'opacity-0');
+      toast.classList.add('translate-y-0', 'opacity-100');
+    }, 100);
+
+    // Ocultar después de 2 segundos
+    setTimeout(() => {
+      toast.classList.add('translate-y-full', 'opacity-0');
+      toast.classList.remove('translate-y-0', 'opacity-100');
+      
+      // Ocultar completamente después de la animación
+      setTimeout(() => {
+        toast.classList.add('hidden');
+      }, 300);
+    }, 2000);
+  }
+
+  // Event listeners
+  btnSubmit.addEventListener('click', agregarAlCarrito);
+  btnCart.addEventListener('click', () => { window.location.href = "/cart"; });
+
+  // Cargar precio y talles
+  document.addEventListener('DOMContentLoaded', () => {
+    // Cargar precio
+    getPrecios();
+    
+    // Cargar talles y crear botones
+    setTimeout(() => {
+      crearBotonesTalles();
+    }, 100);
   });
 
-  // Obtener precio y talles
-  document.addEventListener('DOMContentLoaded', getPrecios);
-  document.addEventListener('DOMContentLoaded', getTalles);
-
-  btnCart.addEventListener('click', () => { window.location.href = "/cart"; });
+  // También ejecutar cuando la ventana esté completamente cargada
+  window.addEventListener('load', () => {
+    crearBotonesTalles();
+  });
 </script>
+
+<style>
+  /* Animaciones personalizadas */
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-fade-in-up {
+    animation: fadeInUp 0.6s ease-out;
+  }
+
+  /* Efectos de hover mejorados */
+  .talle-btn:hover {
+    box-shadow: 0 4px 12px rgba(236, 72, 153, 0.3);
+  }
+
+  /* Toast animations */
+  #alert-success {
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  /* Responsive improvements */
+  @media (max-width: 1024px) {
+    .grid-cols-3 {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 640px) {
+    .grid-cols-3 {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    
+    #toast-container {
+      bottom: 2rem;
+      left: 1rem;
+      right: 1rem;
+      transform: none;
+    }
+    
+    #alert-success {
+      width: 100%;
+      text-align: center;
+    }
+  }
+</style>

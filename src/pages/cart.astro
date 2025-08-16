@@ -84,7 +84,7 @@ import Modalidad from "@components/Modalidad.astro";
 <script>
     import { cargarCarrito } from "@scripts/getCarrito";
     import { sumarEnvio, sumarMetodoPago } from "@scripts/sumarExtras";
-    import { eliminarProducto, vaciarCarrito, validarFormulario } from "@scripts/carritoFunctions";
+    import { vaciarCarrito, validarFormulario } from "@scripts/carritoFunctions";
     import {enviarMensaje} from "@scripts/enviarMensaje";
 
     const carritoItems = document.querySelector('#carrito-items') as HTMLElement;
@@ -94,12 +94,100 @@ import Modalidad from "@components/Modalidad.astro";
     const envioSelect = document.querySelector('#envio') as HTMLSelectElement;
     const metodoPagoSelect = document.querySelector('#metodo-pago') as HTMLSelectElement;
     let subTotal = 0;
+
+    // Función para actualizar cantidad
+    function actualizarCantidad(index: number, nuevaCantidad: number) {
+      let carrito: any[] = [];
+      try {
+        const raw = localStorage.getItem('carrito') || '[]';
+        carrito = JSON.parse(raw);
+        if (!Array.isArray(carrito)) carrito = [];
+      } catch {
+        carrito = [];
+      }
+
+      // Si la cantidad es 0 o menor, eliminar el producto
+      if (nuevaCantidad <= 0) {
+        carrito.splice(index, 1);
+        localStorage.setItem('carrito', JSON.stringify(carrito));
+        window.dispatchEvent(new Event('carrito:actualizado'));
+        return;
+      }
+
+      // Actualizar la cantidad del producto
+      if (carrito[index]) {
+        carrito[index].cantidad = nuevaCantidad;
+        localStorage.setItem('carrito', JSON.stringify(carrito));
+        window.dispatchEvent(new Event('carrito:actualizado'));
+      }
+    }
+
+    // Función para eliminar producto
+    function eliminarProducto(index: number) {
+      let carrito: any[] = [];
+      try {
+        const raw = localStorage.getItem('carrito') || '[]';
+        carrito = JSON.parse(raw);
+        if (!Array.isArray(carrito)) carrito = [];
+      } catch {
+        carrito = [];
+      }
+
+      carrito.splice(index, 1);
+      localStorage.setItem('carrito', JSON.stringify(carrito));
+      window.dispatchEvent(new Event('carrito:actualizado'));
+    }
     
     // Cargar el carrito al cargar la página y devolver el total
     document.addEventListener('DOMContentLoaded', () => {
       subTotal = cargarCarrito() as number;
       const totalPrecio = sumarEnvio(subTotal as number);
       totalPrecioElement.textContent = totalPrecio.toLocaleString('es-AR')
+    });
+
+    // Event listener para los controles de cantidad
+    carritoItems.addEventListener('click', (event) => {
+      const target = event.target as HTMLElement;
+      
+      // Buscar el data-index en el elemento clickeado o en su padre más cercano
+      let elementWithIndex = target;
+      let index = -1;
+      
+      // Buscar en el elemento actual y sus padres
+      while (elementWithIndex && index === -1) {
+        index = elementWithIndex.dataset.index ? parseInt(elementWithIndex.dataset.index, 10) : -1;
+        if (index === -1) {
+          elementWithIndex = elementWithIndex.parentElement as HTMLElement;
+        }
+      }
+      
+      if (index === -1) return;
+
+      if (target.classList.contains('cantidad-btn-minus')) {
+        let carrito: any[] = [];
+        try {
+          const raw = localStorage.getItem('carrito') || '[]';
+          carrito = JSON.parse(raw);
+          if (!Array.isArray(carrito)) carrito = [];
+        } catch {
+          carrito = [];
+        }
+        const cantidadActual = carrito[index]?.cantidad || 1;
+        actualizarCantidad(index, cantidadActual - 1);
+      } else if (target.classList.contains('cantidad-btn-plus')) {
+        let carrito: any[] = [];
+        try {
+          const raw = localStorage.getItem('carrito') || '[]';
+          carrito = JSON.parse(raw);
+          if (!Array.isArray(carrito)) carrito = [];
+        } catch {
+          carrito = [];
+        }
+        const cantidadActual = carrito[index]?.cantidad || 1;
+        actualizarCantidad(index, cantidadActual + 1);
+      } else if (target.classList.contains('eliminar-btn') || target.closest('.eliminar-btn')) {
+        eliminarProducto(index);
+      }
     });
 
     // Mostrar total con envio y metodo de pago al cambiar selección
@@ -114,20 +202,14 @@ import Modalidad from "@components/Modalidad.astro";
       const totalPrecio =sumarMetodoPago(totalEnvio as number);
       totalPrecioElement.textContent = totalPrecio.toLocaleString('es-AR')
     });
-   
-  // Evento de eliminar producto
-  carritoItems.addEventListener('click', (event) => {
-    const target = event.target as HTMLElement;
-    if (target.classList.contains('eliminar-btn')) {
-      const index = target.dataset.index ? parseInt(target.dataset.index, 10) : -1;
-      if (index !== -1) {
-        subTotal = eliminarProducto(index);
-        const totalEnvio = sumarEnvio(subTotal as number);
-        const totalPrecio =sumarMetodoPago(totalEnvio as number);
-        totalPrecioElement.textContent = totalPrecio.toLocaleString('es-AR')
-      }
-    }
-  });
+
+    // Escuchar cambios en el carrito para actualizar el total
+    window.addEventListener('carrito:actualizado', () => {
+      subTotal = cargarCarrito() as number;
+      const totalEnvio = sumarEnvio(subTotal as number);
+      const totalPrecio = sumarMetodoPago(totalEnvio as number);
+      totalPrecioElement.textContent = totalPrecio.toLocaleString('es-AR')
+    });
 
   // Evento para vaciar el carrito
   vaciarCarritoBtn.addEventListener('click', () => {
