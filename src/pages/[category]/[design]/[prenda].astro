@@ -80,7 +80,7 @@ const precioFormateado = precioEncontrado ? precioEncontrado.precio.toLocaleStri
             <h1 class="text-3xl lg:text-4xl font-bold text-gray-900 mb-2">{prendaTitle}</h1>
             <p class="text-lg text-gray-600 mb-4">{title}</p>
             <div class="flex flex-col gap-1">
-              <div class="text-3xl lg:text-4xl font-bold text-pink-500">
+              <div id="precio-display" class="text-3xl lg:text-4xl font-bold text-pink-500">
                 AR$ {precioFormateado}
               </div>
               <span class="text-sm text-gray-500">Envío gratis a partir de $100.000</span>
@@ -176,6 +176,7 @@ const precioFormateado = precioEncontrado ? precioEncontrado.precio.toLocaleStri
           <input type="text" id="price" value={precioEncontrado ? precioEncontrado.precio : '0'} hidden />
           <input type="text" id="talle-seleccionado" value="" hidden />
           <input type="text" id="prenda-talles" value={prendaTalles} hidden />
+          <input type="text" id="prenda-price-slug" value={prendaPrice} hidden />
         </div>
       </div>
     </div>
@@ -196,11 +197,31 @@ const precioFormateado = precioEncontrado ? precioEncontrado.precio.toLocaleStri
   const talleInfo = document.getElementById('talle-info') as HTMLElement;
   const talleSeleccionadoText = document.getElementById('talle-seleccionado-text') as HTMLElement;
   const talleMedidas = document.getElementById('talle-medidas') as HTMLElement;
+  const precioDisplay = document.getElementById('precio-display') as HTMLElement;
 
   let talleActual = "";
 
   // Importar talles desde el archivo centralizado
   import { talles } from "@lib/talles";
+
+  // Función para actualizar el precio en el cliente
+  function actualizarPrecio() {
+    const prendaPriceSlug = document.getElementById('prenda-price-slug') as HTMLInputElement;
+    
+    if (!prendaPriceSlug || !precioDisplay) {
+      return;
+    }
+
+    const priceSlug = prendaPriceSlug.value;
+    const precioEncontrado = precios.find(p => p.slug === priceSlug);
+    
+    if (precioEncontrado) {
+      const precioFormateado = precioEncontrado.precio.toLocaleString('es-AR');
+      precioDisplay.textContent = `AR$ ${precioFormateado}`;
+    } else {
+      precioDisplay.textContent = 'AR$ 0';
+    }
+  }
 
   // Función para obtener talles de la prenda
   function obtenerTallesPrenda() {
@@ -388,8 +409,8 @@ const precioFormateado = precioEncontrado ? precioEncontrado.precio.toLocaleStri
 
   // Cargar precio y talles
   document.addEventListener('DOMContentLoaded', () => {
-    // Cargar precio
-    // getPrecios(); // This line is removed as per the edit hint
+    // Actualizar precio en el cliente
+    actualizarPrecio();
     
     // Cargar talles y crear botones
     setTimeout(() => {
@@ -399,6 +420,13 @@ const precioFormateado = precioEncontrado ? precioEncontrado.precio.toLocaleStri
 
   // También ejecutar cuando la ventana esté completamente cargada
   window.addEventListener('load', () => {
+    actualizarPrecio();
+    crearBotonesTalles();
+  });
+
+  // Escuchar eventos de navegación de Astro para SPA
+  document.addEventListener('astro:page-load', () => {
+    actualizarPrecio();
     crearBotonesTalles();
   });
 </script>
