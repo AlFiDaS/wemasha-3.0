@@ -1,7 +1,7 @@
 ---
 title: 'Messi M1'
 category: futbol
-designSlug: messi-diseño1
+designSlug: messi-diseno1
 image: '/products/idolos/messi-diseño1/principal.jpg'
 imageHover: '/products/idolos/messi-diseño1/normal.jpg'
 prendas: [

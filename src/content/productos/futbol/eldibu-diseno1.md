@@ -1,52 +1,52 @@
 ---
-title: 'Tu Diseño - 100% personalizado'
-category: personalizados
-designSlug: 99-tudiseño
-image: '/products/personalizados/tudiseño/principal.jpg'
-imageHover: '/products/personalizados/tudiseño/oversize.jpg'
+title: 'Dibu Martinez M1'
+category: futbol
+designSlug: eldibu-diseno1
+image: '/products/idolos/eldibu-diseño1/principal.jpg'
+imageHover: '/products/idolos/eldibu-diseño1/oversize.jpg'
 prendas: [
-    {   
+   {   
         title: 'Remera',
         slug: 'remera',          
-        image: '/products/personalizados/tudiseño/normal.jpg',
+        image: '/products/idolos/eldibu-diseño1/normal.jpg',
         price: 'remerasPrecio',
         talles: 'remerasTalles'
     },
     {
         title: 'Remera Oversize',
         slug: 'remera-oversize',
-        image: '/products/personalizados/tudiseño/oversize.jpg',
-         price: 'oversizePrecio',
+        image: '/products/idolos/eldibu-diseño1/oversize.jpg',
+        price: 'oversizePrecio',
         talles: 'oversizeTalles'
     },
     {
         title: 'Musculosa M',
         slug: 'musculosa-mujer',
-        image: '/products/personalizados/tudiseño/musculosa.jpg',
+        image: '/products/idolos/eldibu-diseño1/musculosa.jpg',
         price: 'musculosaPrecio',
         talles: 'musculosasMujerTalles'
     },
-   {
+     {
         title: 'Musculosa H',
         slug: 'musculoso',
-        image: '/products/personalizados/tudiseño/musculoso.jpg',
+        image: '/products/idolos/eldibu-diseño1/musculoso.jpg',
         price: 'musculosaPrecio',
         talles: 'musculosasHombreTalles'
     },
     {
         title: 'Pupera Oversize',
         slug: 'pupera-oversize',
-        image: '/products/personalizados/tudiseño/pupera.jpg',
+        image: '/products/idolos/eldibu-diseño1/pupera.jpg',
         price: 'remerasPrecio',
         talles: 'oversizePuperasTalles'
     },
+
     {
          title: 'Buzo',
          slug: 'buzo',
-         image: '/products/personalizados/tudiseño/buzo.jpg',
+         image: '/products/idolos/eldibu-diseño1/buzo.jpg',
          price: buzosPrecio,
         talles: 'BuzosTalles'
      },
 ]
 ---
-

@@ -21,7 +21,7 @@ export async function getStaticPaths() {
 
 const { design, category, prenda } = Astro.params;
 
-const producto = (await getEntry("productos", category + "/" + design))?.data;
+const producto = (await getEntry("productos", `${category}/${design}`))?.data;
 
 if (!producto) {
   throw new Error(`No se encontró el producto con el slug ${design}`);
