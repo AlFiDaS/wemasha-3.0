@@ -16,8 +16,8 @@ function niceName(file: string) {
     .trim();
 }
 
-// Función para generar URLs optimizadas
-function generateOptimizedUrls(originalUrl: string): { thumbnail: string; optimized: string } {
+// Función para generar URLs optimizadas corregida
+function generateOptimizedUrls(originalUrl: string, category: string): { thumbnail: string; optimized: string } {
   // Si ya es una URL optimizada, devolver como está
   if (originalUrl.includes('optimized') || originalUrl.includes('thumbnails')) {
     return {
@@ -26,12 +26,12 @@ function generateOptimizedUrls(originalUrl: string): { thumbnail: string; optimi
     };
   }
   
-  // Extraer el nombre del archivo y la categoría
+  // Extraer el nombre del archivo de la URL original
   const urlParts = originalUrl.split('/');
   const fileName = urlParts[urlParts.length - 1];
   const fileNameWithoutExt = fileName.replace(/\.(png|jpg|jpeg|webp|svg)$/i, '');
-  const category = urlParts[urlParts.length - 2] || 'otros';
   
+  // Usar la categoría proporcionada en lugar de intentar extraerla de la URL
   return {
     thumbnail: `/thumbnails/${category}/${fileNameWithoutExt}.webp`,
     optimized: `/optimized/${category}/${fileNameWithoutExt}.webp`
@@ -50,7 +50,7 @@ export const designs: Design[] = Object.entries(modules)
     const i = parts.lastIndexOf("designs");
     const category = parts[i + 1] || "otros";
     const originalUrl = url as string;
-    const { thumbnail, optimized } = generateOptimizedUrls(originalUrl);
+    const { thumbnail, optimized } = generateOptimizedUrls(originalUrl, category);
     
     return {
       src: originalUrl,

@@ -379,16 +379,39 @@ function initPagination(refs) {
 
     const btn = document.createElement("button");
     btn.className = "aspect-square bg-black rounded-xl overflow-hidden border border-neutral-700 hover:shadow transition";
-    btn.dataset.design = design.src; // Mantener src original para el mockup
+    btn.dataset.design = design.optimized; // Usar optimized para consistencia
     btn.title = design.name;
     btn.setAttribute("aria-label", `Usar ${design.name}`);
     
     const img = document.createElement("img");
-    // Usar thumbnail para la galería, pero mantener src original para el mockup
-    img.src = design.thumbnail || design.src; 
+    
+    // Sistema de fallbacks mejorado para producción
+    const imageSources = [
+      design.thumbnail,
+      design.optimized,
+      design.src
+    ].filter(Boolean);
+    
+    let currentSourceIndex = 0;
+    
+    function tryNextSource() {
+      if (currentSourceIndex < imageSources.length) {
+        img.src = imageSources[currentSourceIndex];
+        currentSourceIndex++;
+      }
+    }
+    
+    // Usar thumbnail para la galería
+    img.src = design.thumbnail || design.optimized; 
     img.alt = design.name; 
     img.className = "w-full h-full object-contain p-2";
     img.loading = "lazy"; // Lazy loading nativo
+    
+    // Manejo de errores de carga de imagen mejorado
+    img.onerror = function() {
+      console.warn(`Error cargando imagen: ${img.src} para ${design.name}`);
+      tryNextSource();
+    };
     
     // Si hay thumbnail diferente al src, usar Intersection Observer
     if (design.thumbnail && design.thumbnail !== design.src) {
@@ -409,16 +432,39 @@ function initPagination(refs) {
   function createMobileImageElement(design) {
     const btn = document.createElement("button");
     btn.className = "bg-black rounded-xl overflow-hidden border border-neutral-700 h-[72px]";
-    btn.dataset.design = design.src; // Mantener src original para el mockup
+    btn.dataset.design = design.optimized; // Usar optimized para consistencia
     btn.title = design.name;
     btn.setAttribute("aria-label", `Usar ${design.name}`);
     
     const img = document.createElement("img");
+    
+    // Sistema de fallbacks mejorado para producción
+    const imageSources = [
+      design.thumbnail,
+      design.optimized,
+      design.src
+    ].filter(Boolean);
+    
+    let currentSourceIndex = 0;
+    
+    function tryNextSource() {
+      if (currentSourceIndex < imageSources.length) {
+        img.src = imageSources[currentSourceIndex];
+        currentSourceIndex++;
+      }
+    }
+    
     // Usar thumbnail para la galería móvil
-    img.src = design.thumbnail || design.src; 
+    img.src = design.thumbnail || design.optimized; 
     img.alt = design.name; 
     img.className = "w-full h-full object-contain p-2";
     img.loading = "lazy"; // Lazy loading nativo
+    
+    // Manejo de errores de carga de imagen mejorado
+    img.onerror = function() {
+      console.warn(`Error cargando imagen: ${img.src} para ${design.name}`);
+      tryNextSource();
+    };
     
     // Precargar imagen original en background
     if (design.thumbnail && design.thumbnail !== design.src) {
@@ -489,11 +535,11 @@ function initPagination(refs) {
     // Limpiar contenido anterior
     mobPages.innerHTML = "";
     
-    // Renderizar solo las páginas necesarias
-    Array.from(pagesToRender).sort((a, b) => a - b).forEach(p => {
-      const holder = document.createElement("div");
-      holder.className = "shrink-0 w-full snap-start grid grid-cols-4 grid-rows-2 gap-3";
-      holder.dataset.page = p;
+         // Renderizar solo las páginas necesarias
+     Array.from(pagesToRender).sort((a, b) => a - b).forEach(p => {
+       const holder = document.createElement("div");
+       holder.className = "shrink-0 w-full snap-start grid grid-cols-4 grid-rows-2 gap-2";
+       holder.dataset.page = p;
       
       const start = p * MOB_PER_PAGE, end = start + MOB_PER_PAGE;
       list.slice(start, end).forEach(d => {

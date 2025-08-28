@@ -10,6 +10,7 @@
     "optimize": "node scripts/optimize-build.js",
     "analyze": "node scripts/optimize-images.js",
     "optimize-images": "node scripts/optimize-images.js",
+    "verify-images": "node scripts/verify-images.js",
     "lighthouse": "npx lighthouse http://localhost:4321 --output=html --output-path=./lighthouse-report.html",
     "browserslist:update": "npx update-browserslist-db@latest",
     "performance": "npm run build && npm run lighthouse"

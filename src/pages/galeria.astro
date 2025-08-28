@@ -28,55 +28,44 @@ const categories = ["todos", ...Array.from(new Set(designs.map(d => d.category))
 	ogImage="/images/categories/artistas.jpg"
 	canonical="https://wemasha.com/galeria"
 >
-  <div class="max-w-[1400px] mx-auto px-4 pt-6 pb-28 md:pb-10 grid lg:grid-cols-2 gap-8">
+  <div class="max-w-[1200px] mx-auto px-4 pt-4 pb-20 md:pb-8 grid lg:grid-cols-2 gap-6">
 
     <!-- TÍTULO -->
-    <h1 class="lg:col-span-2 text-3xl md:text-4xl font-semibold text-center mb-2">
+    <h1 class="lg:col-span-2 text-2xl md:text-3xl font-semibold text-center mb-3">
       GALERIA DE IDEAS
     </h1>
 
     <!-- FILTRO DE CATEGORÍAS (visible en mobile y desktop) -->
-    <nav id="cat-filter" class="lg:col-span-2 flex flex-wrap gap-2 justify-center">
+    <nav id="cat-filter" class="lg:col-span-2 flex flex-wrap gap-1.5 justify-center mb-2">
       {categories.map((cat) => (
-        <button
-          class="btn-cat px-4 py-2 rounded-xl border-2 border-gray-200 text-sm capitalize font-medium transition-all duration-300 hover:border-pink-500 hover:text-pink-500 data-[active=true]:bg-gradient-to-r data-[active=true]:from-pink-500 data-[active=true]:to-pink-600 data-[active=true]:border-pink-500 data-[active=true]:text-white data-[active=true]:shadow-lg"
-          data-cat={cat}
-        >
+                 <button
+           class="btn-cat px-3 py-1.5 rounded-lg border border-gray-200 text-xs capitalize font-medium transition-all duration-300 hover:border-pink-500 hover:text-pink-500 data-[active=true]:bg-gradient-to-r data-[active=true]:from-pink-500 data-[active=true]:to-pink-600 data-[active=true]:border-pink-500 data-[active=true]:text-white data-[active=true]:shadow-md"
+           data-cat={cat}
+         >
           {cat === 'todos' ? 'Todos' : cat.replace(/-/g, ' ')}
         </button>
       ))}
     </nav>
 
-    <!-- IZQUIERDA: visor + controles -->
-    <section class="grid gap-4 content-start">
-      <!-- Toggle centrado 50/50 -->
-      <div class="w-full max-w-md mx-auto self-center md:self-start">
-        <div class="flex w-full rounded-xl overflow-hidden border-2 border-gray-200 shadow-lg">
-          <button id="btn-adelante" class="flex-1 px-4 py-2 text-sm font-medium bg-gradient-to-r from-pink-500 to-pink-600 text-white transition-all duration-300" data-side="adelante">
-            Adelante
-          </button>
-          <button id="btn-atras" class="flex-1 px-4 py-2 text-sm font-medium bg-white text-gray-700 hover:text-pink-500 transition-all duration-300" data-side="atras">
-            Atrás
-          </button>
-        </div>
-      </div>
+                                       <!-- IZQUIERDA: visor + controles -->
+       <section class="grid gap-3 content-start lg:pt-4">
+              <!-- Toggle centrado 50/50 -->
+        <div class="w-full max-w-md mx-auto self-center md:self-start">
+          <div class="flex w-full rounded-lg overflow-hidden border border-gray-200 shadow-md">
+           <button id="btn-adelante" class="flex-1 px-4 py-2 text-sm font-medium bg-gradient-to-r from-pink-500 to-pink-600 text-white transition-all duration-300" data-side="adelante">
+             Adelante
+           </button>
+           <button id="btn-atras" class="flex-1 px-4 py-2 text-sm font-medium bg-white text-gray-700 hover:text-pink-500 transition-all duration-300" data-side="atras">
+             Atrás
+           </button>
+         </div>
+       </div>
 
-      <!-- Controles -->
-      <div class="order-3 md:order-3 grid grid-cols-1 sm:grid-cols-[1fr_auto] gap-3 items-end">
-        <label class="flex flex-col gap-1 text-sm">
-          Tamaño
-          <input id="range-size" type="range" min="10" max="100" value="35" step="1" />
-        </label>
-        <button id="btn-centro" class="px-4 py-2 rounded-xl bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white font-medium text-sm transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl">
-          Centrar diseño
-        </button>
-      </div>
-
-      <!-- Visor -->
-      <div
-        id="mockup-wrapper"
-        class="order-2 md:order-2 relative w-full aspect-[4/5] bg-neutral-100 rounded-2xl overflow-hidden shadow md:touch-none md:overscroll-contain"
-      >
+                                                         <!-- Visor -->
+          <div
+            id="mockup-wrapper"
+            class="relative w-full max-w-md mx-auto aspect-[4/5] bg-neutral-100 rounded-xl overflow-hidden shadow-md md:touch-none md:overscroll-contain"
+          >
         <img
           id="mockup-base"
           src={mockups.adelante}
@@ -91,21 +80,34 @@ const categories = ["todos", ...Array.from(new Set(designs.map(d => d.category))
           class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 select-none touch-none pointer-events-auto"
           style="display:none; mix-blend:multiply;"
           draggable="false"
-        />
-      </div>
-    </section>
+                 />
+       </div>
 
-    <!-- DERECHA: galería (desktop) con paginación -->
-    <section class="hidden md:block space-y-3">
-      <div class="flex items-center justify-between md:mt-6">
-        <h2 class="text-lg font-medium">Elegí un diseño</h2>
+              <!-- Controles -->
+        <div class="w-full max-w-md mx-auto">
+         <div class="flex flex-col gap-3">
+           <label class="flex flex-col gap-1 text-sm">
+             Tamaño
+             <input id="range-size" type="range" min="10" max="100" value="35" step="1" />
+           </label>
+           <button id="btn-centro" class="w-full px-3 py-2 rounded-lg bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white font-medium text-xs transition-all duration-300 transform hover:scale-105 shadow-md hover:shadow-lg">
+             Centrar diseño
+           </button>
+         </div>
+       </div>
+     </section>
+
+         <!-- DERECHA: galería (desktop) con paginación -->
+     <section class="hidden md:block space-y-2">
+       <div class="flex items-center justify-between md:mt-4">
+         <h2 class="text-base font-medium">Elegí un diseño</h2>
         <div id="desk-page-indicator" class="text-sm text-neutral-500"></div>
       </div>
 
-      <div class="flex items-center gap-3">
-        <button id="desk-prev" class="p-3 rounded-xl border-2 border-gray-200 hover:border-pink-500 hover:text-pink-500 transition-all duration-300 transform hover:scale-105" aria-label="Anterior">‹</button>
+             <div class="flex items-center gap-2">
+         <button id="desk-prev" class="p-2 rounded-lg border border-gray-200 hover:border-pink-500 hover:text-pink-500 transition-all duration-300 transform hover:scale-105" aria-label="Anterior">‹</button>
 
-        <div id="desk-grid" class="grid grid-cols-3 gap-3 flex-1">
+                 <div id="desk-grid" class="grid grid-cols-3 gap-2 flex-1">
           <!-- Fallback SSR: primera página (12) -->
           {firstDesk.map((d) => (
             <button
@@ -114,36 +116,42 @@ const categories = ["todos", ...Array.from(new Set(designs.map(d => d.category))
               aria-label={`Usar ${d.name}`}
               title={d.name}
             >
-              <img src={d.thumbnail} alt={d.name} class="w-full h-full object-contain p-2" loading="lazy" />
+              <img 
+                src={d.thumbnail} 
+                alt={d.name} 
+                class="w-full h-full object-contain p-2" 
+                loading="lazy"
+                onerror="this.onerror=null; this.src=this.parentElement.dataset.design;"
+              />
             </button>
           ))}
         </div>
 
-        <button id="desk-next" class="p-3 rounded-xl border-2 border-gray-200 hover:border-pink-500 hover:text-pink-500 transition-all duration-300 transform hover:scale-105" aria-label="Siguiente">›</button>
+                 <button id="desk-next" class="p-2 rounded-lg border border-gray-200 hover:border-pink-500 hover:text-pink-500 transition-all duration-300 transform hover:scale-105" aria-label="Siguiente">›</button>
       </div>
     </section>
   </div>
 
-  <!-- MOBILE: paginado 2x4 por página -->
-  <div class="md:hidden fixed bottom-0 inset-x-0 z-40 bg-black/90 backdrop-blur supports-[backdrop-filter]:bg-black/70 py-2">
-    <div class="px-3 text-white text-sm mb-2 flex items-center justify-between">
-      <span>Elegí un diseño</span>
+     <!-- MOBILE: paginado 2x4 por página -->
+   <div class="md:hidden fixed bottom-0 inset-x-0 z-40 bg-black/90 backdrop-blur supports-[backdrop-filter]:bg-black/70 py-1.5">
+         <div class="px-3 text-white text-xs mb-1.5 flex items-center justify-between">
+       <span>Elegí un diseño</span>
       <div id="mob-page-indicator" class="text-xs text-neutral-300"></div>
     </div>
 
-    <div class="flex items-center gap-3 px-3">
-      <!-- Flecha izquierda -->
-      <button id="mob-prev" class="flex-shrink-0 p-3 rounded-full bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white backdrop-blur transition-all duration-300 transform hover:scale-105 shadow-lg" aria-label="Anterior">
+         <div class="flex items-center gap-2 px-3">
+             <!-- Flecha izquierda -->
+       <button id="mob-prev" class="flex-shrink-0 p-2 rounded-full bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white backdrop-blur transition-all duration-300 transform hover:scale-105 shadow-md" aria-label="Anterior">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <polyline points="15,18 9,12 15,6"></polyline>
         </svg>
       </button>
 
-      <!-- Contenedor de diseños -->
-      <div id="mob-pager" class="flex-1 overflow-x-auto no-scrollbar snap-x snap-mandatory">
-        <div id="mob-pages" class="flex gap-6">
-          <!-- Fallback SSR: primera página (8) -->
-          <div class="shrink-0 w-full snap-start grid grid-cols-4 grid-rows-2 gap-3">
+             <!-- Contenedor de diseños -->
+       <div id="mob-pager" class="flex-1 overflow-x-auto no-scrollbar snap-x snap-mandatory">
+         <div id="mob-pages" class="flex gap-4">
+           <!-- Fallback SSR: primera página (8) -->
+           <div class="shrink-0 w-full snap-start grid grid-cols-4 grid-rows-2 gap-2">
             {firstMob.map((d) => (
               <button
                 class="bg-black rounded-xl overflow-hidden border border-neutral-700 h-[72px]"
@@ -151,15 +159,21 @@ const categories = ["todos", ...Array.from(new Set(designs.map(d => d.category))
                 aria-label={`Usar ${d.name}`}
                 title={d.name}
               >
-                <img src={d.thumbnail} alt={d.name} class="w-full h-full object-contain p-2" loading="lazy" />
+                <img 
+                  src={d.thumbnail} 
+                  alt={d.name} 
+                  class="w-full h-full object-contain p-2" 
+                  loading="lazy"
+                  onerror="this.onerror=null; this.src=this.parentElement.dataset.design;"
+                />
               </button>
             ))}
           </div>
         </div>
       </div>
 
-      <!-- Flecha derecha -->
-      <button id="mob-next" class="flex-shrink-0 p-3 rounded-full bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white backdrop-blur transition-all duration-300 transform hover:scale-105 shadow-lg" aria-label="Siguiente">
+             <!-- Flecha derecha -->
+       <button id="mob-next" class="flex-shrink-0 p-2 rounded-full bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white backdrop-blur transition-all duration-300 transform hover:scale-105 shadow-md" aria-label="Siguiente">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <polyline points="9,18 15,12 9,6"></polyline>
         </svg>
@@ -311,6 +325,104 @@ const categories = ["todos", ...Array.from(new Set(designs.map(d => d.category))
 <script type="module">
   import initGaleria from "../scripts/galeria.js";
   initGaleria();
+</script>
+
+<!-- Script de diagnóstico para producción -->
+<script is:inline>
+// Script de diagnóstico para problemas de imágenes en producción
+function debugImages() {
+  console.log('🔍 Iniciando diagnóstico de imágenes...');
+  
+  // Verificar si estamos en móvil
+  const isMobile = window.innerWidth <= 768;
+  console.log(`📱 Dispositivo: ${isMobile ? 'Móvil' : 'Desktop'}`);
+  
+  // Verificar todas las imágenes en la página
+  const images = document.querySelectorAll('img[src*="thumbnails"], img[src*="optimized"]');
+  console.log(`📸 Imágenes encontradas: ${images.length}`);
+  
+  let brokenImages = 0;
+  let workingImages = 0;
+  
+  images.forEach((img, index) => {
+    const src = img.src;
+    const isLoaded = img.complete && img.naturalHeight !== 0;
+    
+    if (isLoaded) {
+      workingImages++;
+      console.log(`✅ Imagen ${index + 1}: ${src}`);
+    } else {
+      brokenImages++;
+      console.log(`❌ Imagen ${index + 1}: ${src} - NO CARGA`);
+    }
+  });
+  
+  console.log(`\n📊 RESUMEN:`);
+  console.log(`✅ Imágenes que cargan: ${workingImages}`);
+  console.log(`❌ Imágenes rotas: ${brokenImages}`);
+  
+  // Verificar rutas base
+  const baseUrl = window.location.origin;
+  console.log(`🌐 URL base: ${baseUrl}`);
+  
+  // Probar acceso a algunas rutas comunes
+  const testPaths = [
+    '/thumbnails/artistas-y-bandas/2pac.webp',
+    '/optimized/artistas-y-bandas/2pac.webp',
+    '/images/mockups/adelante.webp'
+  ];
+  
+  testPaths.forEach(path => {
+    const testUrl = baseUrl + path;
+    fetch(testUrl, { method: 'HEAD' })
+      .then(response => {
+        if (response.ok) {
+          console.log(`✅ Ruta accesible: ${path}`);
+        } else {
+          console.log(`❌ Ruta no accesible: ${path} (${response.status})`);
+        }
+      })
+      .catch(error => {
+        console.log(`❌ Error accediendo a: ${path} - ${error.message}`);
+      });
+  });
+  
+  // Verificar datos de diseños
+  const designsData = document.getElementById('designs-data');
+  if (designsData) {
+    try {
+      const data = JSON.parse(designsData.textContent);
+      console.log(`📋 Datos de diseños cargados: ${data.designs?.length || 0} diseños`);
+      
+      // Verificar algunos diseños específicos
+      if (data.designs && data.designs.length > 0) {
+        const sampleDesign = data.designs[0];
+        console.log(`🔍 Diseño de ejemplo:`);
+        console.log(`  - Nombre: ${sampleDesign.name}`);
+        console.log(`  - Thumbnail: ${sampleDesign.thumbnail}`);
+        console.log(`  - Optimized: ${sampleDesign.optimized}`);
+        console.log(`  - Src: ${sampleDesign.src}`);
+      }
+    } catch (error) {
+      console.log(`❌ Error parseando datos de diseños: ${error.message}`);
+    }
+  } else {
+    console.log(`❌ No se encontraron datos de diseños`);
+  }
+}
+
+// Ejecutar diagnóstico cuando se carga la página
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', debugImages);
+} else {
+  debugImages();
+}
+
+// También ejecutar en cambios de página (para SPA)
+document.addEventListener('astro:page-load', debugImages);
+
+// Función para ejecutar manualmente desde la consola
+window.debugImages = debugImages;
 </script>
 
 

@@ -15,8 +15,7 @@ const CRITICAL_FILES = [
 
 // Archivos estáticos para cache
 const STATIC_FILES = [
-  '/scripts/galeria.js',
-  '/scripts/carritoFunctions.js'
+  '/scripts/galeria.js'
 ];
 
 // Patrones para cache de imágenes
