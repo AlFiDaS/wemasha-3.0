@@ -60,6 +60,8 @@ const {
 		<script type="module" src="/src/scripts/global.js"></script>
 		<script type="module" src="/src/scripts/lazy-loading.js"></script>
 		<script type="module" src="/src/scripts/performance.js"></script>
+		<script type="module" src="/src/scripts/cache-debug.js"></script>
+		<script type="module" src="/src/scripts/galeria-navigation.js"></script>
 
 		<!-- Service Worker para optimización de galería -->
 		<script>
@@ -68,12 +70,54 @@ const {
 					navigator.serviceWorker.register('/sw.js')
 						.then(registration => {
 							console.log('✅ Service Worker registrado:', registration.scope);
+							
+							// Verificar si hay una nueva versión del Service Worker
+							registration.addEventListener('updatefound', () => {
+								const newWorker = registration.installing;
+								if (newWorker) {
+									newWorker.addEventListener('statechange', () => {
+										if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+											// Hay una nueva versión disponible
+											console.log('🔄 Nueva versión del Service Worker disponible');
+											// Forzar actualización
+											newWorker.postMessage({ type: 'SKIP_WAITING' });
+											window.location.reload();
+										}
+									});
+								}
+							});
 						})
 						.catch(error => {
 							console.log('❌ Error registrando Service Worker:', error);
 						});
 				});
 			}
+			
+			// Función para limpiar caché manualmente (útil para debugging)
+			(window as any).clearCache = function() {
+				if ('serviceWorker' in navigator) {
+					navigator.serviceWorker.getRegistrations().then(registrations => {
+						registrations.forEach(registration => {
+							registration.unregister();
+							console.log('🗑️ Service Worker desregistrado');
+						});
+					});
+				}
+				
+				if ('caches' in window) {
+					caches.keys().then(cacheNames => {
+						cacheNames.forEach(cacheName => {
+							caches.delete(cacheName);
+							console.log(`🗑️ Cache eliminado: ${cacheName}`);
+						});
+					});
+				}
+				
+				// Recargar la página después de limpiar
+				setTimeout(() => {
+					window.location.reload();
+				}, 1000);
+			};
 		</script>
 
 	</body>

@@ -1,7 +1,7 @@
 // Service Worker para WeMasha
-const CACHE_NAME = 'wemasha-v1.0.0';
-const STATIC_CACHE = 'wemasha-static-v1.0.0';
-const IMAGE_CACHE = 'wemasha-images-v1.0.0';
+const CACHE_NAME = 'wemasha-v1.0.1';
+const STATIC_CACHE = 'wemasha-static-v1.0.1';
+const IMAGE_CACHE = 'wemasha-images-v1.0.1';
 
 // Archivos críticos para cache inmediato
 const CRITICAL_FILES = [
@@ -91,24 +91,12 @@ self.addEventListener('fetch', (event) => {
     return;
   }
   
-  // Estrategia para páginas HTML
+  // Estrategia para páginas HTML - NETWORK FIRST para evitar contenido desactualizado
   if (request.destination === 'document') {
     event.respondWith(
-      caches.match(request).then((response) => {
-        if (response) {
-          // Actualizar cache en background
-          fetch(request).then((freshResponse) => {
-            if (freshResponse.ok) {
-              const responseClone = freshResponse.clone();
-              caches.open(CACHE_NAME).then((cache) => {
-                cache.put(request, responseClone);
-              });
-            }
-          });
-          return response;
-        }
-        
-        return fetch(request).then((response) => {
+      fetch(request)
+        .then((response) => {
+          // Solo cachear respuestas exitosas
           if (response.ok) {
             const responseClone = response.clone();
             caches.open(CACHE_NAME).then((cache) => {
@@ -116,8 +104,11 @@ self.addEventListener('fetch', (event) => {
             });
           }
           return response;
-        });
-      })
+        })
+        .catch(() => {
+          // Solo usar caché como fallback si la red falla
+          return caches.match(request);
+        })
     );
     return;
   }
@@ -130,7 +121,7 @@ self.addEventListener('fetch', (event) => {
     return;
   }
   
-  // Estrategia para archivos estáticos
+  // Estrategia para archivos estáticos - CACHE FIRST con actualización en background
   if (request.destination === 'script' || request.destination === 'style') {
     event.respondWith(
       caches.match(request).then((response) => {
