@@ -410,7 +410,18 @@ function initPagination(refs) {
     // Manejo de errores de carga de imagen mejorado
     img.onerror = function() {
       console.warn(`Error cargando imagen: ${img.src} para ${design.name}`);
-      tryNextSource();
+      
+      // Intentar con la imagen original si falla la optimizada
+      if (img.src.includes('optimized') || img.src.includes('thumbnails')) {
+        img.src = design.src;
+      } else if (img.src === design.src && design.thumbnail) {
+        // Si falla la original, intentar con thumbnail
+        img.src = design.thumbnail;
+      } else {
+        // Si todo falla, mostrar imagen placeholder
+        img.src = '/images/placeholder.webp';
+        img.alt = `Error cargando ${design.name}`;
+      }
     };
     
     // Si hay thumbnail diferente al src, usar Intersection Observer
@@ -463,7 +474,18 @@ function initPagination(refs) {
     // Manejo de errores de carga de imagen mejorado
     img.onerror = function() {
       console.warn(`Error cargando imagen: ${img.src} para ${design.name}`);
-      tryNextSource();
+      
+      // Intentar con la imagen original si falla la optimizada
+      if (img.src.includes('optimized') || img.src.includes('thumbnails')) {
+        img.src = design.src;
+      } else if (img.src === design.src && design.thumbnail) {
+        // Si falla la original, intentar con thumbnail
+        img.src = design.thumbnail;
+      } else {
+        // Si todo falla, mostrar imagen placeholder
+        img.src = '/images/placeholder.webp';
+        img.alt = `Error cargando ${design.name}`;
+      }
     };
     
     // Precargar imagen original en background

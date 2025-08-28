@@ -31,7 +31,9 @@ function generateOptimizedUrls(originalUrl: string, category: string): { thumbna
   const fileName = urlParts[urlParts.length - 1];
   const fileNameWithoutExt = fileName.replace(/\.(png|jpg|jpeg|webp|svg)$/i, '');
   
-  // Usar la categoría proporcionada en lugar de intentar extraerla de la URL
+  // Usar rutas directas para las imágenes optimizadas
+  // IMPORTANTE: Estas rutas NO deben ser procesadas por Astro
+  // para evitar que agregue hashes a los nombres de archivo
   return {
     thumbnail: `/thumbnails/${category}/${fileNameWithoutExt}.webp`,
     optimized: `/optimized/${category}/${fileNameWithoutExt}.webp`
@@ -50,7 +52,14 @@ export const designs: Design[] = Object.entries(modules)
     const i = parts.lastIndexOf("designs");
     const category = parts[i + 1] || "otros";
     const originalUrl = url as string;
-    const { thumbnail, optimized } = generateOptimizedUrls(originalUrl, category);
+    
+    // Extraer el ID simple del diseño desde el path (sin hash)
+    const fileName = parts[parts.length - 1];
+    const designId = fileName.replace(/\.(png|jpg|jpeg|webp|svg)$/i, '');
+    
+    // Generar URLs optimizadas usando el ID simple
+    const thumbnail = `/thumbnails/${category}/${designId}.webp`;
+    const optimized = `/optimized/${category}/${designId}.webp`;
     
     return {
       src: originalUrl,

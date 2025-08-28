@@ -99,8 +99,9 @@ self.addEventListener('fetch', (event) => {
           // Actualizar cache en background
           fetch(request).then((freshResponse) => {
             if (freshResponse.ok) {
+              const responseClone = freshResponse.clone();
               caches.open(CACHE_NAME).then((cache) => {
-                cache.put(request, freshResponse.clone());
+                cache.put(request, responseClone);
               });
             }
           });
@@ -109,8 +110,9 @@ self.addEventListener('fetch', (event) => {
         
         return fetch(request).then((response) => {
           if (response.ok) {
+            const responseClone = response.clone();
             caches.open(CACHE_NAME).then((cache) => {
-              cache.put(request, response.clone());
+              cache.put(request, responseClone);
             });
           }
           return response;
@@ -120,24 +122,11 @@ self.addEventListener('fetch', (event) => {
     return;
   }
   
-  // Estrategia para imágenes
+  // Estrategia para imágenes - DESHABILITADO TEMPORALMENTE PARA DEBUG
   if (request.destination === 'image' || IMAGE_PATTERNS.some(pattern => pattern.test(url.pathname))) {
-    event.respondWith(
-      caches.match(request).then((response) => {
-        if (response) {
-          return response;
-        }
-        
-        return fetch(request).then((response) => {
-          if (response.ok) {
-            caches.open(IMAGE_CACHE).then((cache) => {
-              cache.put(request, response.clone());
-            });
-          }
-          return response;
-        });
-      })
-    );
+    // Por ahora, no cachear imágenes para evitar problemas con URLs
+    // y permitir que se carguen directamente desde el servidor
+    event.respondWith(fetch(request));
     return;
   }
   
@@ -149,8 +138,9 @@ self.addEventListener('fetch', (event) => {
           // Actualizar cache en background
           fetch(request).then((freshResponse) => {
             if (freshResponse.ok) {
+              const responseClone = freshResponse.clone();
               caches.open(STATIC_CACHE).then((cache) => {
-                cache.put(request, freshResponse.clone());
+                cache.put(request, responseClone);
               });
             }
           });
@@ -159,8 +149,9 @@ self.addEventListener('fetch', (event) => {
         
         return fetch(request).then((response) => {
           if (response.ok) {
+            const responseClone = response.clone();
             caches.open(STATIC_CACHE).then((cache) => {
-              cache.put(request, response.clone());
+              cache.put(request, responseClone);
             });
           }
           return response;
