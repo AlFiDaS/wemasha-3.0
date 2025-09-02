@@ -2,6 +2,7 @@
 import Layout from "@layouts/LayoutCart.astro";
 import Hero from "@components/Hero.astro";
 import Modalidad from "@components/Modalidad.astro";
+import { preciosEnvio } from "@lib/precios";
 ---
 
 <Layout title="WeMasha - Remeras y Buzos Streetwear de tus Artistas Favoritos">
@@ -56,8 +57,8 @@ import Modalidad from "@components/Modalidad.astro";
                       <option value="Corrientes">Retiro en Ciudad de Corrientes</option>
                       <option value="Motomandado">Motomandado en Ciudad de Corrientes (Precio a coordinar)</option>
                       <option value="">------------------------------------------------------------</option>
-                      <option value="Sucursal">Envio a Sucursal de Correo Argentino a elección ($6000)</option>
-                      <option value="Domicilio">Envio a Domicilio por Correo Argentino ($8500)</option>
+                      <option value="Sucursal">Envio a Sucursal de Correo Argentino a elección (${preciosEnvio.sucursal.toLocaleString('es-AR')})</option>
+                      <option value="Domicilio">Envio a Domicilio por Correo Argentino (${preciosEnvio.domicilio.toLocaleString('es-AR')})</option>
                       <!-- <option value="Resistencia">Retiro en Ciudad de Resistencia (Chaco)</option> -->
                     </select>
                     <span class="text-xs text-zinc-600 ">Los pedidos mayores a $150.000 tienen envio GRATIS a domicilio.</span>

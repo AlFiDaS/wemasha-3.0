@@ -5,7 +5,7 @@ export const precios = [
     },
     {
       slug: 'oversizePrecio',
-      precio: 30000,
+      precio: 31000,
     },
     {
       slug: 'musculosaPrecio',
@@ -19,8 +19,8 @@ export const precios = [
 
 // Precios de envío
 export const preciosEnvio = {
-  sucursal: 6000,
-  domicilio: 8500,
+  sucursal: 7500,
+  domicilio: 10000,
   motomandado: 0, // A coordinar
   corrientes: 0, // Retiro en Corrientes
   resistencia: 0, // Retiro en Resistencia
