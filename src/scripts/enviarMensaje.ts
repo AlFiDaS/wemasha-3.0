@@ -1,4 +1,5 @@
 import type { ProductoCarrito } from "@interfaces/productoCarrito";
+import { preciosEnvio } from "@lib/precios";
 
 export function enviarMensaje() {
   
@@ -27,13 +28,13 @@ export function enviarMensaje() {
     const aclaraciones = (document.querySelector('#aclaraciones') as HTMLInputElement).value;
   
   
-    //Calcular costo de envio
+    //Calcular costo de envio usando los precios del archivo
     if ( tipoEnvio === "Sucursal"){
       envio = "Envio a sucursal:* $6000"
-      totalPrecio += 6000;
+      totalPrecio += preciosEnvio.sucursal;
     } else if (tipoEnvio === "Domicilio") {
       envio = "Envio a domicilio:* $8500"
-      totalPrecio += 8500;
+      totalPrecio += preciosEnvio.domicilio;
     } else if (tipoEnvio === "Motomandado") {
       envio = "Envio Motomandado a coordinar*"
     } else if (tipoEnvio === "Corrientes") {
@@ -42,13 +43,15 @@ export function enviarMensaje() {
       envio = "Retiro en Resistencia*"
     }
   
-    // Calcular medios de pago
-      if(metodoPago === "Transferencia"){
-      pago = `por transferencia:* $${totalPrecio}`
-      infoCliente = `Deberá transferir *$${totalPrecio}* al alias *wemasha* (cuenta a nombre de *Alessandro Hernan Fiorio D'Ascenzo*) y enviarnos el comprobante. `
+    // Calcular medios de pago - ahora el precio base es con tarjeta
+    if(metodoPago === "Transferencia"){
+      // Aplicar descuento del 15% para transferencia
+      const totalConDescuento = Math.round(totalPrecio * 0.85);
+      pago = `por transferencia:* $${totalConDescuento}`
+      infoCliente = `Deberá transferir *$${totalConDescuento}* al alias *wemasha* (cuenta a nombre de *Alessandro Hernan Fiorio D'Ascenzo*) y enviarnos el comprobante. `
   
     } else if (metodoPago === "Tarjeta") {
-      totalPrecio = Math.round(totalPrecio / 0.85); 
+      // El precio ya es con tarjeta, no hay que hacer nada
       pago = `con tarjeta:* $${totalPrecio} (Hasta en 2 cuotas sin interés)`
       infoCliente = `Le enviaremos un link de pago con el monto de *$${totalPrecio}*, que corresponde al precio de lista de los artículos. El mismo podrá ser abonado hasta en 2 cuotas sin interés.`
     }
@@ -75,4 +78,4 @@ export function enviarMensaje() {
   
     // Enviar el mensaje por WhatsApp
     window.open("https://wa.me/+543795343171?text=" + encodeURIComponent(mensaje));
-  }
+}

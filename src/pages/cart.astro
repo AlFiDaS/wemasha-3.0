@@ -48,10 +48,10 @@ import Modalidad from "@components/Modalidad.astro";
                   <form class="mt-4 flex flex-col gap-4" action="">
                     <input name="nombre" id="nombre" placeholder="Nombre y Apellido"  class="w-full rounded-lg border border-zinc-300 p-2" required />
                     <select name="metodo-pago" id="metodo-pago" class="w-full rounded-lg border border-zinc-300 p-2" required>
-                      <option value="Transferencia">Pago por transferencia</option>
-                      <option value="Tarjeta">Pago con tarjeta (hasta 2 cuotas sin interes)</option>  
+                      <option value="Tarjeta">Pago con tarjeta (hasta 2 cuotas sin interes)</option>
+                      <option value="Transferencia">Pago por transferencia (15% de descuento)</option>
                     </select>
-                    <span class="text-xs text-zinc-600 ">Los pagos con tarjeta tienen un 15% de recargo.</span>
+                    <span class="text-xs text-zinc-600 ">Los pagos por transferencia tienen un 15% de descuento.</span>
                     <select name="envio" id="envio" class="w-full rounded-lg border border-zinc-300 p-2" required>
                       <option value="Corrientes">Retiro en Ciudad de Corrientes</option>
                       <option value="Motomandado">Motomandado en Ciudad de Corrientes (Precio a coordinar)</option>
@@ -60,8 +60,8 @@ import Modalidad from "@components/Modalidad.astro";
                       <option value="Domicilio">Envio a Domicilio por Correo Argentino ($8500)</option>
                       <!-- <option value="Resistencia">Retiro en Ciudad de Resistencia (Chaco)</option> -->
                     </select>
-                    <span class="text-xs text-zinc-600 ">Los pedidos mayores a $100.000 tienen envio GRATIS a domicilio.</span>
-                    <span class="text-xs text-zinc-600 ">Los envios cotizados arriba son de modalidad Clasico y tardan de 2 a 5 dias habiles en llegar a destino.</span>
+                    <span class="text-xs text-zinc-600 ">Los pedidos mayores a $150.000 tienen envio GRATIS a domicilio.</span>
+                    <span class="text-xs text-zinc-600 ">Los envios de correo argentino son de modalidad Clasico y tardan de 2 a 5 dias habiles en llegar a destino.</span>
                     <span class="text-xs text-zinc-600 ">Los envios de modalidad Expreso tardan de 1 a 3 dias habiles en llegar pero tienen costos mas elevados, consultar por whatsapp.</span>
                     
                     <!-- Campos para envío por correo -->

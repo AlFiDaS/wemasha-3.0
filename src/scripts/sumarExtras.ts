@@ -1,16 +1,17 @@
+import { preciosEnvio } from "@lib/precios";
+
 export function sumarEnvio( total: number ){
     const envioSelect = document.querySelector('#envio') as HTMLSelectElement;
-
+    
     if (total === 0 || undefined || null){
         return 0;
     }
 
-    //Calcular costo de envio
-    if ( envioSelect.value === "Sucursal"){
-        const totalPrecio = total + 6000;
+    if (envioSelect.value === "Sucursal") {
+        const totalPrecio = total + preciosEnvio.sucursal;
         return totalPrecio;
     } else if (envioSelect.value === "Domicilio") {
-        const totalPrecio = total + 8500;
+        const totalPrecio = total + preciosEnvio.domicilio;
         return totalPrecio;
     } else {
         const totalPrecio = total;
@@ -25,11 +26,9 @@ export function sumarMetodoPago( total: number ){
         return 0;
     }
 
-    // Removemos el console.log que estaba causando logs repetidos
-    // console.log(total);
-
-    if ( metodoPagoSelect.value === "Tarjeta") {
-        const totalPrecio = Math.round(total / 0.85); 
+    // Ahora el precio base es con tarjeta, para transferencia se aplica descuento del 15%
+    if ( metodoPagoSelect.value === "Transferencia") {
+        const totalPrecio = Math.round(total * 0.85); 
         return totalPrecio;
     } else {
         const totalPrecio = total;

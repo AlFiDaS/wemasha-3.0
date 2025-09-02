@@ -1,19 +1,27 @@
 export const precios = [
     {
       slug: 'remerasPrecio',
-      precio: 24000,
+      precio: 29000,
     },
     {
       slug: 'oversizePrecio',
-      precio: 26000,
+      precio: 30000,
     },
     {
       slug: 'musculosaPrecio',
-      precio: 23000,
+      precio: 27000,
     },
     {
       slug: 'buzosPrecio',
-      precio: 39000,
+      precio: 46000,
     },
-    
   ];
+
+// Precios de envío
+export const preciosEnvio = {
+  sucursal: 6000,
+  domicilio: 8500,
+  motomandado: 0, // A coordinar
+  corrientes: 0, // Retiro en Corrientes
+  resistencia: 0, // Retiro en Resistencia
+};

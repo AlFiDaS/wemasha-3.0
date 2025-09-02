@@ -25,15 +25,26 @@ export function getPrecios() {
     // Actualizar el contenido del elemento con el precio encontrado
     if(priceInput) priceInput.value = precioData.precio.toString();
     
-    // Formatear el precio sin espacios que puedan causar saltos de línea
-    const precioFormateado = `AR$${precioData.precio.toLocaleString('es-AR')}`;
-    precioElement.textContent = precioFormateado;
+    // Calcular precio por transferencia (15% de descuento)
+    const precioTransferencia = Math.round(precioData.precio * 0.85);
+    const precioCuota = Math.round(precioData.precio / 2);
     
-    // Asegurar que el precio se mantenga en una sola línea
-    precioElement.style.whiteSpace = 'nowrap';
-    precioElement.style.wordBreak = 'keep-all';
-    precioElement.style.overflowWrap = 'normal';
-    precioElement.style.hyphens = 'none';
-    precioElement.style.display = 'inline-block';
+    // Crear el HTML completo con precio principal, cuotas y descuento por transferencia
+    const precioHTML = `
+      <div class="flex flex-col gap-1">
+        <div class="text-2xl font-bold text-pink-500">
+          AR$${precioData.precio.toLocaleString('es-AR')}
+        </div>
+        <div class="text-sm text-gray-600">
+          hasta en 2 cuotas de $${precioCuota.toLocaleString('es-AR')}
+        </div>
+        <div class="text-sm text-green-600 font-medium">
+          precio por transferencia: $${precioTransferencia.toLocaleString('es-AR')}
+        </div>
+      </div>
+    `;
+    
+    // Actualizar el contenido del elemento
+    precioElement.innerHTML = precioHTML;
   });
 }
