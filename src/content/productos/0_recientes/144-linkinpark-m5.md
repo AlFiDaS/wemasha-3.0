@@ -26,7 +26,7 @@ prendas: [
         price: 'musculosaPrecio',
         talles: 'musculosasMujerTalles'
     },
-     {
+    {
         title: 'Musculosa H',
         slug: 'musculoso',
         image: '/products/artistas-m5/18-linkinpark/musculoso.jpg',
@@ -40,12 +40,12 @@ prendas: [
         price: 'remerasPrecio',
         talles: 'oversizePuperasTalles'
     },
-     {
-         title: 'Buzo',
-         slug: 'buzo',
-         image: '/products/artistas-m5/18-linkinpark/buzo.jpg',
-         price: buzosPrecio,
+    {
+        title: 'Buzo',
+        slug: 'buzo',
+        image: '/products/artistas-m5/18-linkinpark/buzo.jpg',
+        price: 'buzosPrecio',
         talles: 'BuzosTalles'
-     },
+    }
 ]
 ---

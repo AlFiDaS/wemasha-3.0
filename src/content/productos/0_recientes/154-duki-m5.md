@@ -44,7 +44,7 @@ prendas: [
          title: 'Buzo',
          slug: 'buzo',
          image: '/products/artistas-m5/08-duki/buzo.jpg',
-         price: buzosPrecio,
+         price: 'buzosPrecio',
         talles: 'BuzosTalles'
      },
 ]
