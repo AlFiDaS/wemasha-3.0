@@ -12,14 +12,14 @@ interface Props {
 const { title, image, design, slug, price, category, designSlug } = Astro.props;
 ---
 
-<div class="product-card group bg-white rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 overflow-hidden">
+<div class="product-card group bg-white rounded-2xl md:rounded-3xl shadow-md hover:shadow-xl transition-all duration-500 transform hover:-translate-y-1 md:hover:-translate-y-2 overflow-hidden">
   <!-- Contenedor de imagen -->
   <div class="relative overflow-hidden">
     <a href={`/${category}/${designSlug}/${slug}`} class="block">
       <img
         src={image}
         alt={title}
-        class="w-full h-64 md:h-80 object-cover transition-transform duration-700 group-hover:scale-110"
+        class="w-full h-48 sm:h-56 md:h-64 lg:h-80 object-cover transition-transform duration-700 group-hover:scale-110"
       />
       
       <!-- Overlay en hover -->
@@ -27,8 +27,8 @@ const { title, image, design, slug, price, category, designSlug } = Astro.props;
       
       <!-- Icono de "Ver más" en hover -->
       <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-        <div class="bg-white/90 backdrop-blur-sm rounded-full p-4 shadow-lg">
-          <svg class="w-8 h-8 text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div class="bg-white/90 backdrop-blur-sm rounded-full p-3 md:p-4 shadow-lg">
+          <svg class="w-6 h-6 md:w-8 md:h-8 text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
           </svg>
@@ -38,28 +38,28 @@ const { title, image, design, slug, price, category, designSlug } = Astro.props;
   </div>
   
   <!-- Contenido -->
-  <div class="p-4 md:p-6">
+  <div class="p-4 sm:p-5 md:p-6">
     <!-- Título y diseño -->
-    <div class="mb-3">
-      <h2 class="text-lg md:text-xl font-bold text-gray-900 mb-1 group-hover:text-pink-500 transition-colors duration-300">
+    <div class="mb-1 md:mb-2">
+      <h2 class="text-base sm:text-lg md:text-xl font-bold text-gray-900 mb-2 group-hover:text-pink-500 transition-colors duration-300 leading-tight">
         {title}
       </h2>
-      <p class="text-sm text-gray-600 font-medium">
+      <p class="text-xs sm:text-sm text-gray-600 font-medium leading-relaxed">
         {design}
       </p>
     </div>
     
     <!-- Precio y botón -->
-    <div class="flex items-center justify-between gap-3">
-      <div class="text-xl md:text-2xl font-bold text-gray-900 flex-shrink-0 min-w-0 precio-container">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 sm:gap-5">
+      <div class="text-lg sm:text-xl md:text-2xl font-bold text-gray-900 flex-shrink-0 precio-container">
         <span class="precio whitespace-nowrap inline-block" aria-label={price}>AR$0</span>
       </div>
       
       <a 
         href={`/${category}/${designSlug}/${slug}`} 
-        class="bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white text-center py-2 px-4 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl group/btn text-sm md:text-base"
+        class="bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white text-center py-3 px-4 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl group/btn text-sm md:text-base w-full sm:w-auto"
       >
-        <span class="flex items-center gap-2">
+        <span class="flex items-center justify-center sm:justify-start gap-2">
           <span>Ver</span>
           <svg class="w-4 h-4 transition-transform duration-300 group-hover/btn:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
@@ -74,55 +74,3 @@ const { title, image, design, slug, price, category, designSlug } = Astro.props;
   import { getPrecios } from "@scripts/precios.ts";
   document.addEventListener("astro:page-load", getPrecios);
 </script>
-
-<style>
-  .product-card {
-    min-height: 420px;
-  }
-  
-  @media (min-width: 768px) {
-    .product-card {
-      min-height: 460px;
-    }
-  }
-  
-  /* Asegurar que el precio se mantenga en una línea */
-  .precio {
-    white-space: nowrap !important;
-    display: inline-block !important;
-    word-break: keep-all !important;
-    overflow-wrap: normal !important;
-  }
-  
-  .precio-container {
-    min-width: 80px;
-    overflow: hidden;
-  }
-  
-  /* Mejorar el layout en mobile */
-  @media (max-width: 767px) {
-    .product-card .flex.items-center.justify-between {
-      flex-wrap: nowrap;
-      align-items: center;
-      gap: 8px;
-    }
-    
-    .product-card .flex.items-center.justify-between > * {
-      flex-shrink: 0;
-    }
-    
-    /* Forzar que el precio se mantenga en una línea */
-    .product-card .precio {
-      white-space: nowrap !important;
-      display: inline-block !important;
-      word-break: keep-all !important;
-      overflow-wrap: normal !important;
-      hyphens: none !important;
-    }
-    
-    .product-card .precio-container {
-      min-width: 90px;
-      max-width: 120px;
-    }
-  }
-</style>

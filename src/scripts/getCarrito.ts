@@ -126,7 +126,7 @@ export function cargarCarrito(silent: boolean = false): number {
               <h3 class="font-semibold text-sm md:text-base text-gray-900 truncate">${producto.titulo}</h3>
               ${producto.diseño ? `<p class="text-xs md:text-sm text-gray-600 mb-1 font-medium">${producto.diseño}</p>` : ''}
               <p class="text-xs md:text-sm text-gray-500">Tamaño: ${producto.talla}</p>
-              <p class="text-sm md:text-base font-semibold text-pink-500">$${toARS(precio)}</p>
+              <p class="text-sm md:text-base font-semibold text-pink-500">Precio producto: $${toARS(precio)}</p>
             </div>
             
             <!-- Botón eliminar -->

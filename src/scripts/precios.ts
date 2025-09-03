@@ -35,11 +35,11 @@ export function getPrecios() {
         <div class="text-2xl font-bold text-pink-500">
           AR$${precioData.precio.toLocaleString('es-AR')}
         </div>
-        <div class="text-sm text-gray-600">
-          hasta en 2 cuotas de $${precioCuota.toLocaleString('es-AR')}
+        <div class="text-xs text-gray-600 leading-tight">
+          Hasta 2 cuotas de $${precioCuota.toLocaleString('es-AR')}
         </div>
-        <div class="text-sm text-green-600 font-medium">
-          precio por transferencia: $${precioTransferencia.toLocaleString('es-AR')}
+        <div class="text-xs text-green-600 font-medium leading-tight">
+          Transferencia: $${precioTransferencia.toLocaleString('es-AR')}
         </div>
       </div>
     `;

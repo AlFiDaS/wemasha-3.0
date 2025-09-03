@@ -1,0 +1,32 @@
+/* Estilos globales para el proyecto */
+
+/* Estilos específicos para mobile en las tarjetas de productos */
+@media (max-width: 767px) {
+  .product-card .precio-container .text-xs {
+    font-size: 10px;
+    line-height: 12px;
+  }
+  
+  .product-card .flex.flex-col.sm\:flex-row {
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .product-card .flex.flex-col.sm\:flex-row > * {
+    width: 100%;
+  }
+  
+  .product-card .precio {
+    white-space: nowrap;
+    display: inline-block;
+    word-break: keep-all;
+    overflow-wrap: normal;
+    hyphens: none;
+  }
+  
+  .product-card .precio-container {
+    min-width: auto;
+    max-width: none;
+    overflow: visible;
+  }
+}

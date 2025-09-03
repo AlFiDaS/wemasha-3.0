@@ -37,6 +37,10 @@ import { preciosEnvio } from "@lib/precios";
                 <!-- Total del carrito -->
                 <div class="mt-6 mb-4 p-4 bg-gradient-to-r from-pink-50 to-purple-50 rounded-xl border border-pink-100">
                     <div class="text-right">
+                        <!-- Descuento por transferencia -->
+                        <div id="descuento-transferencia" class="hidden mb-2">
+                            <span class="text-sm text-green-600 font-medium">Descuento por transferencia: -$<span id="monto-descuento">0</span></span>
+                        </div>
                         <span class="text-sm text-gray-600">Total a pagar:</span>
                         <div class="text-2xl md:text-3xl font-bold text-pink-500">
                             AR$<span id="total-precio">0</span>
@@ -125,6 +129,8 @@ import { preciosEnvio } from "@lib/precios";
     const campoMotomandado = document.querySelector('#campo-motomandado') as HTMLElement;
     const emailContainer = document.querySelector('.email-container') as HTMLElement;
     const aclaracionesInput = document.querySelector('#aclaraciones') as HTMLInputElement;
+    const descuentoTransferencia = document.querySelector('#descuento-transferencia') as HTMLElement;
+    const montoDescuento = document.querySelector('#monto-descuento') as HTMLElement;
     let subTotal = 0;
 
     // Removemos la función local actualizarCantidad duplicada
@@ -231,6 +237,9 @@ import { preciosEnvio } from "@lib/precios";
       
       // Inicializar el estado de los campos de envío
       manejarCambioEnvio();
+      
+      // Inicializar el descuento por transferencia
+      actualizarDescuentoTransferencia();
     });
 
     // Event listener para el cambio de envío
@@ -281,17 +290,33 @@ import { preciosEnvio } from "@lib/precios";
       }
     });
 
+    // Función para mostrar/ocultar descuento por transferencia
+    function actualizarDescuentoTransferencia() {
+      const metodoPago = metodoPagoSelect.value;
+      const totalEnvio = sumarEnvio(subTotal as number);
+      
+      if (metodoPago === "Transferencia") {
+        const descuento = Math.round(totalEnvio * 0.15); // 15% de descuento
+        montoDescuento.textContent = descuento.toLocaleString('es-AR');
+        descuentoTransferencia.classList.remove('hidden');
+      } else {
+        descuentoTransferencia.classList.add('hidden');
+      }
+    }
+
     // Mostrar total con envio y metodo de pago al cambiar selección
     envioSelect.addEventListener('change', () => {
       const totalEnvio = sumarEnvio(subTotal as number);
-      const totalPrecio =sumarMetodoPago(totalEnvio as number);
-      totalPrecioElement.textContent = totalPrecio.toLocaleString('es-AR')
+      const totalPrecio = sumarMetodoPago(totalEnvio as number);
+      totalPrecioElement.textContent = totalPrecio.toLocaleString('es-AR');
+      actualizarDescuentoTransferencia();
     });
 
     metodoPagoSelect.addEventListener('change', () => {
       const totalEnvio = sumarEnvio(subTotal as number);
-      const totalPrecio =sumarMetodoPago(totalEnvio as number);
-      totalPrecioElement.textContent = totalPrecio.toLocaleString('es-AR')
+      const totalPrecio = sumarMetodoPago(totalEnvio as number);
+      totalPrecioElement.textContent = totalPrecio.toLocaleString('es-AR');
+      actualizarDescuentoTransferencia();
     });
 
     // Escuchar cambios en el carrito para actualizar el total
@@ -318,7 +343,8 @@ import { preciosEnvio } from "@lib/precios";
 
       const totalEnvio = sumarEnvio(subTotal as number);
       const totalPrecio = sumarMetodoPago(totalEnvio as number);
-      totalPrecioElement.textContent = totalPrecio.toLocaleString('es-AR')
+      totalPrecioElement.textContent = totalPrecio.toLocaleString('es-AR');
+      actualizarDescuentoTransferencia();
     });
 
   // Evento para vaciar el carrito
@@ -326,8 +352,9 @@ import { preciosEnvio } from "@lib/precios";
     vaciarCarrito();
     subTotal = 0; // El carrito está vacío, así que el subtotal es 0
     const totalEnvio = sumarEnvio(subTotal as number);
-    const totalPrecio =sumarMetodoPago(totalEnvio as number);
-    totalPrecioElement.textContent = totalPrecio.toLocaleString('es-AR')
+    const totalPrecio = sumarMetodoPago(totalEnvio as number);
+    totalPrecioElement.textContent = totalPrecio.toLocaleString('es-AR');
+    actualizarDescuentoTransferencia();
   });
 
   // Evento para el botón de realizar pedido
