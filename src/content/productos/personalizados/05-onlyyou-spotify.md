@@ -20,20 +20,6 @@ prendas: [
         talles: 'oversizeTalles'
     },
     {
-        title: 'Musculosa M',
-        slug: 'musculosa-mujer',
-        image: '/products/personalizados/onlyyou-02/musculosa.jpg',
-        price: 'musculosaPrecio',
-        talles: 'musculosasMujerTalles'
-    },
-   {
-        title: 'Musculosa H',
-        slug: 'musculoso',
-        image: '/products/personalizados/onlyyou-02/musculoso.jpg',
-        price: 'musculosaPrecio',
-        talles: 'musculosasHombreTalles'
-    },
-    {
         title: 'Pupera Oversize',
         slug: 'pupera-oversize',
         image: '/products/personalizados/onlyyou-02/pupera.jpg',
@@ -47,6 +33,20 @@ prendas: [
          price: buzosPrecio,
         talles: 'BuzosTalles'
      },
+    {
+        title: 'Musculosa M',
+        slug: 'musculosa-mujer',
+        image: '/products/personalizados/onlyyou-02/musculosa.jpg',
+        price: 'musculosaPrecio',
+        talles: 'musculosasMujerTalles'
+    },
+    {
+        title: 'Musculosa H',
+        slug: 'musculoso',
+        image: '/products/personalizados/onlyyou-02/musculoso.jpg',
+        price: 'musculosaPrecio',
+        talles: 'musculosasHombreTalles'
+    }
 ]
 ---
 

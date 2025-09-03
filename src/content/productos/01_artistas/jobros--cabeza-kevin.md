@@ -20,32 +20,32 @@ prendas: [
         talles: 'oversizeTalles'
     },
     {
-        title: 'Musculosa M',
-        slug: 'musculosa-mujer',
-        image: '/products/cabezotas/kevin/musculosa.jpg',
-        price: 'musculosaPrecio',
-        talles: 'musculosasMujerTalles'
-    },
-     {
-        title: 'Musculosa H',
-        slug: 'musculoso',
-        image: '/products/cabezotas/kevin/musculoso.jpg',
-        price: 'musculosaPrecio',
-        talles: 'musculosasHombreTalles'
-    },
-    {
         title: 'Pupera Oversize',
         slug: 'pupera-oversize',
         image: '/products/cabezotas/kevin/pupera.jpg',
         price: 'remerasPrecio',
         talles: 'oversizePuperasTalles'
     },
-     {
+    {
          title: 'Buzo',
          slug: 'buzo',
          image: '/products/cabezotas/kevin/buzo.jpg',
          price: buzosPrecio,
         talles: 'BuzosTalles'
      },
+    {
+        title: 'Musculosa M',
+        slug: 'musculosa-mujer',
+        image: '/products/cabezotas/kevin/musculosa.jpg',
+        price: 'musculosaPrecio',
+        talles: 'musculosasMujerTalles'
+    },
+    {
+        title: 'Musculosa H',
+        slug: 'musculoso',
+        image: '/products/cabezotas/kevin/musculoso.jpg',
+        price: 'musculosaPrecio',
+        talles: 'musculosasHombreTalles'
+    }
 ]
 ---

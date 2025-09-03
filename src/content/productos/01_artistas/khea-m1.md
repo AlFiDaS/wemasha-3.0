@@ -20,32 +20,32 @@ prendas: [
         talles: 'oversizeTalles'
     },
     {
-        title: 'Musculosa M',
-        slug: 'musculosa-mujer',
-        image: '/products/artistas/09-khea/musculosa.jpg',
-        price: 'musculosaPrecio',
-        talles: 'musculosasMujerTalles'
-    },
-     {
-        title: 'Musculosa H',
-        slug: 'musculoso',
-        image: '/products/artistas/09-khea/musculoso.jpg',
-        price: 'musculosaPrecio',
-        talles: 'musculosasHombreTalles'
-    },
-    {
         title: 'Pupera Oversize',
         slug: 'pupera-oversize',
         image: '/products/artistas/09-khea/pupera.jpg',
         price: 'remerasPrecio',
         talles: 'oversizePuperasTalles'
     },
-     {
+    {
          title: 'Buzo',
          slug: 'buzo',
          image: '/products/artistas/09-khea/buzo.jpg',
          price: buzosPrecio,
         talles: 'BuzosTalles'
      },
+    {
+        title: 'Musculosa M',
+        slug: 'musculosa-mujer',
+        image: '/products/artistas/09-khea/musculosa.jpg',
+        price: 'musculosaPrecio',
+        talles: 'musculosasMujerTalles'
+    },
+    {
+        title: 'Musculosa H',
+        slug: 'musculoso',
+        image: '/products/artistas/09-khea/musculoso.jpg',
+        price: 'musculosaPrecio',
+        talles: 'musculosasHombreTalles'
+    }
 ]
 ---

@@ -20,32 +20,32 @@ prendas: [
         talles: 'oversizeTalles'
     },
     {
-        title: 'Musculosa M',
-        slug: 'musculosa-mujer',
-        image: '/products/autos/05-sally-cars/musculosa.jpg',
-        price: 'musculosaPrecio',
-        talles: 'musculosasMujerTalles'
-    },
-     {
-        title: 'Musculosa H',
-        slug: 'musculoso',
-        image: '/products/autos/05-sally-cars/musculoso.jpg',
-        price: 'musculosaPrecio',
-        talles: 'musculosasHombreTalles'
-    },
-    {
         title: 'Pupera Oversize',
         slug: 'pupera-oversize',
         image: '/products/autos/05-sally-cars/pupera.jpg',
         price: 'remerasPrecio',
         talles: 'oversizePuperasTalles'
     },
-     {
+    {
          title: 'Buzo',
          slug: 'buzo',
          image: '/products/autos/05-sally-cars/buzo.jpg',
          price: buzosPrecio,
         talles: 'BuzosTalles'
      },
+    {
+        title: 'Musculosa M',
+        slug: 'musculosa-mujer',
+        image: '/products/autos/05-sally-cars/musculosa.jpg',
+        price: 'musculosaPrecio',
+        talles: 'musculosasMujerTalles'
+    },
+    {
+        title: 'Musculosa H',
+        slug: 'musculoso',
+        image: '/products/autos/05-sally-cars/musculoso.jpg',
+        price: 'musculosaPrecio',
+        talles: 'musculosasHombreTalles'
+    }
 ]
 ---

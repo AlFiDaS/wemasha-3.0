@@ -20,6 +20,20 @@ prendas: [
         talles: 'oversizeTalles'
     },
     {
+        title: 'Pupera Oversize',
+        slug: 'pupera-oversize',
+        image: '/products/cabezotas/duki/pupera.jpg',
+        price: 'remerasPrecio',
+        talles: 'remerasTalles'
+    },
+    {
+         title: 'Buzo',
+         slug: 'buzo',
+         image: '/products/cabezotas/duki/buzo.jpg',
+         price: buzosPrecio,
+        talles: 'BuzosTalles'
+     },
+    {
         title: 'Musculosa M',
         slug: 'musculosa-mujer',
         image: '/products/cabezotas/duki/musculosa.jpg',
@@ -32,20 +46,6 @@ prendas: [
         image: '/products/cabezotas/duki/musculoso.jpg',
         price: 'musculosaPrecio',
         talles: 'musculosasHombreTalles'
-    },
-    {
-        title: 'Pupera Oversize',
-        slug: 'pupera-oversize',
-        image: '/products/cabezotas/duki/pupera.jpg',
-        price: 'remerasPrecio',
-        talles: 'remerasTalles'
-    },
-     {
-         title: 'Buzo',
-         slug: 'buzo',
-         image: '/products/cabezotas/duki/buzo.jpg',
-         price: buzosPrecio,
-        talles: 'BuzosTalles'
-     },
+    }
 ]
 ---

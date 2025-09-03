@@ -20,32 +20,32 @@ prendas: [
         talles: 'oversizeTalles'
     },
     {
-        title: 'Musculosa M',
-        slug: 'musculosa-mujer',
-        image: '/products/artistas/01-twentyonepilots/musculosa.jpg',
-        price: 'musculosaPrecio',
-        talles: 'musculosasMujerTalles'
-    },
-     {
-        title: 'Musculosa H',
-        slug: 'musculoso',
-        image: '/products/artistas/01-twentyonepilots/musculoso.jpg',
-        price: 'musculosaPrecio',
-        talles: 'musculosasHombreTalles'
-    },
-    {
         title: 'Pupera Oversize',
         slug: 'pupera-oversize',
         image: '/products/artistas/01-twentyonepilots/pupera.jpg',
         price: 'remerasPrecio',
         talles: 'oversizePuperasTalles'
     },
-     {
+    {
          title: 'Buzo',
          slug: 'buzo',
          image: '/products/artistas/01-twentyonepilots/buzo.jpg',
          price: buzosPrecio,
         talles: 'BuzosTalles'
      },
+    {
+        title: 'Musculosa M',
+        slug: 'musculosa-mujer',
+        image: '/products/artistas/01-twentyonepilots/musculosa.jpg',
+        price: 'musculosaPrecio',
+        talles: 'musculosasMujerTalles'
+    },
+    {
+        title: 'Musculosa H',
+        slug: 'musculoso',
+        image: '/products/artistas/01-twentyonepilots/musculoso.jpg',
+        price: 'musculosaPrecio',
+        talles: 'musculosasHombreTalles'
+    }
 ]
 ---

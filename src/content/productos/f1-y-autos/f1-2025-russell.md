@@ -5,7 +5,7 @@ designSlug: f1-2025-russell
 image: '/products/autos/11-russell/principal.jpg'
 imageHover: '/products/autos/11-russell/oversize.jpg'
 prendas: [
-   {   
+    {   
         title: 'Remera',
         slug: 'remera',          
         image: '/products/autos/11-russell/normal.jpg',
@@ -20,27 +20,12 @@ prendas: [
         talles: 'oversizeTalles'
     },
     {
-        title: 'Musculosa M',
-        slug: 'musculosa-mujer',
-        image: '/products/autos/11-russell/musculosa.jpg',
-        price: 'musculosaPrecio',
-        talles: 'musculosasMujerTalles'
-    },
-     {
-        title: 'Musculosa H',
-        slug: 'musculoso',
-        image: '/products/autos/11-russell/musculoso.jpg',
-        price: 'musculosaPrecio',
-        talles: 'musculosasHombreTalles'
-    },
-    {
         title: 'Pupera Oversize',
         slug: 'pupera-oversize',
         image: '/products/autos/11-russell/pupera.jpg',
         price: 'remerasPrecio',
         talles: 'oversizePuperasTalles'
     },
-
     {
          title: 'Buzo',
          slug: 'buzo',
@@ -48,5 +33,19 @@ prendas: [
          price: buzosPrecio,
         talles: 'BuzosTalles'
      },
+    {
+        title: 'Musculosa M',
+        slug: 'musculosa-mujer',
+        image: '/products/autos/11-russell/musculosa.jpg',
+        price: 'musculosaPrecio',
+        talles: 'musculosasMujerTalles'
+    },
+    {
+        title: 'Musculosa H',
+        slug: 'musculoso',
+        image: '/products/autos/11-russell/musculoso.jpg',
+        price: 'musculosaPrecio',
+        talles: 'musculosasHombreTalles'
+    }
 ]
 ---

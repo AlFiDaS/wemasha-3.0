@@ -5,7 +5,7 @@ designSlug: eldibu-diseno1
 image: '/products/idolos/eldibu-diseño1/principal.jpg'
 imageHover: '/products/idolos/eldibu-diseño1/oversize.jpg'
 prendas: [
-   {   
+    {   
         title: 'Remera',
         slug: 'remera',          
         image: '/products/idolos/eldibu-diseño1/normal.jpg',
@@ -20,27 +20,12 @@ prendas: [
         talles: 'oversizeTalles'
     },
     {
-        title: 'Musculosa M',
-        slug: 'musculosa-mujer',
-        image: '/products/idolos/eldibu-diseño1/musculosa.jpg',
-        price: 'musculosaPrecio',
-        talles: 'musculosasMujerTalles'
-    },
-     {
-        title: 'Musculosa H',
-        slug: 'musculoso',
-        image: '/products/idolos/eldibu-diseño1/musculoso.jpg',
-        price: 'musculosaPrecio',
-        talles: 'musculosasHombreTalles'
-    },
-    {
         title: 'Pupera Oversize',
         slug: 'pupera-oversize',
         image: '/products/idolos/eldibu-diseño1/pupera.jpg',
         price: 'remerasPrecio',
         talles: 'oversizePuperasTalles'
     },
-
     {
          title: 'Buzo',
          slug: 'buzo',
@@ -48,5 +33,19 @@ prendas: [
          price: buzosPrecio,
         talles: 'BuzosTalles'
      },
+    {
+        title: 'Musculosa M',
+        slug: 'musculosa-mujer',
+        image: '/products/idolos/eldibu-diseño1/musculosa.jpg',
+        price: 'musculosaPrecio',
+        talles: 'musculosasMujerTalles'
+    },
+    {
+        title: 'Musculosa H',
+        slug: 'musculoso',
+        image: '/products/idolos/eldibu-diseño1/musculoso.jpg',
+        price: 'musculosaPrecio',
+        talles: 'musculosasHombreTalles'
+    }
 ]
 ---
