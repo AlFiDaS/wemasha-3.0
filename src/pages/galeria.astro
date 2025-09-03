@@ -105,7 +105,7 @@ const categories = ["todos", ...Array.from(new Set(designs.map(d => d.category))
       </div>
 
              <div class="flex items-center gap-2">
-         <button id="desk-prev" class="p-2 rounded-lg border border-gray-200 hover:border-pink-500 hover:text-pink-500 transition-all duration-300 transform hover:scale-105" aria-label="Anterior">‹</button>
+         <button id="desk-prev" class="p-2 rounded-lg bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white border border-pink-400 transition-all duration-300 transform hover:scale-105 shadow-md hover:shadow-lg" aria-label="Anterior">‹</button>
 
                  <div id="desk-grid" class="grid grid-cols-3 gap-2 flex-1">
           <!-- Fallback SSR: primera página (12) -->
@@ -127,7 +127,7 @@ const categories = ["todos", ...Array.from(new Set(designs.map(d => d.category))
           ))}
         </div>
 
-                 <button id="desk-next" class="p-2 rounded-lg border border-gray-200 hover:border-pink-500 hover:text-pink-500 transition-all duration-300 transform hover:scale-105" aria-label="Siguiente">›</button>
+                 <button id="desk-next" class="p-2 rounded-lg bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white border border-pink-400 transition-all duration-300 transform hover:scale-105 shadow-md hover:shadow-lg" aria-label="Siguiente">›</button>
       </div>
     </section>
   </div>
