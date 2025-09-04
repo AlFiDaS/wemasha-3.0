@@ -15,6 +15,23 @@ export const precios = [
       slug: 'buzosPrecio',
       precio: 46000,
     },
+
+    {
+      slug: 'remerasPrecio2',
+      precio: 34000,
+    },
+    {
+      slug: 'oversizePrecio2',
+      precio: 36000,
+    },
+    {
+      slug: 'musculosaPrecio2',
+      precio: 30000,
+    },
+    {
+      slug: 'buzosPrecio2',
+      precio: 50000,
+    },
   ];
 
 // Precios de envío
