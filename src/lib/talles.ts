@@ -4,8 +4,8 @@ export const talles = [
       items: [
         { id: 'XS', label: 'XS (Ancho:46cm - Alto:66cm)' },
         { id: 'S', label: 'S (Ancho:50cm - Alto:68cm)' },
-        { id: 'M', label: 'M (Ancho:52cm - Alto:70cm)' },
-        { id: 'L', label: 'L (Ancho:55cm - Alto:74cm)' },
+        //{ id: 'M', label: 'M (Ancho:52cm - Alto:70cm)' },
+        //{ id: 'L', label: 'L (Ancho:55cm - Alto:74cm)' },
         { id: 'XL', label: 'XL (Ancho:57cm - Alto:77cm)' },
       ],
     },
