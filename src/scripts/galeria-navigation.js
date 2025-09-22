@@ -78,7 +78,7 @@ export function initGaleriaNavigation() {
   
   // Interceptar clicks en enlaces de navegación
   document.addEventListener('click', (e) => {
-    const target = e.target as HTMLElement;
+    const target = e.target;
     const link = target.closest('a');
     
     if (link && link.href && link.href.includes('/galeria')) {
@@ -93,9 +93,9 @@ export function initGaleriaNavigation() {
   });
   
   // Agregar funciones globales para debugging
-  (window as any).checkGaleriaContent = checkContentFreshness;
-  (window as any).reloadGaleria = forceContentReload;
-  (window as any).markGaleriaFresh = markContentAsFresh;
+  window.checkGaleriaContent = checkContentFreshness;
+  window.reloadGaleria = forceContentReload;
+  window.markGaleriaFresh = markContentAsFresh;
   
   console.log('✅ Navegación de galería inicializada');
 }

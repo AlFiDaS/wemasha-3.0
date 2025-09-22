@@ -14,10 +14,12 @@ function mount() {
   const btnAtras    = document.getElementById("btn-atras");
   const rangeSize   = document.getElementById("range-size");
   const btnCentro   = document.getElementById("btn-centro");
+  const uploadInput = document.getElementById("upload-design");
+  const btnRemoveCustom = document.getElementById("btn-remove-custom");
 
   if (!base || !overlay || !wrapper || !btnAdelante || !btnAtras || !rangeSize || !btnCentro) return;
 
-  initMockup({ base, overlay, wrapper, btnAdelante, btnAtras, rangeSize, btnCentro });
+  initMockup({ base, overlay, wrapper, btnAdelante, btnAtras, rangeSize, btnCentro, uploadInput, btnRemoveCustom });
 
   // ---------- Data + grillas ----------
   const dataEl   = document.getElementById("designs-data");
@@ -57,7 +59,7 @@ export default function initGaleria() {
 
 /* ===================== Mockup ===================== */
 function initMockup(refs) {
-  const { base, overlay, wrapper, btnAdelante, btnAtras, rangeSize, btnCentro } = refs;
+  const { base, overlay, wrapper, btnAdelante, btnAtras, rangeSize, btnCentro, uploadInput, btnRemoveCustom } = refs;
 
   const ZONES = {
     adelante: { left: 50, top: 65, widthPct: 58, heightPct: 46 },
@@ -67,6 +69,7 @@ function initMockup(refs) {
   let side = "adelante";
   let startX = 0, startY = 0, imgX = 0, imgY = 0, dragging = false;
   let isMobile = window.innerWidth <= 768;
+  let isCustomDesign = false;
 
   // Detectar cambios de tamaño de ventana
   window.addEventListener('resize', () => {
@@ -114,11 +117,15 @@ function initMockup(refs) {
 
     const on = ["bg-gradient-to-r","from-pink-500","to-pink-600","text-white"], off = ["bg-white","text-gray-700"];
     if (next === "adelante") {
-      btnAdelante.classList.add(...on); btnAdelante.classList.remove(...off);
-      btnAtras.classList.add(...off);   btnAtras.classList.remove(...on);
+      on.forEach(cls => btnAdelante.classList.add(cls));
+      off.forEach(cls => btnAdelante.classList.remove(cls));
+      off.forEach(cls => btnAtras.classList.add(cls));
+      on.forEach(cls => btnAtras.classList.remove(cls));
     } else {
-      btnAtras.classList.add(...on);    btnAtras.classList.remove(...off);
-      btnAdelante.classList.add(...off);btnAdelante.classList.remove(...on);
+      on.forEach(cls => btnAtras.classList.add(cls));
+      off.forEach(cls => btnAtras.classList.remove(cls));
+      off.forEach(cls => btnAdelante.classList.add(cls));
+      on.forEach(cls => btnAdelante.classList.remove(cls));
     }
     applyZoneDefaults();
     if (overlay.src) fitOverlayIntoZone();
@@ -150,6 +157,77 @@ function initMockup(refs) {
       selectedBtn.style.boxShadow = '0 0 0 2px rgba(236, 72, 153, 0.5), 0 4px 12px rgba(236, 72, 153, 0.3)';
       selectedBtn.style.transform = 'scale(1.02)';
     }
+    
+    // Marcar como diseño no personalizado
+    isCustomDesign = false;
+  }
+
+  function applyCustomDesign(file) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      overlay.src = e.target.result;
+      overlay.style.display = "block";
+      applyZoneDefaults();
+      fitOverlayIntoZone();
+      
+      // Remover borde rosa de todos los botones de diseño
+      document.querySelectorAll('[data-design]').forEach(btn => {
+        btn.classList.remove('border-pink-500', 'border-2');
+        btn.classList.add('border-neutral-700');
+        btn.style.borderColor = '#374151';
+        btn.style.borderWidth = '1px';
+        btn.style.boxShadow = 'none';
+        btn.style.transform = 'scale(1)';
+      });
+      
+      // Mostrar botón para eliminar diseño personalizado
+      if (btnRemoveCustom) {
+        btnRemoveCustom.classList.remove('hidden');
+      }
+      
+      // Marcar como diseño personalizado
+      isCustomDesign = true;
+      
+      console.log('✅ Diseño personalizado cargado exitosamente');
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function removeCustomDesign() {
+    overlay.src = "";
+    overlay.style.display = "none";
+    
+    // Ocultar botón para eliminar diseño personalizado
+    if (btnRemoveCustom) {
+      btnRemoveCustom.classList.add('hidden');
+    }
+    
+    // Limpiar input de archivo
+    if (uploadInput) {
+      uploadInput.value = "";
+    }
+    
+    // Marcar como diseño no personalizado
+    isCustomDesign = false;
+    
+    console.log('🗑️ Diseño personalizado eliminado');
+  }
+
+  function validateFile(file) {
+    const maxSize = 5 * 1024 * 1024; // 5MB
+    const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg'];
+    
+    if (!allowedTypes.includes(file.type)) {
+      alert('❌ Solo se permiten archivos PNG, JPG o JPEG');
+      return false;
+    }
+    
+    if (file.size > maxSize) {
+      alert('❌ El archivo es demasiado grande. Máximo 5MB');
+      return false;
+    }
+    
+    return true;
   }
 
   function setSize() {
@@ -188,6 +266,20 @@ function initMockup(refs) {
   rangeSize.addEventListener("input", setSize);
   rangeSize.addEventListener("change", setSize);
   btnCentro.addEventListener("click", centerOverlay);
+
+  // Event listeners para carga de archivos personalizados
+  if (uploadInput) {
+    uploadInput.addEventListener("change", function(e) {
+      const file = e.target.files[0];
+      if (file && validateFile(file)) {
+        applyCustomDesign(file);
+      }
+    });
+  }
+
+  if (btnRemoveCustom) {
+    btnRemoveCustom.addEventListener("click", removeCustomDesign);
+  }
 
   // Drag mouse
   overlay.addEventListener("mousedown", (e) => { dragging = true; startX = e.clientX; startY = e.clientY; });
@@ -303,7 +395,7 @@ function initPagination(refs) {
 
   const CATS = jsonCats.length
     ? jsonCats
-    : ["todos", ...Array.from(new Set(ALL.map(d => d.category).filter(Boolean)))];
+    : ["todos"].concat(Array.from(new Set(ALL.map(d => d.category).filter(Boolean))));
 
   const url = new URLSearchParams(location.search);
   let currentCat = url.get("cat") || "todos";

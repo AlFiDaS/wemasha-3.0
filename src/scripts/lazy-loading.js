@@ -76,10 +76,11 @@ class LazyLoader {
 // Debouncer para optimizar eventos
 function debounce(func, wait) {
   let timeout;
-  return function executedFunction(...args) {
+  return function executedFunction() {
+    const args = arguments;
     const later = () => {
       clearTimeout(timeout);
-      func(...args);
+      func.apply(this, args);
     };
     clearTimeout(timeout);
     timeout = setTimeout(later, wait);

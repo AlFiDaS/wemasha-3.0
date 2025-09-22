@@ -84,16 +84,16 @@ export function checkNavigationIssues() {
   const originalPushState = history.pushState;
   const originalReplaceState = history.replaceState;
   
-  history.pushState = function(...args) {
+  history.pushState = function() {
     navigationCount++;
     console.log(`🧭 Navegación ${navigationCount}: pushState`);
-    return originalPushState.apply(this, args);
+    return originalPushState.apply(this, arguments);
   };
   
-  history.replaceState = function(...args) {
+  history.replaceState = function() {
     navigationCount++;
     console.log(`🧭 Navegación ${navigationCount}: replaceState`);
-    return originalReplaceState.apply(this, args);
+    return originalReplaceState.apply(this, arguments);
   };
   
   // Escuchar eventos de popstate
@@ -107,9 +107,9 @@ export function checkNavigationIssues() {
 // Auto-inicializar cuando se carga el script
 if (typeof window !== 'undefined') {
   // Agregar funciones globales para debugging
-  (window as any).debugCache = debugCacheIssues;
-  (window as any).forceRefresh = forceCacheRefresh;
-  (window as any).checkNavigation = checkNavigationIssues;
+  window.debugCache = debugCacheIssues;
+  window.forceRefresh = forceCacheRefresh;
+  window.checkNavigation = checkNavigationIssues;
   
   // Ejecutar diagnóstico automático en desarrollo
   if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {

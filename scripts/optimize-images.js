@@ -104,17 +104,17 @@ async function processImage(filePath) {
   // Generar thumbnail
   const thumbnailPath = path.join(thumbnailDir, `${fileName}.webp`);
   const thumbnailResult = await optimizeImage(filePath, thumbnailPath, OPTIMIZATION_CONFIG.thumbnail);
-  results.push({ type: 'thumbnail', ...thumbnailResult });
+  results.push(Object.assign({ type: 'thumbnail' }, thumbnailResult));
   
   // Generar versión optimizada para galería
   const galleryPath = path.join(optimizedDir, `${fileName}.webp`);
   const galleryResult = await optimizeImage(filePath, galleryPath, OPTIMIZATION_CONFIG.gallery);
-  results.push({ type: 'gallery', ...galleryResult });
+  results.push(Object.assign({ type: 'gallery' }, galleryResult));
   
   // Generar versión optimizada completa
   const fullPath = path.join(optimizedDir, `${fileName}_full.webp`);
   const fullResult = await optimizeImage(filePath, fullPath, OPTIMIZATION_CONFIG.full);
-  results.push({ type: 'full', ...fullResult });
+  results.push(Object.assign({ type: 'full' }, fullResult));
   
   return results;
 }
@@ -131,7 +131,7 @@ async function scanAndOptimizeDirectory(dirPath) {
       
       if (stat.isDirectory()) {
         const subResults = await scanAndOptimizeDirectory(fullPath);
-        results.push(...subResults);
+        results = results.concat(subResults);
       } else if (isImageFile(item)) {
         const imageResults = await processImage(fullPath);
         results.push({ file: fullPath, results: imageResults });
