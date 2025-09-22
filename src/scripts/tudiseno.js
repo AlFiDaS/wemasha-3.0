@@ -209,11 +209,21 @@ function initTuDisenoInternal(refs) {
   function applyCustomDesign(file) {
     const reader = new FileReader();
     reader.onload = function(e) {
-      overlay.src = e.target.result;
+      const imageData = e.target.result;
+      overlay.src = imageData;
       overlay.style.display = "block";
       hideNoDesignMessage();
       applyZoneDefaults();
       fitOverlayIntoZone();
+      
+      // Guardar imagen en localStorage
+      try {
+        localStorage.setItem('tudiseno_custom_image', imageData);
+        localStorage.setItem('tudiseno_custom_filename', file.name);
+        localStorage.setItem('tudiseno_custom_size', file.size.toString());
+      } catch (error) {
+        console.warn('No se pudo guardar la imagen en localStorage:', error);
+      }
       
       // Mostrar botones para eliminar y descargar diseño (desktop)
       if (btnRemoveCustom) {
@@ -258,6 +268,15 @@ function initTuDisenoInternal(refs) {
     overlay.src = "";
     overlay.style.display = "none";
     showNoDesignMessage();
+    
+    // Limpiar localStorage
+    try {
+      localStorage.removeItem('tudiseno_custom_image');
+      localStorage.removeItem('tudiseno_custom_filename');
+      localStorage.removeItem('tudiseno_custom_size');
+    } catch (error) {
+      console.warn('No se pudo limpiar localStorage:', error);
+    }
     
     // Ocultar botones para eliminar y descargar diseño (desktop)
     if (btnRemoveCustom) {
@@ -651,9 +670,62 @@ function initTuDisenoInternal(refs) {
     }
   }, { passive: true });
 
+  // Función para cargar imagen desde localStorage
+  function loadSavedDesign() {
+    try {
+      const savedImage = localStorage.getItem('tudiseno_custom_image');
+      const savedFilename = localStorage.getItem('tudiseno_custom_filename');
+      const savedSize = localStorage.getItem('tudiseno_custom_size');
+      
+      if (savedImage && savedFilename) {
+        // Simular un archivo para mantener la funcionalidad existente
+        const sizeInMB = savedSize ? (parseInt(savedSize) / (1024 * 1024)).toFixed(2) : '0.00';
+        
+        overlay.src = savedImage;
+        overlay.style.display = "block";
+        hideNoDesignMessage();
+        applyZoneDefaults();
+        fitOverlayIntoZone();
+        
+        // Mostrar botones
+        if (btnRemoveCustom) {
+          btnRemoveCustom.classList.remove('hidden');
+        }
+        if (btnDownload) {
+          btnDownload.classList.remove('hidden');
+        }
+        if (btnRemoveCustomMobile) {
+          btnRemoveCustomMobile.classList.remove('hidden');
+        }
+        if (btnDownloadMobile) {
+          btnDownloadMobile.classList.remove('hidden');
+        }
+        
+        // Ocultar sección de upload y mostrar botón de cambiar imagen
+        if (uploadSection) {
+          uploadSection.style.display = 'none';
+        }
+        if (btnChangeImage) {
+          btnChangeImage.classList.remove('hidden');
+        }
+        
+        // Mostrar información del archivo
+        if (fileInfo && fileDetails) {
+          fileInfo.classList.remove('hidden');
+          fileDetails.textContent = `${savedFilename} (${sizeInMB} MB) - Guardado`;
+        }
+      }
+    } catch (error) {
+      console.warn('No se pudo cargar la imagen guardada:', error);
+    }
+  }
+
   // Inicialización
   setSide("adelante");
   showNoDesignMessage();
+  
+  // Cargar imagen guardada si existe
+  loadSavedDesign();
   
   // Inicializar el gradiente de la barra
   const initialPct = Number(rangeSize.value || "35");
