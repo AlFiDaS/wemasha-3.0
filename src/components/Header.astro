@@ -25,7 +25,7 @@ const links = [
     <div class="right desktop-only">
       <ul class="links">
         {links.map((l) => (
-          <li><a href={l.href}>{l.text}</a></li>
+          <li><a href={l.href} class={l.href === '/tudiseno' ? 'nav-link-tudiseno' : l.href === '/galeria' ? 'nav-link-galeria' : l.href === '/clientes' ? 'nav-link-clientes' : ''}>{l.text}</a></li>
         ))}
       </ul>
       <a href="/cart" class="cart" aria-label="Carrito">
@@ -45,7 +45,7 @@ const links = [
   <ul id="nav-links" class="drawer">
     {links.map((l) => (
       <li class="nav-item">
-        <a href={l.href} class="nav-link">
+        <a href={l.href} class="nav-link nav-link-mobile">
           {l.text}
         </a>
       </li>
@@ -171,6 +171,65 @@ const links = [
     refreshRefs();
     setSpacerHeight();
   });
+
+  // --------- Deshabilitar botones cuando estés en esa página ---------
+  function disableCurrentPageButton() {
+    const currentPath = window.location.pathname;
+    
+    // Función helper para deshabilitar un enlace
+    function setLinkState(link, isCurrentPage) {
+      if (isCurrentPage) {
+        link.style.pointerEvents = 'none';
+        link.style.opacity = '0.5';
+        link.style.cursor = 'default';
+        link.title = 'Ya estás en esta página';
+      } else {
+        link.style.pointerEvents = '';
+        link.style.opacity = '';
+        link.style.cursor = '';
+        link.title = '';
+      }
+    }
+    
+    // Desktop - Tu Diseño
+    const desktopTuDiseno = document.querySelector('.nav-link-tudiseno');
+    if (desktopTuDiseno) {
+      setLinkState(desktopTuDiseno, currentPath.includes('/tudiseno'));
+    }
+    
+    // Desktop - Galería
+    const desktopGaleria = document.querySelector('.nav-link-galeria');
+    if (desktopGaleria) {
+      setLinkState(desktopGaleria, currentPath.includes('/galeria'));
+    }
+    
+    // Desktop - Clientes
+    const desktopClientes = document.querySelector('.nav-link-clientes');
+    if (desktopClientes) {
+      setLinkState(desktopClientes, currentPath.includes('/clientes'));
+    }
+    
+    // Mobile - todos los enlaces
+    const mobileLinks = document.querySelectorAll('.nav-link-mobile');
+    mobileLinks.forEach(link => {
+      const linkText = link.textContent.trim();
+      let isCurrentPage = false;
+      
+      if (linkText === 'Tu diseño' && currentPath.includes('/tudiseno')) {
+        isCurrentPage = true;
+      } else if (linkText === 'Galería de ideas' && currentPath.includes('/galeria')) {
+        isCurrentPage = true;
+      } else if (linkText === 'Clientes' && currentPath.includes('/clientes')) {
+        isCurrentPage = true;
+      }
+      
+      setLinkState(link, isCurrentPage);
+    });
+  }
+
+  // Ejecutar en carga inicial y en navegación
+  disableCurrentPageButton();
+  document.addEventListener('astro:page-load', disableCurrentPageButton);
 
   // Primera carga
   refreshRefs();
