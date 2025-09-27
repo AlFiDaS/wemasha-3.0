@@ -1,0 +1,51 @@
+---
+interface Props {
+  products: Array<{
+    name: string;
+    description: string;
+    image: string;
+    category: string;
+    price?: string;
+  }>;
+}
+
+const { products } = Astro.props;
+
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  "name": "Productos WeMasha",
+  "description": "Colección de remeras y buzos streetwear con diseños exclusivos",
+  "numberOfItems": products.length,
+  "itemListElement": products.map((product, index) => ({
+    "@type": "Product",
+    "position": index + 1,
+    "name": product.name,
+    "description": product.description,
+    "image": `https://wemasha.hechoencorrientes.com${product.image}`,
+    "category": product.category,
+    "brand": {
+      "@type": "Brand",
+      "name": "WeMasha"
+    },
+    "offers": {
+      "@type": "Offer",
+      "price": product.price || "Consultar precio",
+      "priceCurrency": "ARS",
+      "availability": "https://schema.org/InStock",
+      "seller": {
+        "@type": "Organization",
+        "name": "WeMasha",
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Corrientes",
+          "addressRegion": "Corrientes",
+          "addressCountry": "AR"
+        }
+      }
+    }
+  }))
+};
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(structuredData)} />

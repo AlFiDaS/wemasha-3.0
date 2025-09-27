@@ -1,52 +1,62 @@
-import { getCollection } from 'astro:content';
 import type { APIRoute } from 'astro';
+import { getCollection } from 'astro:content';
 
 export const GET: APIRoute = async ({ site }) => {
-  if (!site) {
-    throw new Error('site is not defined in astro.config.mjs');
-  }
-
-  // Obtener todas las categorías
   const categorias = await getCollection('categorias');
   
-  // Obtener todos los productos
-  const productos = await getCollection('productos');
-
-  // Páginas estáticas principales
+  // Páginas principales
   const staticPages = [
-    '',
-    '/galeria',
-    '/clientes',
-    '/cart'
+    {
+      url: site?.href || 'https://wemasha.hechoencorrientes.com',
+      lastmod: new Date().toISOString(),
+      changefreq: 'weekly',
+      priority: '1.0'
+    },
+    {
+      url: `${site?.href || 'https://wemasha.hechoencorrientes.com'}galeria`,
+      lastmod: new Date().toISOString(),
+      changefreq: 'daily',
+      priority: '0.9'
+    },
+    {
+      url: `${site?.href || 'https://wemasha.hechoencorrientes.com'}tudiseno`,
+      lastmod: new Date().toISOString(),
+      changefreq: 'weekly',
+      priority: '0.8'
+    },
+    {
+      url: `${site?.href || 'https://wemasha.hechoencorrientes.com'}clientes`,
+      lastmod: new Date().toISOString(),
+      changefreq: 'weekly',
+      priority: '0.7'
+    }
   ];
 
-  // Generar URLs de categorías
-  const categoryUrls = categorias.map(categoria => `/${categoria.slug}`);
+  // Páginas de categorías
+  const categoryPages = categorias.map(categoria => ({
+    url: `${site?.href || 'https://wemasha.hechoencorrientes.com'}${categoria.slug}`,
+    lastmod: new Date().toISOString(),
+    changefreq: 'weekly',
+    priority: '0.8'
+  }));
 
-  // Generar URLs de productos (categoría/diseño)
-  const productUrls = productos.map(producto => {
-    const categorySlug = producto.data.category;
-    return `/${categorySlug}/${producto.data.designSlug}`;
-  });
+  const allPages = [...staticPages, ...categoryPages];
 
-  // Combinar todas las URLs
-  const allUrls = [...staticPages, ...categoryUrls, ...productUrls];
-
-  // Crear el XML del sitemap
   const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  ${allUrls.map(url => `
+  ${allPages.map(page => `
   <url>
-    <loc>${site}${url}</loc>
-    <lastmod>${new Date().toISOString()}</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>${url === '' ? '1.0' : url === '/galeria' ? '0.9' : '0.8'}</priority>
+    <loc>${page.url}</loc>
+    <lastmod>${page.lastmod}</lastmod>
+    <changefreq>${page.changefreq}</changefreq>
+    <priority>${page.priority}</priority>
   </url>`).join('')}
 </urlset>`;
 
   return new Response(sitemap, {
     headers: {
       'Content-Type': 'application/xml',
-    },
+      'Cache-Control': 'public, max-age=3600'
+    }
   });
 };

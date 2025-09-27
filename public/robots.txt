@@ -2,7 +2,7 @@ User-agent: *
 Allow: /
 
 # Sitemap
-Sitemap: https://wemasha.com/sitemap.xml
+Sitemap: https://wemasha.hechoencorrientes.com/sitemap.xml
 
 # Disallow admin areas (if any)
 Disallow: /admin/
